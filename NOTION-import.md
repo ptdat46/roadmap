@@ -1,415 +1,560 @@
-# Java Software Engineer — Roadmap học từng ngày
+# Java & Next.js Fullstack Software Engineer — Roadmap học từng ngày
 
-> Mục tiêu: Fresher sau 4–5 tháng; Junior thực chiến và đủ năng lực apply Mid sau 12–14 tháng tiếp theo; Senior sau 1–2 năm tích lũy scope thật.
+> **Mục tiêu:** 
+> - **Fresher sau 4–5 tháng:** Đủ năng lực phỏng vấn và trúng tuyển cả hai vị trí: **Java Backend Developer** và **Fullstack Java + Next.js Developer** tại thị trường Việt Nam (Mức lương mục tiêu: 12–15+ triệu VNĐ).
+> - **Junior thực chiến & Mid sau 12–14 tháng tiếp theo:** 25–30 triệu VNĐ.
+> - **Senior Software Engineer sau 1–2 năm tích lũy scope thật:** 45–55+ triệu VNĐ.
 >
-> Lịch chuẩn: Thứ 2–6 mỗi ngày 2 giờ; Thứ 7 5 giờ; Chủ nhật nghỉ hoặc bù tối đa 2 giờ. Tổng 15 giờ/tuần. Mỗi buổi: 45 phút học, 60 phút code, 15 phút ghi chú/test/commit.
+> **Lịch chuẩn 15 giờ/tuần — Phát triển song song theo Lát Cắt Dọc Tính Năng (Vertical Slice Driven: 70% Java / 30% Next.js):**
+> - **Nguyên tắc bất biến:** Triển khai tới chức năng nào thì làm chủ kiến thức Java Backend VÀ Next.js Frontend ở chính chức năng đó. Tuyệt đối không code mù hàng loạt API backend rồi cuối tuần mới làm frontend. Mỗi tính năng hoàn thiện trọn vẹn cả 2 phía song song:
+>   - **Phần Backend (~70% thời lượng):** Code Controller, Service, Domain Logic, Database/Cache $\rightarrow$ Học sâu bản chất Java 17 LTS, Spring Boot 3.x, OOP, Type Safety, Concurrency, Database, Performance.
+>   - **Phần Frontend (~30% thời lượng):** Xây dựng Component Next.js (App Router, TypeScript, Tailwind) tiêu thụ trực tiếp API vừa viết $\rightarrow$ Học State, Hooks, Form validation, Client Caching, UX.
+>   - **Vòng lặp phản hồi tức thì (Immediate Feedback Loop):** Chạy và kiểm thử trực tiếp trên trình duyệt ngay trong ngày/chức năng đó, nhìn thấy dữ liệu và giao diện tương tác thật.
+> - **Thứ 2 – Thứ 6 (2h/ngày):** Mỗi chặng 1–2 ngày hoàn thiện trọn vẹn 1 Lát cắt chức năng (Vertical Slice: Backend Java + Frontend Next.js + Test trên browser).
+> - **Thứ 7 (5h):** Tích hợp sâu, tối ưu hóa hiệu năng, xử lý các kịch bản biên (Edge cases, Race conditions, Errors), viết bài test tự động và hoàn thiện tài liệu.
+> - **Chủ nhật:** Nghỉ hoặc bù tối đa 2 giờ.
 >
-> Quy tắc: học xong phải code; feature phải có test; mỗi tuần có commit; mỗi mốc có project demo. Salary/title không tự động theo thời gian; cần năng lực, output, phỏng vấn, thị trường.
+> **Chiến Lược Luyện DSA Cho Các Vòng Phỏng Vấn Live Coding (Live Coding Track — 2–3 bài LeetCode/tuần):**
+> - **Bối cảnh thị trường:** Nhiều công ty Product, FinTech, Unicorn tại Việt Nam (Shopee, VNG/Zalo, NAB, MoMo, Axon, Line Technology, Grab...) và các công ty Global Outsourcing (FPT Software Global, KMS...) đều có vòng Online Assessment (HackerRank/Codility/LeetCode) và vòng phỏng vấn Live Coding 1-on-1 trước khi vào vòng chuyên sâu Framework/System.
+> - **Phương pháp "Pattern-Based DSA" (Blind 75 / NeetCode 150):** Tuyệt đối không cày bừa hàng trăm bài ngẫu nhiên. Lộ trình chọn lọc chính xác **40 bài cốt lõi nhất** thuộc 14 mẫu thuật toán kinh điển, phân bổ nhịp nhàng 2 bài/tuần bám sát cấu trúc dữ liệu Java học trong tuần.
+> - **Quy Trình 4 Bước Chuẩn Mực Khi Live Coding (The 4-Step Live Coding Framework):**
+>   1. **Clarify (3–5m):** Đặt câu hỏi làm rõ đề, xác định input/output, hỏi về giới hạn dữ liệu ($N \le 10^5$ hay $10^9$) và các trường hợp biên (null, rỗng, số âm, mảng trùng lặp).
+>   2. **Approach & Big-O (5–7m):** Nghĩ thành tiếng (Think Out Loud). Nêu giải pháp thô (Brute-force) trước $\rightarrow$ đề xuất giải pháp tối ưu ($O(N)$ dùng Hash Map / Two Pointers thay vì $O(N^2)$). Phân tích Time & Space Complexity trước khi code; thống nhất với Interviewer rồi mới bắt đầu gõ phím.
+>   3. **Clean Idiomatic Java (15m):** Viết code sạch bằng Java 17 chuẩn mực (dùng đúng Collections `HashMap`, `ArrayList`, `Deque`, `PriorityQueue`; biến đặt tên rõ nghĩa, không viết tắt, bẻ nhỏ hàm nếu cần).
+>   4. **Dry Run & Verification (3–5m):** Tự mình chạy tay (dry run) từng dòng với một ví dụ cụ thể và edge cases; chủ động bắt bug trước khi người phỏng vấn lên tiếng.
 >
-> Buffer: trượt tuần nào dời gate tương ứng; không học nhanh hơn để kịp lịch. Gate trượt thì bù đúng phần trượt, không bỏ qua.
+> **Quy tắc:** học xong phải code; feature phải có test; mỗi tuần có commit; mỗi tính năng đều có giao diện tương tác chạy trên browser; mỗi tuần luyện 2 bài DSA live code.
 
 ---
 
 # GIAI ĐOẠN 1 — TUẦN 1–8
-## Java 17 LTS + Spring Boot Foundation: Xây Dựng Base Dự Án Giao Vặt
+## Java 17 LTS + Spring Boot Foundation & Next.js Frontend (70% Backend / 30% Frontend)
 
-**Mục tiêu cuối giai đoạn:** Tự tay dựng và làm chủ một Backend Spring Boot 3.x chuẩn sản xuất chạy trên **Java 17 LTS**; hiểu sâu kiến trúc phân tầng 3 layers; tự viết RESTful API kết nối Database quan hệ (PostgreSQL/MySQL); nắm vững cú pháp, câu điều kiện, vòng lặp, OOP, Java Collections, Domain Exceptions, Stream API và Concurrency Locking cơ bản trực tiếp trên codebase Giao Vặt; có test tự động MockMvc và Testcontainers.
+**Mục tiêu cuối giai đoạn:** 
+- **Backend (70%):** Tự tay dựng và làm chủ một Backend Spring Boot 3.x chuẩn sản xuất chạy trên **Java 17 LTS**; hiểu sâu kiến trúc phân tầng 3 layers; tự viết RESTful API kết nối Database quan hệ (PostgreSQL/MySQL); nắm vững cú pháp, câu điều kiện, vòng lặp, OOP, Java Collections, Domain Exceptions, Stream API và Concurrency Locking cơ bản trực tiếp trên codebase Giao Vặt; có test tự động MockMvc và Testcontainers.
+- **Frontend (30%):** Dựng được giao diện Web Giao Vặt hoàn chỉnh bằng **Next.js (App Router, TypeScript, Tailwind CSS)**: Form đặt đơn có validation Zod, Bảng tin đơn hàng (`/feed`) hiển thị danh sách đơn từ DB, nút "Nhận đơn" (Claim) tương tác trực tiếp với API Backend.
+- **Tích hợp Fullstack:** Khắc phục triệt để lỗi CORS, xử lý định dạng lỗi chuẩn RFC 7807 `ProblemDetail` hiển thị lên UI, hoàn thành luồng End-to-End v0 chạy mượt mà trên trình duyệt.
 
-> **NGUYÊN TẮC HỌC CỐT LÕI CỦA GIAI ĐOẠN 1 (PRACTICE-FIRST VIA GIAO VẶT):**
-> - **Môi trường kỹ thuật chuẩn:** Sử dụng **Java 17 LTS** và phiên bản **Spring Boot 3.x tương thích** (Spring Boot 3.2+).
-> - **Tuyệt đối không học qua ví dụ console rời rạc nhỏ lẻ:** Bỏ qua các bài toán máy tính cầm tay, quản lý sinh viên mảng console, quản lý thư viện console. Chúng gây phân mảnh và không phản ánh cách tư duy của kỹ sư phần mềm backend thực chiến.
-> - **Học theo phương pháp thực hành trực tiếp làm app Giao Vặt:**
->   1. Ngay từ Tuần 1, khởi tạo base dự án Spring Boot cho Giao Vặt $\rightarrow$ Học được cấu trúc hoàn chỉnh của 1 Backend Java Spring Boot chuẩn doanh nghiệp (Maven/Gradle, `pom.xml`, các package `controller`, `service`, `repository`, `model`, `dto`, `config`, `exception`).
->   2. Code Controller và các REST API đầu tiên cho Giao Vặt (Ping API, Order Controller skeleton).
->   3. Khi bắt tay vào viết logic nghiệp vụ cho Giao Vặt (tính cước sàn theo khoảng cách, kiểm tra điều kiện tạo đơn, kiểm tra trạng thái máy đơn hàng, duyệt danh sách bảng tin, lọc đơn, thống kê thu nhập) $\rightarrow$ Học và làm chủ tự nhiên các logic cú pháp Java: kiểu dữ liệu, toán tử, câu điều kiện (`if/else`, switch-case / switch expression), vòng lặp (`for`, `while`), OOP đóng gói, Java Collections in-memory, Custom Exceptions và Stream API.
+> **NGUYÊN TẮC HỌC CỐT LÕI CỦA GIAI ĐOẠN 1 (PRACTICE-FIRST FULLSTACK VIA GIAO VẶT):**
+> - **Môi trường kỹ thuật chuẩn:** Sử dụng **Java 17 LTS** + **Spring Boot 3.x** cho Backend; **Next.js 14+ (App Router, TypeScript)** cho Frontend.
+> - **Tuyệt đối không học qua ví dụ console rời rạc nhỏ lẻ:** Bỏ qua các bài toán máy tính cầm tay, quản lý sinh viên mảng console, quản lý thư viện console. Chúng gây phân mảnh và không phản ánh cách tư duy của kỹ sư phần mềm thực chiến.
+> - **Phát triển tính năng song song BE và FE (Vertical Slice Driven):**
+>   1. Không code mù hàng loạt API backend rồi bỏ ngỏ giao diện. Mỗi tuần chia thành các chức năng cụ thể của Giao Vặt.
+>   2. Với mỗi chức năng: code API Backend (nắm kiến thức Java phần đó) $\rightarrow$ code ngay Component Frontend Next.js tương ứng (nắm kiến thức Next.js phần đó) $\rightarrow$ bật trình duyệt lên kiểm thử ngay lập tức.
+>   3. Nhờ làm song song, người học làm chủ tự nhiên cả logic cú pháp Java (kiểu dữ liệu, toán tử, `if/else`, switch-case, vòng lặp, OOP, Collections, Custom Exceptions, Stream API) lẫn kiến trúc Frontend hiện đại (React state, hooks, Zod schema, component composition).
 
-**Dự án chính: Giao Vặt** — On-Demand Crowdsourced Delivery Platform (Nền tảng tiện chuyến & giao việc vi mô)
+**Dự án chính: Giao Vặt Platform** — On-Demand Crowdsourced Delivery Platform (Nền tảng tiện chuyến & giao việc vi mô)
 - **Scope nghiệp vụ:** Hệ thống kết nối Người tạo đơn (Creator) và Người tiện chuyến / Tài xế (Runner). Khách đăng nhu cầu giao hàng/đi nhờ xe $\rightarrow$ Đơn hàng hiển thị trên Bảng tin công khai (`Order Feed`) $\rightarrow$ Runner duyệt bảng tin và nhận đơn (`claimOrder`).
 - **Core Mechanism:** Bảng tin đơn hàng tập trung (`OPEN` orders), cơ chế khóa chống tranh chấp khi nhiều Runner cùng bấm nhận 1 đơn trong cùng tích tắc (Concurrency Locking với `@Version`), thông báo real-time cập nhật trạng thái đơn (Server-Sent Events / SSE).
 - **Core features:** Creator đăng đơn (điểm đón, điểm trả, khoảng cách, cước phí), Bảng tin đơn mở công khai, Runner duyệt feed & nhận đơn (`OPEN` $\rightarrow$ `ACCEPTED`), cập nhật hành trình (`PICKED_UP` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`), tính giá linh hoạt (Strategy Pattern), phân quyền Creator vs Runner bằng JWT.
-- **Architecture:** Monolith Spring Boot 3 chuẩn 3 layers (Controller–Service–Repository Seam), In-Memory Cache/Queue (Redis ở Giai đoạn 2), PostgreSQL/MySQL tập trung, thiết kế module hóa phân ranh giới rõ ràng.
+- **Architecture:** Monolith Spring Boot 3 chuẩn 3 layers (Controller–Service–Repository Seam) + Next.js App Router Frontend, In-Memory Cache/Queue (Redis ở Giai đoạn 2), PostgreSQL/MySQL tập trung.
 
 ### Danh mục 9 Module Chức năng Bắt buộc của App Giao Vặt (Khai thác 100% Roadmap)
-1. **Module 1 — Authentication & RBAC (Tuần 9, 15):** Đăng ký/đăng nhập Creator & Runner; Spring Security 6 + JWT Stateless; Refresh Token Rotation; phân quyền `@PreAuthorize("hasRole('...')")`; cấu hình MDC Logging `traceId`; ẩn số điện thoại khách trên public feed (chỉ hiển thị sau khi Runner nhận đơn thành công).
-2. **Module 2 — Đăng đơn & Định giá thông minh (Tuần 3, 6, 15, 17):** Jakarta Validation `@Valid`; GoF Strategy Pattern cho tính giá cước (`StandardPricingStrategy`, `SurgePricingStrategy` giờ cao điểm, `BadWeatherPricingStrategy` thời tiết xấu); Idempotency Key Pattern (Header `Idempotency-Key` lưu Redis chống bấm đúp tạo đơn trùng); chuẩn hóa lỗi theo RFC 7807 `ProblemDetail`.
-3. **Module 3 — Redis In-Memory Priority Queue & Feed (Tuần 10):** Redis Sorted Set (ZSET) lưu `orders:open` theo score thời gian/giá cước; Cache-Aside pattern cho chi tiết đơn `order:{id}`; Sliding Window Rate Limiting bằng Redis để chống bot/spam refresh bảng tin.
-4. **Module 4 — Runner Claim Order & Concurrency Control (Tuần 7, 8, 17, 24–26):** Giải quyết triệt để race condition khi nhiều Runner cùng bấm nhận 1 đơn bằng JPA Optimistic Locking (`@Version`); đối chứng so sánh với Pessimistic Locking (`PESSIMISTIC_WRITE`) hoặc Redisson Distributed Lock; cấu hình Spring `@Retryable` tự động retry với exponential backoff khi gặp deadlock.
-5. **Module 5 — Real-time Feed & Notifications (Tuần 17):** Server-Sent Events (`SseEmitter`) quản lý luồng real-time một chiều nhẹ; Event-Driven Architecture (`ApplicationEventPublisher`); sử dụng Thread Pool bất đồng bộ (`ThreadPoolTaskExecutor`, `@Async`) trên Java 17 LTS cho tác vụ push notification (broadcast thêm đơn mới vào feed, gỡ đơn đã nhận, báo khách có Runner nhận).
+1. **Module 1 — Authentication & RBAC (Tuần 9, 15):** Đăng ký/đăng nhập Creator & Runner; Spring Security 6 + JWT Stateless; Refresh Token Rotation; phân quyền `@PreAuthorize("hasRole('...')")`; cấu hình MDC Logging `traceId`; ẩn số điện thoại khách trên public feed; giao diện Next.js phân quyền theo Role.
+2. **Module 2 — Đăng đơn & Định giá thông minh (Tuần 3, 6, 15, 17):** Jakarta Validation `@Valid` & Zod validation ở Frontend; GoF Strategy Pattern cho tính giá cước (`StandardPricingStrategy`, `SurgePricingStrategy` giờ cao điểm, `BadWeatherPricingStrategy` thời tiết xấu); Idempotency Key Pattern chống bấm đúp tạo đơn trùng; chuẩn hóa lỗi theo RFC 7807 `ProblemDetail`.
+3. **Module 3 — Redis In-Memory Priority Queue & Feed (Tuần 10):** Redis Sorted Set (ZSET) lưu `orders:open` theo score thời gian/giá cước; Cache-Aside pattern cho chi tiết đơn `order:{id}`; Sliding Window Rate Limiting bằng Redis; Next.js hiển thị đếm ngược khi bị rate limit.
+4. **Module 4 — Runner Claim Order & Concurrency Control (Tuần 7, 8, 17, 24–26):** Giải quyết triệt để race condition khi nhiều Runner cùng bấm nhận 1 đơn bằng JPA Optimistic Locking (`@Version`); đối chứng so sánh với Pessimistic Locking hoặc Redisson Distributed Lock; Next.js Optimistic UI & Rollback khi gặp lỗi 409 Conflict.
+5. **Module 5 — Real-time Feed & Notifications (Tuần 17):** Server-Sent Events (`SseEmitter`) quản lý luồng real-time một chiều nhẹ; Event-Driven Architecture (`ApplicationEventPublisher`); Thread Pool bất đồng bộ Java 17 LTS; Next.js lắng nghe qua native `EventSource` tự động nhảy đơn mới không cần F5.
 6. **Module 6 — Quản lý vòng đời đơn & State Machine (Tuần 2, 4, 6, 8, 12):** Quản lý chu trình trạng thái: `DRAFT` $\rightarrow$ `OPEN` $\rightarrow$ `ACCEPTED` $\rightarrow$ `PICKED_UP` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`; Custom Exceptions (`InvalidOrderStateException`, `OrderNotFoundException`); Global Exception Handler `@RestControllerAdvice`; Unit & Integration tests với MockMvc.
 7. **Module 7 — Thanh toán Sandbox & Webhook (Tuần 17, 49):** Tích hợp cổng thanh toán giả lập (VNPay/Stripe Sandbox); Webhook Receiver xác thực chữ ký số HMAC-SHA256; Idempotent Webhook Processing (chống duplicate webhook callback khi cổng gửi lại).
-8. **Module 8 — Báo cáo định kỳ & Spring Batch (Tuần 4, 22):** `@Scheduled` hoặc Spring Batch tự động tổng kết doanh thu Runner lúc 00:00 hàng ngày; xuất file báo cáo Excel bằng Apache POI; tính toán thống kê bằng Java Stream API (`groupingBy`, `summarizingDouble`).
-9. **Module 9 — Database Tuning, Testing & DevOps (Tuần 5, 7, 11, 12, 36):** Flyway Database Migrations (`V1`, `V2`); B-Tree Composite Index `(status, created_at)` kèm benchmark `EXPLAIN ANALYZE`; Testcontainers (PostgreSQL + Redis thật); Multi-thread stress test với JUnit 5 + `CountDownLatch`; Dockerfile multi-stage; Docker Compose full stack; GitHub Actions CI pipeline; Spring Actuator & Prometheus metrics.
+8. **Module 8 — Báo cáo định kỳ & Spring Batch (Tuần 4, 22):** `@Scheduled` hoặc Spring Batch tự động tổng kết doanh thu Runner lúc 00:00 hàng ngày; xuất file báo cáo Excel bằng Apache POI; Java Stream API (`groupingBy`, `summarizingDouble`); hiển thị biểu đồ trên giao diện Next.js.
+9. **Module 9 — Database Tuning, Testing & DevOps (Tuần 5, 7, 11, 12, 36):** Flyway Database Migrations (`V1`, `V2`); B-Tree Composite Index `(status, created_at)` kèm benchmark `EXPLAIN ANALYZE`; Testcontainers (PostgreSQL + Redis thật); Multi-thread stress test với JUnit 5 + `CountDownLatch`; Dockerfile multi-stage cho cả Backend và Frontend; Docker Compose full stack; GitHub Actions CI pipeline.
 
 ---
 
-## Tuần 1 — Khởi tạo Base Giao Vặt & Cấu trúc Backend Spring Boot (Java 17 LTS)
+## Tuần 1 — Khởi tạo Base Giao Vặt: Backend Spring Boot (Java 17 LTS) & Frontend Next.js Song Song
 
-### Thứ 2 — Môi trường Java 17 LTS & Khởi tạo dự án Giao Vặt (2h)
-- [ ] Cài đặt JDK 17 (Java 17 LTS), IntelliJ IDEA, Git, Maven (hoặc Gradle wrapper); kiểm tra `java -version`, `mvn -version`, `git --version`.
-- [ ] Khởi tạo dự án Spring Boot 3.x (Java 17) cho Giao Vặt qua Spring Initializr (dependencies: `spring-boot-starter-web`, `lombok`, `spring-boot-starter-test`).
-- [ ] Khám phá cấu trúc thư mục của 1 Backend Spring Boot chuẩn: `src/main/java`, `src/main/resources`, `pom.xml` (quản lý dependency, plugin compiler target 17).
-- [ ] Tìm hiểu điểm khởi chạy ứng dụng: `@SpringBootApplication`, phương thức `main`, Spring ApplicationContext khởi động ra sao.
-- [ ] Tạo repository `giao-vat-platform`; commit initial codebase chuẩn.
+### Thứ 2 — Khởi Tạo Nền Tảng Song Song: Backend Spring Boot & Frontend Next.js (2h)
+- [ ] **Backend (70%):**
+  - Cài đặt JDK 17 (Java 17 LTS), IntelliJ IDEA, Git, Maven (hoặc Gradle wrapper); kiểm tra `java -version`, `mvn -version`, `git --version`.
+  - Khởi tạo dự án Spring Boot 3.x (Java 17) cho Giao Vặt qua Spring Initializr (dependencies: `spring-boot-starter-web`, `lombok`, `spring-boot-starter-test`).
+  - Khám phá cấu trúc thư mục của 1 Backend Spring Boot chuẩn: `src/main/java`, `src/main/resources`, `pom.xml` (quản lý dependency, plugin compiler target 17).
+  - Tìm hiểu điểm khởi chạy ứng dụng: `@SpringBootApplication`, phương thức `main`, Spring ApplicationContext khởi động ra sao.
+- [ ] **Frontend (30%):**
+  - Cài đặt Node.js LTS; khởi tạo dự án Next.js 14+ trong thư mục `frontend/` bằng lệnh `npx create-next-app@latest` (TypeScript, Tailwind CSS, App Router, ESLint).
+  - Khám phá cấu trúc thư mục App Router: `app/layout.tsx`, `app/page.tsx`, `components/`, `lib/`. Hiểu khái niệm cốt lõi: **Server Components (RSC - mặc định)** vs **Client Components (`'use client'`)**.
+- [ ] Khởi chạy cả 2 server local (Backend cổng 8080, Frontend cổng 3000); commit initial codebase.
 
-### Thứ 3 — Controller đầu tiên & Cấu trúc Phân tầng Package (2h)
-- [ ] Học cấu trúc phân tầng (Package Structure) chuẩn của Spring Boot Backend: `controller`, `service`, `repository`, `model`/`entity`, `dto`, `config`, `exception`.
-- [ ] Tạo Controller đầu tiên: `PingController` với endpoint `GET /api/v1/ping` trả về trạng thái hệ thống `"Giao Vat Platform v1 - Ready"`.
-- [ ] Tìm hiểu cơ chế HTTP Request/Response, annotation `@RestController`, `@GetMapping`.
-- [ ] Học cú pháp Java nền tảng: Biến, kiểu dữ liệu primitive vs reference, `String`, hằng số (`final`), quy ước đặt tên (CamelCase, Clean Code).
-- [ ] Test endpoint qua trình duyệt hoặc curl/Postman; commit.
+### Thứ 3 — Chức năng 1: Hoàn Thiện Lát Cắt Ping Health Check Cả Hai Phía (2h)
+- [ ] **Backend (70%):**
+  - Tạo Controller đầu tiên: `PingController` với endpoint `GET /api/v1/ping` trả về JSON trạng thái `{"status": "UP", "message": "Giao Vat Platform v1 - Ready"}`.
+  - Tìm hiểu cơ chế HTTP Request/Response, annotation `@RestController`, `@GetMapping`.
+  - Học cú pháp Java nền tảng: Biến, kiểu dữ liệu primitive vs reference, `String`, hằng số (`final`), quy ước đặt tên (CamelCase, Clean Code).
+  - Cấu hình **CORS** bằng `@CrossOrigin(origins = "http://localhost:3000")` hoặc `WebMvcConfigurer` cho phép frontend gọi sang.
+- [ ] **Frontend (30%):**
+  - Xây dựng Component `PingStatus` (`'use client'`): Dùng `fetch()` gọi API `http://localhost:8080/api/v1/ping` để hiển thị trạng thái kết nối lên trang chủ Next.js.
+  - Quản lý trạng thái bằng `useState` và `useEffect`: Hiển thị badge xanh *"Đã kết nối máy chủ"* hoặc đỏ *"Mất kết nối máy chủ"*.
+- [ ] **Chạy thử trên trình duyệt:** Mở `http://localhost:3000`, thấy ngay giao diện Next.js hiển thị badge xanh kết nối thành công tới Spring Boot!
 
-### Thứ 4 — Controller API Đơn Hàng Đầu Tiên (`OrderController` Skeleton) (2h)
-- [ ] Tạo `OrderController` với 2 endpoint cơ bản: `POST /api/v1/orders` (tạo đơn hàng) và `GET /api/v1/orders` (lấy danh sách đơn hàng).
-- [ ] Học cách nhận dữ liệu trong Spring Boot: `@PostMapping`, `@RequestBody`, `@RequestParam`, `@PathVariable`.
-- [ ] Khái niệm DTO (Data Transfer Object): Tạo `CreateOrderRequest` và `OrderResponse`.
-- [ ] Học Java 17 `record`: Viết DTO bằng Java `record` (immutable data carrier gọn gàng) vs class truyền thống.
-- [ ] Test gửi request JSON qua Postman/curl; commit.
+### Thứ 4 — Chức năng 2: Khung API Đơn Hàng & Đồng Bộ Interface Type (2h)
+- [ ] **Backend (70%):**
+  - Tạo `OrderController` với 2 endpoint cơ bản: `POST /api/v1/orders` (tạo đơn hàng) và `GET /api/v1/orders` (lấy danh sách đơn hàng).
+  - Khái niệm DTO (Data Transfer Object): Tạo `CreateOrderRequest` và `OrderResponse`.
+  - Học Java 17 `record`: Viết DTO bằng Java `record` (immutable data carrier gọn gàng) vs class truyền thống.
+  - Học cách nhận dữ liệu trong Spring Boot: `@PostMapping`, `@RequestBody`, `@RequestParam`.
+- [ ] **Frontend (30%):**
+  - Tạo file `types/order.ts`: Định nghĩa TypeScript interface `CreateOrderInput` và `Order` khớp 1:1 với các trường trong Java DTO record của Backend.
+  - Xây dựng hàm gọi API `fetchOrders()` trong thư mục `lib/api.ts`.
+- [ ] **Chạy thử:** Kiểm tra tính khớp kiểu (Type-safe contract) giữa TypeScript Interface và Java Record DTO; commit.
 
-### Thứ 5 — Inversion of Control (IoC), Dependency Injection (DI) & Tầng Service (2h)
-- [ ] Học nguyên lý Inversion of Control (IoC) và Dependency Injection (DI) trong Spring Boot.
-- [ ] Phân tách trách nhiệm: Controller chỉ nhận HTTP và trả response; Logic nghiệp vụ thuộc về Service.
-- [ ] Tạo `OrderService` (đánh dấu `@Service`), inject vào `OrderController` qua Constructor Injection (Spring Best Practice, tránh dùng `@Autowired` trên field).
-- [ ] Viết method đầu tiên trong `OrderService`: tạo đơn hàng mock và trả về `OrderResponse`.
-- [ ] Review luồng đi của dữ liệu: Client $\rightarrow$ Controller $\rightarrow$ Service $\rightarrow$ Response; commit.
+### Thứ 5 — Chức năng 3: IoC/DI Tầng Service & Mock Data Hiển Thị Trình Duyệt (2h)
+- [ ] **Backend (70%):**
+  - Học nguyên lý Inversion of Control (IoC) và Dependency Injection (DI) trong Spring Boot.
+  - Phân tách trách nhiệm: Controller chỉ nhận HTTP và trả response; Logic nghiệp vụ thuộc về Service.
+  - Tạo `OrderService` (đánh dấu `@Service`), inject vào `OrderController` qua Constructor Injection (Spring Best Practice, tránh dùng `@Autowired` trên field).
+  - Viết method trong `OrderService`: tạo 2 đơn hàng mock và trả về `List<OrderResponse>`.
+- [ ] **Frontend (30%):**
+  - Tạo trang danh sách đơn thô (`app/orders/page.tsx`) trên Next.js gọi `GET /api/v1/orders`.
+  - Render danh sách đơn hàng mock ra màn hình với layout Tailwind đơn giản.
+- [ ] **Chạy thử trên trình duyệt:** Tải trang `http://localhost:3000/orders`, thấy ngay danh sách 2 đơn hàng mock từ Spring Boot Service hiển thị lên giao diện web!
 
-### Thứ 6 — Configuration, Spring Profiles & Clean Logging (2h)
-- [ ] Cấu hình ứng dụng qua `application.yml`: cấu hình `server.port=8080`, context-path `/api`.
-- [ ] Học Spring Profiles (`local`, `dev`, `test`): tách file `application-local.yml` và kích hoạt qua `spring.profiles.active`.
-- [ ] Sử dụng SLF4J / Logback (`@Slf4j`): Ghi log khi nhận request tạo đơn, tuyệt đối không dùng `System.out.println`.
-- [ ] Tự review git diff; dọn dẹp mã nguồn; commit.
+### Thứ 6 — Chuẩn Hóa API Contract & OpenAPI / Swagger (2h)
+- [ ] **Backend (70%):**
+  - Tích hợp SpringDoc OpenAPI / Swagger (`/swagger-ui.html`) để tự động sinh tài liệu API trực quan.
+  - Thêm chú thích `@Operation`, `@ApiResponse` mô tả rõ ràng các tham số request và response.
+  - Chuẩn hóa cấu hình CORS toàn cục cho toàn bộ các endpoint `/api/v1/**`.
+- [ ] **Frontend (30%):**
+  - Xây dựng API Client tập trung (`lib/api.ts`) với cấu hình baseURL đọc từ biến môi trường `.env.local` (`NEXT_PUBLIC_API_URL=http://localhost:8080`).
+  - Viết helper hàm xử lý response và parse JSON an toàn; commit.
 
-### Thứ 7 — Base Project Lab & API Verification (5h)
-- [ ] 2h: Hoàn thiện khung base project Giao Vặt chạy mượt mà trên Java 17 LTS + Spring Boot 3.
-- [ ] 1h: Viết test khởi động context (`@SpringBootTest` contextLoads) và test endpoint `/api/v1/ping`.
-- [ ] 1h: Thiết lập tài liệu API cơ bản bằng SpringDoc OpenAPI / Swagger (`/swagger-ui.html`).
-- [ ] 1h: Viết README giới thiệu kiến trúc base của Giao Vặt; commit và tag `giaovat-base-v0`.
+### Thứ 7 — Fullstack Base Lab & Luyện Live Coding DSA Mở Đầu (5h)
+- [ ] 2h: Khởi chạy song song cả 2 dịch vụ; kiểm thử trọn vẹn luồng gọi API từ Next.js sang Spring Boot trên trình duyệt (F12 Network tab kiểm tra status 200, headers, CORS).
+- [ ] 1h: Kiểm tra tài liệu Swagger UI tại `http://localhost:8080/swagger-ui.html` và viết README giới thiệu kiến trúc Fullstack Monorepo.
+- [ ] 1h: Commit toàn bộ mã nguồn và tag release Git: `fullstack-base-v0`.
+- [ ] 1h: **Luyện Live Coding DSA (Arrays & Hashing — Khởi động):**
+  - Thực hành khung 4 bước (Clarify $\rightarrow$ Big-O $\rightarrow$ Code Java 17 $\rightarrow$ Dry Run):
+  - Bài 1: **Two Sum** (LeetCode 1, Easy) — Dùng `HashMap` 1 lần duyệt tối ưu từ $O(N^2)$ xuống $O(N)$ Time / $O(N)$ Space.
+  - Bài 2: **Valid Anagram** (LeetCode 242, Easy) — Dùng mảng tần suất `int[26]` tối ưu $O(N)$ Time / $O(1)$ Space.
+  - Lưu mã nguồn giải pháp vào thư mục `dsa/week-01/`; commit.
 
-**Chủ nhật:** Nghỉ; tự kiểm tra kiến trúc Spring Boot và request lifecycle.
-
----
-
-## Tuần 2 — Nghiệp Vụ Đơn Hàng: Học Cú Pháp, Điều Kiện & Vòng Lặp Java Thực Chiến
-
-### Thứ 2 — Model Nghiệp Vụ Giao Vặt, Kiểu Dữ Liệu & Enums (2h)
-- [ ] Tạo class nghiệp vụ trung tâm: `Order` (chứa: `id`, `creatorId`, `runnerId`, `pickupAddress`, `dropoffAddress`, `distanceInKm`, `offeredPrice`, `minPrice`, `status`, `category`, `createdAt`).
-- [ ] Học các kiểu dữ liệu số thực và tiền tệ trong Java: `BigDecimal` vs `long` (lý do không dùng `double`/`float` cho tiền tệ vì lỗi sai số dấu phẩy động).
-- [ ] Học Java Enum: Tạo `OrderCategory` (`RIDE`, `FOOD`, `PARCEL`) và `OrderStatus` (`OPEN`, `ACCEPTED`, `PICKED_UP`, `IN_TRANSIT`, `COMPLETED`, `CANCELLED`).
-- [ ] Viết logic khởi tạo đơn hàng với trạng thái mặc định ban đầu là `OPEN`; commit.
-
-### Thứ 3 — Câu Điều Kiện (`if/else`, switch) & Logic Tính Cước Sàn (2h)
-- [ ] Học câu điều kiện Java (`if/else`, ternary operator `?:`).
-- [ ] Viết method tính cước sàn tối thiểu `calculateMinPrice(distanceInKm, category)`:
-  - Nếu khoảng cách $\le 0$: báo lỗi logic không hợp lệ.
-  - Cước phí cơ sở theo loại đơn: `RIDE` (10.000đ/km), `FOOD` (12.000đ/km), `PARCEL` (8.000đ/km).
-  - Sử dụng `switch expression` (tính năng mạnh mẽ của Java 17) để trả về đơn giá theo `OrderCategory`.
-- [ ] Kiểm tra điều kiện tạo đơn: `offeredPrice` do khách đưa ra phải $\ge$ `minPrice` hệ thống gợi ý.
-- [ ] Viết bài test nhỏ kiểm tra các nhánh điều kiện tính giá; commit.
-
-### Thứ 4 — Máy Trạng Thái Đơn Hàng & Switch Pattern Matching (2h)
-- [ ] Học quản lý trạng thái đơn hàng (State Transitions):
-  - Đơn chỉ có thể nhận (`ACCEPTED`) khi đang ở trạng thái `OPEN`.
-  - Đơn chỉ có thể chuyển sang `PICKED_UP` khi đang ở trạng thái `ACCEPTED`.
-  - Khách chỉ được hủy (`CANCELLED`) khi đơn chưa có Runner nhận (`OPEN`).
-- [ ] Viết hàm kiểm tra và chuyển trạng thái `canTransitionTo(currentStatus, targetStatus)` bằng `switch`.
-- [ ] Tránh nested `if/else` sâu; áp dụng kỹ thuật "Early Return / Guard Clauses" để code trong sáng, dễ đọc; commit.
-
-### Thứ 5 — Vòng Lặp Java (`for`, `while`) & Duyệt Danh Sách Đơn Bảng Tin (2h)
-- [ ] Học các loại vòng lặp trong Java: `for` truyền thống, enhanced `for-each`, `while`, `break`, `continue`.
-- [ ] Quản lý danh sách đơn hàng in-memory: Duyệt qua danh sách đơn hàng để tìm kiếm:
-  - Tìm các đơn hàng có địa chỉ đón trùng với từ khóa tìm kiếm của Runner.
-  - Lọc ra các đơn hàng thỏa mãn điều kiện cước phí tối thiểu Runner mong muốn.
-  - Dùng `while` mô phỏng việc sinh ID tự tăng an toàn không trùng lặp.
-- [ ] Phân tích độ phức tạp thời gian (Big-O) của thao tác duyệt danh sách: $O(N)$; commit.
-
-### Thứ 6 — Method Refactoring & Clean Business Logic (2h)
-- [ ] Tối ưu hóa code trong `OrderService`: Một method chỉ làm một nhiệm vụ duy nhất (Single Responsibility Principle).
-- [ ] Tách các hàm validate riêng biệt: `validateCreateOrderRequest()`, `validatePrice()`, `validateStateTransition()`.
-- [ ] Đặt tên biến và method mang tính biểu đạt cao theo từ điển nghiệp vụ Giao Vặt (xem `CONTEXT.md`).
-- [ ] Tự review diff; loại bỏ mã lặp (DRY - Don't Repeat Yourself); commit.
-
-### Thứ 7 — Order Flow In-Memory Lab (5h)
-- [ ] 2h: Hoàn thiện bộ API in-memory: Đăng đơn (`POST /api/v1/orders`), Xem bảng tin các đơn `OPEN` (`GET /api/v1/orders/feed`), Runner nhận đơn (`POST /api/v1/orders/{id}/claim`), Hủy đơn (`POST /api/v1/orders/{id}/cancel`).
-- [ ] 1h: Kiểm tra kỹ toàn bộ logic điều kiện (biên khoảng cách, giá âm, nhận đơn đã bị claim...).
-- [ ] 1h: Viết tài liệu mô tả luồng nghiệp vụ đơn hàng và máy trạng thái.
-- [ ] 1h: Commit và dọn dẹp mã nguồn.
+**Chủ nhật:** Nghỉ; tự kiểm tra lại kiến trúc Spring Boot 3 layers và luồng tương tác Next.js.
 
 ---
 
-## Tuần 3 — Đóng Gói OOP, Strategy Pattern Tính Giá & Quản Lý In-Memory Bằng Java Collections
+## Tuần 2 — Chức Năng Tạo Đơn Hàng & Máy Trạng Thái Đơn Hàng
 
-### Thứ 2 — Tính Đóng Gói (Encapsulation) & Immutability trong Giao Vặt (2h)
-- [ ] Học 4 tính chất OOP: Encapsulation, Inheritance, Polymorphism, Abstraction.
-- [ ] Encapsulation thực chiến trên class `Order`:
-  - Đặt các field là `private`; không tạo setter bừa bãi làm hỏng tính toàn vẹn trạng thái đơn hàng.
-  - Thay thế setter bằng các phương thức nghiệp vụ có chủ đích: `claimByRunner(runnerId)`, `markAsPickedUp()`, `complete()`.
-  - Đảm bảo tính bất biến (Immutability): Tạo Value Object `Location` (`address`, `lat`, `lng`) bằng Java 17 `record`.
-- [ ] Review các nguy cơ khi setter cho phép ghi đè trạng thái sai lệch; commit.
+### Thứ 2 — Chức Năng Tạo Đơn (Backend: Model, Kiểu Dữ Liệu & Tính Cước Sàn) (2h)
+- [ ] **Backend (70%):**
+  - Tạo class thực thể nghiệp vụ trung tâm: `Order` (chứa: `id`, `creatorId`, `runnerId`, `pickupAddress`, `dropoffAddress`, `distanceInKm`, `offeredPrice`, `minPrice`, `status`, `category`, `createdAt`).
+  - Học các kiểu dữ liệu số thực và tiền tệ trong Java: `BigDecimal` vs `long` (lý do không dùng `double`/`float` cho tiền tệ vì sai số dấu phẩy động).
+  - Học Java Enum: Tạo `OrderCategory` (`RIDE`, `FOOD`, `PARCEL`) và `OrderStatus` (`OPEN`, `ACCEPTED`, `PICKED_UP`, `IN_TRANSIT`, `COMPLETED`, `CANCELLED`).
+  - Viết method tính cước sàn tối thiểu `calculateMinPrice(distanceInKm, category)` bằng `switch expression` (Java 17): `RIDE` (10k/km), `FOOD` (12k/km), `PARCEL` (8k/km).
+  - Thêm Jakarta Validation `@Valid` trên DTO: `@NotBlank` địa chỉ, `@Positive` khoảng cách, `@Min` cước phí.
+- [ ] **Frontend (30%):**
+  - Định nghĩa Zod schema validation trên Next.js (`lib/validations/order.ts`) với các quy tắc ràng buộc tương đồng backend: địa chỉ không rỗng, khoảng cách $> 0$, cước phí $\ge$ cước sàn tối thiểu; commit.
 
-### Thứ 3 — Composition over Inheritance & Thiết Kế Thực Thể (2h)
-- [ ] Học nguyên lý "Ưu tiên Composition hơn Inheritance" (Composition over Inheritance).
-- [ ] Thiết kế quan hệ giữa các thực thể Giao Vặt:
-  - `Order` sở hữu `PickupLocation` và `DropoffLocation` (Composition - Has-a relationship).
-  - Tạo `User` đóng gói thông tin người dùng (`id`, `fullName`, `phoneNumber`, `role`), phân tách rõ Creator vs Runner.
-  - Tránh bẫy kế thừa sai lầm (ví dụ: không kế thừa `Order` thành `FoodOrder`, mà dùng enum thuộc tính hoặc strategy).
-- [ ] Viết test đảm bảo tính độc lập giữa các thực thể; commit.
+### Thứ 3 — Chức Năng Tạo Đơn (Frontend: Form Nhập Liệu & Submit Đơn Hàng) (2h)
+- [ ] **Frontend (70%):**
+  - Xây dựng trang Form Tạo Đơn Hàng (`app/orders/create/page.tsx`) bằng **React Hook Form** kết hợp **Zod Schema**: Ô nhập điểm đón, điểm trả, khoảng cách, dropdown danh mục, ô nhập cước đề xuất.
+  - Xử lý validate ngay khi gõ phím; tự động tính và hiển thị mức cước sàn gợi ý theo khoảng cách và danh mục người dùng vừa chọn.
+  - Viết hàm submit form gọi `POST /api/v1/orders` sang Backend.
+- [ ] **Backend (30%):**
+  - Viết logic lưu đơn hàng in-memory trong `OrderService` và trả về `OrderResponse` kèm mã đơn vừa sinh.
+- [ ] **Chạy thử trên trình duyệt:** Điền form trên Next.js $\rightarrow$ Bấm "Tạo đơn hàng" $\rightarrow$ Backend nhận và xử lý $\rightarrow$ Web hiển thị Toast thông báo xanh: *"Tạo đơn hàng #1 thành công!"*.
 
-### Thứ 4 — Interface, Polymorphism & GoF Strategy Pattern Tính Giá Cước (2h)
-- [ ] Học Interface, Abstract Class, Polymorphism (Tính đa hình), Dependency Inversion.
-- [ ] Áp dụng **Strategy Pattern** cho bài toán tính cước phí Giao Vặt (Module 2):
-  - Tạo interface `PricingStrategy` với method `calculatePrice(distanceInKm)`.
-  - Triển khai `StandardPricingStrategy` (giá cước ngày thường).
-  - Triển khai `SurgePricingStrategy` (nhân hệ số giờ cao điểm 1.5x).
-  - Triển khai `BadWeatherPricingStrategy` (nhân hệ số trời mưa 1.3x).
-- [ ] Dùng Spring `@Component` và `@Qualifier` hoặc Factory để chọn strategy linh hoạt theo điều kiện; commit.
+### Thứ 4 — Chức Năng Máy Trạng Thái Đơn Hàng (State Machine & Guard Clauses) (2h)
+- [ ] **Backend (70%):**
+  - Học quản lý chu trình trạng thái đơn hàng (State Transitions):
+    - Đơn chỉ có thể nhận (`ACCEPTED`) khi đang ở trạng thái `OPEN`.
+    - Đơn chỉ có thể chuyển sang `PICKED_UP` khi đang ở trạng thái `ACCEPTED`.
+    - Khách chỉ được hủy (`CANCELLED`) khi đơn chưa có Runner nhận (`OPEN`).
+  - Viết hàm kiểm tra và chuyển trạng thái `canTransitionTo(currentStatus, targetStatus)`.
+  - Áp dụng kỹ thuật "Early Return / Guard Clauses", tránh nested `if/else` sâu; commit.
+- [ ] **Frontend (30%):**
+  - Tạo component `StatusBadge` hiển thị trạng thái đơn hàng dạng badge màu sắc trực quan (Xanh lá `OPEN`, Vàng `ACCEPTED`, Xanh dương `IN_TRANSIT`, Xám `COMPLETED`, Đỏ `CANCELLED`).
+  - Đưa `StatusBadge` vào hiển thị cạnh tiêu đề đơn hàng; commit.
 
-### Thứ 5 — Java Collections Nền Tảng: List & Map Quản Lý Bảng Tin Đơn Hàng (2h)
-- [ ] Học Java Collections Framework: Hierarchy của `Collection`, `List`, `Set`, `Map`.
-- [ ] `ArrayList` vs `LinkedList`: Hiệu năng truy xuất ngẫu nhiên $O(1)$ vs chèn/xóa $O(N)$ trong bảng tin đơn hàng.
-- [ ] `HashMap` vs `ConcurrentHashMap`:
-  - Lưu trữ danh sách đơn hàng in-memory dạng Key-Value (`Map<Long, Order>`).
-  - Tìm kiếm đơn theo ID với độ phức tạp $O(1)$.
-  - Hiểu sâu cơ chế bên trong của `HashMap`: Hash function, Array of Buckets, Hash Collision (Chaining bằng LinkedList / Red-Black Tree khi bucket $\ge 8$), Load Factor (0.75), Rehashing.
-  - Hợp đồng bất biến: `equals()` và `hashCode()` contract — tại sao override `equals` bắt buộc phải override `hashCode`.
-- [ ] Test tìm kiếm và thêm đơn hàng vào Map; commit.
+### Thứ 5 — Chức Năng Danh Sách Đơn Bảng Tin & Collections In-Memory (2h)
+- [ ] **Backend (70%):**
+  - Học các loại vòng lặp trong Java: `for` truyền thống, enhanced `for-each`, `while`, `break`, `continue`.
+  - Lưu trữ danh sách đơn hàng in-memory bằng Java Collections (`List<Order>`, `ArrayList`).
+  - Viết hàm tìm kiếm và lọc đơn hàng theo từ khóa địa chỉ hoặc cước phí tối thiểu bằng vòng lặp. Dùng `while` mô phỏng sinh ID tự tăng an toàn.
+  - Phân tích độ phức tạp thời gian Big-O: $O(N)$; commit.
+- [ ] **Frontend (30%):**
+  - Nâng cấp trang danh sách đơn hàng trên Next.js: Hiển thị các đơn vừa tạo dạng danh sách thẻ, có hiển thị `StatusBadge` và cước phí định dạng VNĐ.
+- [ ] **Chạy thử trên trình duyệt:** Vào form tạo đơn 1, tạo đơn 2 $\rightarrow$ Mở trang danh sách thấy cả 2 đơn hàng tự động xuất hiện với badge `OPEN`!
 
-### Thứ 6 — Java Collections Nâng Cao: Set & PriorityQueue (2h)
-- [ ] `HashSet` / `LinkedHashSet`: Quản lý danh sách ID đơn đã hoàn tất hoặc danh sách mã khuyến mãi độc nhất (không trùng lặp).
-- [ ] `PriorityQueue` (Hàng đợi ưu tiên):
-  - Ứng dụng sắp xếp bảng tin đơn hàng: Đơn có cước phí đề xuất (`offeredPrice`) cao hơn hoặc thời gian chờ lâu hơn sẽ được ưu tiên xếp lên đầu queue.
-  - Học cơ chế Binary Heap bên dưới `PriorityQueue`.
-- [ ] Viết test so sánh thứ tự pick đơn khi dùng Queue thường vs PriorityQueue; commit.
+### Thứ 6 — Chức Năng Báo Lỗi Nghiệp Vụ Cước Sàn (Validation Error Handling) (2h)
+- [ ] **Backend (70%):**
+  - Kiểm tra điều kiện nghiệp vụ: Nếu `offeredPrice < minPrice` gợi ý $\rightarrow$ Trả về mã lỗi HTTP `400 Bad Request` kèm thông báo: *"Cước phí đề xuất không được nhỏ hơn cước sàn tối thiểu: ... VNĐ"*.
+  - Bắt lỗi vi phạm Jakarta Validation `@Valid` và trả về danh sách lỗi các trường; commit.
+- [ ] **Frontend (30%):**
+  - Bắt mã lỗi 400 từ Backend trong hàm gọi API của Next.js.
+  - Hiển thị thông báo lỗi màu đỏ trực tiếp dưới ô nhập cước phí: *"Giá đề xuất quá thấp so với cước sàn gợi ý"*; commit.
 
-### Thứ 7 — Collections & Strategy Lab (5h)
-- [ ] 2h: Refactor toàn bộ tầng lưu trữ in-memory của Giao Vặt sang dùng `ConcurrentHashMap<Long, Order>` và `PriorityQueue`.
-- [ ] 1h: Tích hợp Strategy Pattern tính giá cước động dựa trên thời gian request (giờ cao điểm).
-- [ ] 1h: Viết test cho `PricingStrategy` và các thao tác CRUD in-memory.
-- [ ] 1h: Commit và tổng kết bài học về cấu trúc dữ liệu.
+### Thứ 7 — Fullstack Order Slice Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Thử nghiệm thực tế trên trình duyệt: Cố ý nhập giá thấp hơn cước sàn $\rightarrow$ Kiểm tra giao diện chặn lỗi đúng $\rightarrow$ Nhập giá hợp lệ $\rightarrow$ Tạo đơn thành công; kiểm tra badge đổi màu.
+- [ ] 1h: Viết unit test cho logic tính giá cước và state machine.
+- [ ] 1h: Dọn dẹp mã nguồn và commit code.
+- [ ] 1h: **Luyện Live Coding DSA (Two Pointers — Hai Con Trỏ):**
+  - Bài 3: **Valid Palindrome** (LeetCode 125, Easy) — Kỹ thuật 2 con trỏ chạy từ 2 đầu bỏ qua ký tự đặc biệt $O(N)$ Time / $O(1)$ Space.
+  - Bài 4: **Two Sum II - Input Array Is Sorted** (LeetCode 167, Medium) — Hai con trỏ co hẹp trên mảng tăng dần $O(N)$ Time / $O(1)$ Space (giải thích vì sao tối ưu hơn HashMap).
+  - Tự luyện giải thích Big-O bằng tiếng Anh/Việt; commit code vào `dsa/week-02/`.
 
 ---
 
-## Tuần 4 — Xử Lý Lỗi Tập Trung (Domain Exceptions), Java Stream API & Báo Cáo Doanh Thu
+## Tuần 3 — Chức Năng Định Giá Đa Thuật Toán (Strategy Pattern) & Bảng Tin Đơn Hàng (Order Feed)
 
-### Thứ 2 — Phân Cấp Exception & Domain Exceptions Giao Vặt (2h)
-- [ ] Học cơ chế xử lý ngoại lệ trong Java: `Throwable`, `Error`, `Exception` (Checked vs Unchecked / `RuntimeException`).
-- [ ] Tại sao trong Spring Boot Backend hiện đại nên ưu tiên Unchecked Domain Exceptions?
-- [ ] Tạo bộ Custom Domain Exceptions cho Giao Vặt:
-  - `OrderNotFoundException` (khi không tìm thấy ID đơn hàng).
-  - `InvalidOrderStateException` (khi chuyển trạng thái sai quy tắc, ví dụ đơn đã nhận rồi mà Runner khác đòi nhận lại).
-  - `PriceBelowMinimumException` (khi khách trả giá thấp hơn giá sàn).
-- [ ] Sử dụng từ khóa `throw`, `throws`, khối `try/catch/finally`; commit.
+### Thứ 2 — Chức Năng Định Giá Thông Minh (Backend: GoF Strategy Pattern) (2h)
+- [ ] **Backend (70%):**
+  - Học nguyên lý OOP: Interface, Abstract Class, Polymorphism (Tính đa hình), Composition over Inheritance.
+  - Áp dụng **Strategy Pattern** cho bài toán tính cước phí Giao Vặt (Module 2):
+    - Tạo interface `PricingStrategy` với method `calculatePrice(distanceInKm)`.
+    - Triển khai `StandardPricingStrategy` (giá cước ngày thường).
+    - Triển khai `SurgePricingStrategy` (nhân hệ số giờ cao điểm 1.5x).
+    - Triển khai `BadWeatherPricingStrategy` (nhân hệ số trời mưa 1.3x).
+  - Dùng Spring `@Component` và `@Qualifier` hoặc Factory để chọn strategy linh hoạt theo điều kiện; commit.
+- [ ] **Frontend (30%):**
+  - Thêm các ô checkbox tùy chọn trên Form Tạo Đơn của Next.js: "Giờ cao điểm (1.5x)", "Thời tiết mưa gió (1.3x)"; commit.
 
-### Thứ 3 — Chuẩn Hóa Lỗi API với `@RestControllerAdvice` & RFC 7807 (2h)
-- [ ] Xây dựng Global Exception Handler tập trung bằng `@RestControllerAdvice` và `@ExceptionHandler`.
-- [ ] Chuyển đổi các Domain Exception thành HTTP Response tương ứng:
-  - `OrderNotFoundException` $\rightarrow$ `404 Not Found`.
-  - `InvalidOrderStateException` $\rightarrow$ `409 Conflict`.
-  - `PriceBelowMinimumException` $\rightarrow$ `400 Bad Request`.
-- [ ] Chuẩn hóa payload lỗi theo chuẩn quốc tế **RFC 7807 ProblemDetail** (Spring 6 / Spring Boot 3 hỗ trợ native: `status`, `title`, `detail`, `instance`, `timestamp`).
-- [ ] Không bao giờ để lộ stack trace thô ra ngoài client vì lý do bảo mật; commit.
+### Thứ 3 — Chức Năng Định Giá Thông Minh (Frontend: Dynamic Calculation & UI) (2h)
+- [ ] **Frontend (70%):**
+  - Xử lý tính cước động trên Next.js: Khi người dùng tích chọn "Giờ cao điểm" hoặc "Thời tiết xấu", giao diện tự động tính toán lại mức cước ước tính theo thời gian thực ($0$ms delay) trước khi submit.
+  - Gửi kèm cờ `pricingOption` (`STANDARD`, `SURGE`, `BAD_WEATHER`) trong payload request tạo đơn.
+- [ ] **Backend (30%):**
+  - Controller nhận tùy chọn định giá, áp dụng đúng `PricingStrategy` tương ứng để tính toán cước sàn và lưu thông tin vào đơn hàng.
+- [ ] **Chạy thử trên trình duyệt:** Tích chọn checkbox "Trời mưa" $\rightarrow$ cước sàn gợi ý tự nhảy tăng 30% trên giao diện $\rightarrow$ Bấm tạo đơn $\rightarrow$ Backend áp dụng đúng `BadWeatherPricingStrategy`!
 
-### Thứ 4 — Lambda Expressions & Functional Interfaces (2h)
-- [ ] Học lập trình hàm trong Java: Anonymous class vs Lambda expressions `() -> {}`.
-- [ ] Các Functional Interfaces cốt lõi trong `java.util.function`:
-  - `Predicate<T>`: Kiểm tra điều kiện (ví dụ: `order -> order.getStatus() == OrderStatus.OPEN`).
-  - `Function<T, R>`: Biến đổi dữ liệu (ví dụ: chuyển `Order` thành `OrderResponse`).
-  - `Consumer<T>`: Tiêu thụ dữ liệu (ví dụ: gửi thông báo).
-  - `Supplier<T>`: Cung cấp dữ liệu.
-- [ ] Method References (`Order::getId`, `System.out::println`); commit.
+### Thứ 4 — Chức Năng Bảng Tin Ưu Tiên (Backend: Java Collections Deep Dive) (2h)
+- [ ] **Backend (70%):**
+  - Học Java Collections Framework: Hierarchy của `Collection`, `List`, `Set`, `Map`.
+  - `ArrayList` vs `LinkedList`: Hiệu năng truy xuất ngẫu nhiên $O(1)$ vs chèn/xóa $O(N)$ trong bảng tin đơn hàng.
+  - `HashMap` vs `ConcurrentHashMap`:
+    - Lưu trữ danh sách đơn hàng in-memory dạng Key-Value (`Map<Long, Order>`).
+    - Tìm kiếm đơn theo ID với độ phức tạp $O(1)$.
+    - Hiểu sâu cơ chế bên trong của `HashMap`: Hash function, Buckets, Hash Collision (Chaining bằng LinkedList / Red-Black Tree khi bucket $\ge 8$), Load Factor (0.75), Rehashing.
+    - Hợp đồng bất biến: `equals()` và `hashCode()` contract.
+  - Áp dụng `PriorityQueue` sắp xếp thứ tự ưu tiên bảng tin theo cước phí đề xuất ($O(\log N)$); commit.
+- [ ] **Frontend (30%):**
+  - Thiết kế Component `OrderCard` tái sử dụng: Hiển thị điểm đón, điểm trả, khoảng cách km, badge loại đơn hàng (Chở người / Đồ ăn / Bưu kiện), mức cước nổi bật và thời gian tạo; commit.
 
-### Thứ 5 — Java Stream API Thực Chiến (2h)
-- [ ] Khái niệm luồng xử lý dữ liệu Stream (nguồn, intermediate operations, terminal operations).
-- [ ] Các thao tác xử lý danh sách đơn hàng Giao Vặt bằng Stream:
-  - `filter()`: Lọc các đơn đang ở trạng thái `OPEN` và có khoảng cách $\le 5$km.
-  - `map()`: Biến đổi danh sách thực thể `Order` sang danh sách `OrderResponse` DTO.
-  - `sorted()`: Sắp xếp đơn theo cước phí giảm dần (`Comparator.comparing(Order::getOfferedPrice).reversed()`).
-  - `distinct()`, `limit()`, `skip()` (hỗ trợ phân trang in-memory).
-  - `collect(Collectors.toList())` / Java 16+ `.toList()`.
-- [ ] Test stream với danh sách rỗng và null; commit.
+### Thứ 5 — Chức Năng Bảng Tin Ưu Tiên (Frontend: Order Feed UI & Sorting) (2h)
+- [ ] **Frontend (70%):**
+  - Dựng trang Bảng Tin Đơn Hàng công khai (`app/feed/page.tsx`) dành cho Runner.
+  - Gọi API `GET /api/v1/orders/feed`, render danh sách thẻ `OrderCard` dạng lưới (grid layout) với Tailwind CSS.
+  - Hiển thị thông báo trạng thái "Đang tải dữ liệu..." (Loading skeleton) và "Chưa có đơn hàng nào" (Empty state).
+- [ ] **Backend (30%):**
+  - API `GET /api/v1/orders/feed` lấy các đơn hàng từ `PriorityQueue` in-memory và trả về danh sách đã sắp xếp.
+- [ ] **Chạy thử trên trình duyệt:** Tạo 3 đơn hàng với mức cước 50k, 150k, 80k $\rightarrow$ Mở trang `/feed`, thấy đơn 150k tự động nhảy lên đầu tiên!
 
-### Thứ 6 — Stream Collectors Nâng Cao & Java 17 Optional (2h)
-- [ ] Thống kê doanh thu Runner bằng `Collectors`:
-  - `groupingBy(Order::getCategory)`: Nhóm đơn hàng theo danh mục.
-  - `summarizingDouble(Order::getOfferedPrice)`: Tính tổng doanh thu, cước phí trung bình, đơn giá cao nhất/thấp nhất.
-  - `counting()`: Đếm số đơn hoàn tất theo từng Runner.
-- [ ] Học `Optional<T>`: Tránh triệt để lỗi kinh điển `NullPointerException` (NPE).
-- [ ] Viết method `findOrderById(Long id)` trả về `Optional<Order>`, sử dụng `.orElseThrow(() -> new OrderNotFoundException(id))`; commit.
+### Thứ 6 — Chức Năng Lọc Đơn Theo Danh Mục (Category Filtering) (2h)
+- [ ] **Backend (70%):**
+  - Thêm query param `category` vào API feed: `GET /api/v1/orders/feed?category=FOOD`.
+  - Lọc danh sách đơn hàng in-memory theo `OrderCategory` bằng Collections.
+- [ ] **Frontend (30%):**
+  - Thêm thanh Tab lọc danh mục trên trang `/feed`: [Tất cả] | [Chở người] | [Đồ ăn] | [Bưu kiện].
+  - Bấm chọn tab nào thì gọi API lọc theo danh mục đó.
+- [ ] **Chạy thử trên trình duyệt:** Bấm tab "Đồ ăn" trên web $\rightarrow$ danh sách thẻ đơn hàng lọc tức thì, chỉ hiện đơn hàng đồ ăn!
 
-### Thứ 7 — Reporting & Stream API Lab (5h)
-- [ ] 2h: Viết API thống kê báo cáo cho Giao Vặt (`GET /api/v1/orders/reports/summary`) sử dụng toàn bộ sức mạnh của Stream API.
-- [ ] 1h: Export dữ liệu báo cáo ra định dạng CSV/Text sử dụng try-with-resources an toàn tài nguyên.
-- [ ] 1h: Viết unit tests kiểm tra toàn bộ luồng exception và logic thống kê Stream API.
+### Thứ 7 — Fullstack Feed Integration Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Kiểm thử toàn diện luồng: Tạo nhiều đơn với các danh mục và mức giá khác nhau $\rightarrow$ Kiểm tra Bảng tin sắp xếp và lọc chính xác 100%.
+- [ ] 1h: Viết bài test JUnit cho Strategy Pattern và bài test component `OrderCard` ở Frontend.
 - [ ] 1h: Commit và tổng kết tuần.
+- [ ] 1h: **Luyện Live Coding DSA (Hashing & Frequency Mapping):**
+  - Bài 5: **Contains Duplicate** (LeetCode 217, Easy) — Dùng `HashSet` kiểm tra phần tử trùng lặp trong $O(N)$ Time / $O(N)$ Space.
+  - Bài 6: **Group Anagrams** (LeetCode 49, Medium) — Gom nhóm chuỗi đảo chữ bằng chuỗi đã sắp xếp hoặc mảng tần suất làm Key trong `HashMap` $O(N \cdot K \log K)$ Time / $O(N \cdot K)$ Space.
+  - Tự luyện giải thích cách thiết kế Key trong HashMap cho Interviewer; commit code vào `dsa/week-03/`.
 
 ---
 
-## Tuần 5 — Git, Maven, Unit Testing Thực Chiến & Nền Tảng JVM / Concurrency trên Java 17
+## Tuần 4 — Chức Năng Xử Lý Ngoại Lệ Chuẩn RFC 7807 & Báo Cáo Doanh Thu (Stream API)
 
-### Thứ 2 — Git Workflow Thực Chiến Trong Team (2h)
-- [ ] Học Git fundamentals: Working Directory, Staging Area, Local Repository, Remote.
-- [ ] Branching model: `main`, `develop`, feature branches (`feature/order-lifecycle`, `feature/pricing-strategy`).
-- [ ] Các lệnh thiết yếu: `branch`, `checkout`/`switch`, `merge`, `rebase`, `stash`, `cherry-pick`, `revert`.
-- [ ] Quy ước commit chuẩn Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`).
-- [ ] Thực hành cố ý tạo conflict trên code Giao Vặt và giải quyết conflict (merge conflict resolution); commit.
+### Thứ 2 — Chức Năng Xử Lý Ngoại Lệ Tập Trung Chuẩn RFC 7807 (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Học cơ chế ngoại lệ Java: Checked vs Unchecked (`RuntimeException`). Tại sao Spring Boot hiện đại ưu tiên Unchecked Domain Exceptions?
+  - Tạo bộ Custom Domain Exceptions cho Giao Vặt:
+    - `OrderNotFoundException` (khi không tìm thấy ID đơn hàng).
+    - `InvalidOrderStateException` (khi chuyển trạng thái sai quy tắc).
+    - `PriceBelowMinimumException` (khi khách trả giá thấp hơn giá sàn).
+  - Xây dựng Global Exception Handler tập trung bằng `@RestControllerAdvice` và `@ExceptionHandler`.
+  - Chuẩn hóa payload lỗi theo chuẩn quốc tế **RFC 7807 ProblemDetail** (Spring 6 / Spring Boot 3 hỗ trợ native: `status`, `title`, `detail`, `instance`, `timestamp`); tuyệt đối không để lộ stack trace thô; commit.
+- [ ] **Frontend (30%):**
+  - Khai báo TypeScript interface `ProblemDetail` khớp với RFC 7807 của Backend: `type`, `title`, `status`, `detail`, `timestamp`; commit.
 
-### Thứ 3 — Maven Build Tool & Dependency Management (2h)
-- [ ] Cấu trúc `pom.xml`: `groupId`, `artifactId`, `version`, `packaging`.
-- [ ] Quản lý dependency: Dependency Scopes (`compile`, `provided`, `runtime`, `test`).
-- [ ] Maven Build Lifecycle: `validate` $\rightarrow$ `compile` $\rightarrow$ `test` $\rightarrow$ `package` $\rightarrow$ `verify` $\rightarrow$ `install`.
-- [ ] Phân tích và xử lý xung đột dependency (Dependency Convergence & Exclusion); commit.
+### Thứ 3 — Chức Năng Xử Lý Ngoại Lệ Tập Trung Chuẩn RFC 7807 (Frontend Toast & Error Handling) (2h)
+- [ ] **Frontend (70%):**
+  - Xây dựng module xử lý lỗi tập trung phía Frontend (`lib/error-handler.ts`).
+  - Tự động bắt payload `ProblemDetail` từ Backend và render thông báo Toast cảnh báo màu đỏ thân thiện (hiển thị `title` và `detail` cụ thể).
+  - Xử lý các mã lỗi phổ biến: 400 (Dữ liệu sai), 404 (Không tìm thấy), 409 (Xung đột trạng thái).
+- [ ] **Backend (30%):**
+  - Viết test kiểm tra các endpoint ném ngoại lệ và trả về đúng status code RFC 7807.
+- [ ] **Chạy thử trên trình duyệt:** Cố tình truy cập chi tiết đơn hàng ID 9999 không tồn tại $\rightarrow$ Web hiển thị Toast thông báo đỏ đẹp mắt: *"Không tìm thấy đơn hàng: Đơn hàng #9999 không tồn tại trong hệ thống"* thay vì bị sập trắng màn hình!
 
-### Thứ 4 — Unit Testing Chuẩn với JUnit 5 (2h)
-- [ ] Nguyên lý kiểm thử: Mô hình Arrange-Act-Assert (AAA), First-Class Tests, Red-Green-Refactor.
-- [ ] JUnit 5 Annotations: `@Test`, `@BeforeEach`, `@AfterEach`, `@DisplayName`, `@ParameterizedTest` (kiểm thử tham số hóa nhiều trường hợp khoảng cách và giá cước).
-- [ ] Viết unit test toàn diện cho logic tính cước sàn và chuyển trạng thái đơn hàng trong `OrderService`.
-- [ ] Assertions: `assertEquals`, `assertThrows`, `assertNotNull`, AssertJ Fluent Assertions (`assertThat`); commit.
+### Thứ 4 — Chức Năng Thống Kê Báo Cáo Doanh Thu (Backend: Java Stream API) (2h)
+- [ ] **Backend (70%):**
+  - Học lập trình hàm Java: Lambda expressions `() -> {}`, Functional Interfaces (`Predicate`, `Function`, `Consumer`), Method References (`Order::getId`).
+  - Học Java Stream API: `filter()`, `map()`, `sorted()`, `distinct()`, `toList()`.
+  - Thống kê doanh thu Runner bằng `Collectors`:
+    - `groupingBy(Order::getCategory)`: Nhóm đơn hàng theo danh mục.
+    - `summarizingDouble(Order::getOfferedPrice)`: Tính tổng doanh thu, cước phí trung bình, đơn giá cao nhất/thấp nhất.
+  - Xây dựng API `GET /api/v1/reports/summary` trả về báo cáo tổng hợp.
+  - Sử dụng `Optional<T>` xử lý dữ liệu tránh triệt để `NullPointerException`; commit.
+- [ ] **Frontend (30%):**
+  - Dựng khung trang Báo cáo thống kê (`app/reports/page.tsx`) trên Next.js với các thẻ KPI cards: Tổng đơn hàng, Tổng doanh thu, Giá cước trung bình; commit.
 
-### Thứ 5 — Mocking Dependencies với Mockito (2h)
-- [ ] Bản chất của Mocking: Phân biệt Dummy, Stub, Spy, Mock, Fake.
-- [ ] Mockito annotations: `@Mock`, `@InjectMocks`, `@Spy`, `@ExtendWith(MockitoExtension.class)`.
-- [ ] Cấu hình hành vi giả lập: `when(...).thenReturn(...)`, `when(...).thenThrow(...)`.
-- [ ] Xác minh tương tác: `verify(mock, times(1)).doSomething(...)`.
-- [ ] Viết unit test cho `OrderController` độc lập với Service; đánh giá trade-off giữa Unit Test độc lập vs Integration Test; commit.
+### Thứ 5 — Chức Năng Thống Kê Báo Cáo Doanh Thu (Frontend: Reporting UI & Charts) (2h)
+- [ ] **Frontend (70%):**
+  - Kết nối trang `/reports` gọi API `GET /api/v1/reports/summary` từ Spring Boot.
+  - Hiển thị các số liệu thống kê lên các thẻ KPI cards.
+  - Dùng Recharts (hoặc Chart.js) trực quan hóa biểu đồ doanh thu theo từng danh mục đơn hàng (`RIDE`, `FOOD`, `PARCEL`).
+- [ ] **Backend (30%):**
+  - Kiểm tra độ chính xác của các phép tính toán thống kê Stream API; commit.
+- [ ] **Chạy thử trên trình duyệt:** Tạo thêm 2 đơn hàng mới $\rightarrow$ Mở trang `/reports`, thấy các số liệu tổng doanh thu và biểu đồ tự động cập nhật số liệu mới chính xác 100%!
 
-### Thứ 6 — JVM Memory Layout & Concurrency Primitives trên Java 17 (2h)
-- [ ] Học kiến trúc bộ nhớ JVM:
-  - **Heap Memory**: Young Generation (Eden, Survivor 0/1), Old Generation.
-  - **Stack Memory**: Stack Frame, lưu biến cục bộ (Local Variables) và tham chiếu phương thức; phân biệt rõ Pass-by-value trong Java.
-  - **Metaspace**: Lưu metadata của class, static fields.
-  - Cơ chế Garbage Collection (GC) căn bản: Mark & Sweep, Stop-The-World.
-- [ ] Nền tảng Concurrency trên Java 17:
-  - Java Memory Model (JMM): Visibility, Instruction Reordering, Happens-Before relationship.
-  - Từ khóa `volatile` (đảm bảo visibility qua CPU cache) vs `synchronized` (đảm bảo atomicity & mutual exclusion).
-  - `AtomicInteger`, `AtomicLong` và cơ chế phần cứng CAS (Compare-And-Swap).
+### Thứ 6 — Chức Năng Xuất Báo Cáo CSV (CSV Export) (2h)
+- [ ] **Backend (70%):**
+  - Xây dựng endpoint `GET /api/v1/reports/export-csv` xuất danh sách đơn hàng ra định dạng CSV.
+  - Sử dụng cú pháp `try-with-resources` để tự động đóng luồng `PrintWriter` / `BufferedWriter`, chống rò rỉ tài nguyên (resource leak).
+  - Cấu hình header response `Content-Disposition: attachment; filename="orders-report.csv"`.
+- [ ] **Frontend (30%):**
+  - Thêm nút bấm "Tải báo cáo CSV" trên trang `/reports` của Next.js, kích hoạt tải file CSV trực tiếp về máy tính người dùng; commit.
+
+### Thứ 7 — Fullstack Reporting Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Thử nghiệm gửi dữ liệu sai từ Form Next.js $\rightarrow$ Kiểm tra Backend trả mã lỗi RFC 7807 $\rightarrow$ Frontend hiển thị thông báo lỗi rõ ràng.
+- [ ] 1h: Kiểm tra trang báo cáo `/reports`, bấm nút "Tải báo cáo CSV" $\rightarrow$ File CSV tải về máy $\rightarrow$ Kiểm tra khớp dữ liệu.
+- [ ] 1h: Viết test cho Stream API report service ở Backend; commit.
+- [ ] 1h: **Luyện Live Coding DSA (Strings & Greedy Two Pointers):**
+  - Bài 7: **Longest Common Prefix** (LeetCode 14, Easy) — Duyệt chuỗi theo chiều dọc (Vertical Scanning) $O(N \cdot M)$ Time / $O(1)$ Space.
+  - Bài 8: **Valid Palindrome II** (LeetCode 680, Easy) — Bỏ qua tối đa 1 ký tự bằng đệ quy con trỏ tham lam $O(N)$ Time / $O(1)$ Space.
+  - Thực hành tự dry run test case trước mặt Interviewer; commit code vào `dsa/week-04/`.
+
+---
+
+## Tuần 5 — Chiến Lược Kiểm Thử Tự Động (TDD) Cả Hai Phía & Monorepo Quality
+
+### Thứ 2 — Kiểm Thử Đơn Vị Backend (JUnit 5 & Mockito) (2h)
+- [ ] **Backend (70%):**
+  - Nguyên lý kiểm thử: Mô hình Arrange-Act-Assert (AAA), First-Class Tests, Red-Green-Refactor.
+  - JUnit 5 Annotations: `@Test`, `@BeforeEach`, `@DisplayName`, `@ParameterizedTest`.
+  - Mocking với Mockito: `@Mock`, `@InjectMocks`, `when().thenReturn()`, `verify()`.
+  - Viết bộ unit test độc lập cho `OrderService`: Test logic tính cước, kiểm tra điều kiện tạo đơn, kiểm tra ném ngoại lệ khi dữ liệu sai.
+- [ ] **Frontend (30%):**
+  - Cài đặt Vitest và React Testing Library trong thư mục `frontend/`.
+  - Cấu hình file `vitest.config.ts` và thiết lập môi trường test `jsdom`; commit.
+
+### Thứ 3 — Kiểm Thử Đơn Vị Giao Diện (Frontend: Vitest & React Testing Library) (2h)
+- [ ] **Frontend (70%):**
+  - Viết unit test cho component `OrderCard`: Kiểm tra render đúng địa chỉ đón/trả, khoảng cách km, badge danh mục và định dạng tiền tệ VNĐ.
+  - Viết unit test cho logic validation của Form Tạo Đơn: Kiểm tra form chặn submit và hiển thị thông báo lỗi màu đỏ khi để trống địa chỉ hoặc nhập giá tiền âm.
+- [ ] **Backend (30%):**
+  - Chạy `mvn test` hoặc `.\gradlew.bat test` đảm bảo toàn bộ unit test backend pass 100%.
+- [ ] **Kết quả:** Chạy `npm test` ở frontend và `gradlew test` ở backend: Cả 2 phía đều pass xanh 100%!
+
+### Thứ 4 — Kiểm Thử Tích Hợp API (Backend: MockMvc) (2h)
+- [ ] **Backend (70%):**
+  - Học kiểm thử tầng Web với `@WebMvcTest` và `MockMvc`.
+  - Viết test mô phỏng gửi request HTTP tới `OrderController`:
+    - Gửi payload hợp lệ $\rightarrow$ Kiểm tra mã trạng thái `200 OK` hoặc `201 Created` và cấu trúc JSON trả về.
+    - Gửi thiếu trường bắt buộc $\rightarrow$ Kiểm tra mã trạng thái `400 Bad Request`.
+    - Gọi đơn không tồn tại $\rightarrow$ Kiểm tra mã trạng thái `404 Not Found` khớp chuẩn RFC 7807 `ProblemDetail`.
+- [ ] **Frontend (30%):**
+  - Cài đặt Mock Service Worker (MSW) để giả lập API endpoints phía frontend; commit.
+
+### Thứ 5 — Kiểm Thử Tích Hợp Giao Diện (Frontend: MSW & Form Submit Flow) (2h)
+- [ ] **Frontend (70%):**
+  - Dùng MSW giả lập phản hồi API `POST /api/v1/orders`.
+  - Viết integration test cho toàn bộ luồng người dùng trên giao diện: Điền thông tin vào form $\rightarrow$ bấm nút Tạo đơn $\rightarrow$ kiểm tra nút chuyển sang trạng thái Loading $\rightarrow$ kiểm tra hiển thị thông báo Toast thành công.
+- [ ] **Backend (30%):**
+  - Rà soát coverage các bài test MockMvc; commit.
+
+### Thứ 6 — JVM Memory Layout, Concurrency Cơ Bản & TypeScript Type Safety (2h)
+- [ ] **Backend (70%):**
+  - Học kiến trúc bộ nhớ JVM: Heap (Young, Old), Stack Frame, Metaspace, GC căn bản (Mark & Sweep).
+  - Nền tảng Concurrency trên Java 17: JMM (Visibility, Reordering, Happens-Before), `volatile` vs `synchronized`, `AtomicInteger`, CAS.
   - Tạo bài lab đa luồng nhỏ: 10 threads cùng cộng dồn biến đếm đơn hàng để chứng minh Lost Update nếu không đồng bộ hóa; commit.
+- [ ] **Frontend (30%):**
+  - Kiểm tra type safety toàn diện: Chạy `npm run typecheck`, loại bỏ toàn bộ kiểu `any` trong code TypeScript frontend; commit.
 
-### Thứ 7 — Java Core & Quality Assessment (5h)
-- [ ] 2h: Rà soát toàn bộ codebase Giao Vặt in-memory, đảm bảo Clean Code và test coverage đạt $\ge 80\%$ cho tầng Service.
-- [ ] 1h: Tự giải 3 bài toán DSA căn bản liên quan đến Array, HashMap, Two Pointers.
-- [ ] 1h: Mock interview tự vấn đáp 20 câu hỏi trọng tâm về Java Core, OOP, Collections, JVM Memory.
-- [ ] 1h: Tag release Git: `giaovat-core-passed`.
+### Thứ 7 — Fullstack Quality Gate & Luyện Live Coding DSA (5h)
+- [ ] 2h: Thiết lập kịch bản chạy test tự động: `npm test` ở frontend pass 100% và `mvn test` / `.\gradlew.bat test` ở backend pass 100%.
+- [ ] 1h: Tạo script 1 lệnh kiểm tra toàn diện chất lượng (format, typecheck, unit/integration test); Tag release Git: `fullstack-core-passed`.
+- [ ] 1h: Mock interview tự vấn đáp 15 câu Java Core/Testing và 5 câu React/Next.js Testing.
+- [ ] 1h: **Luyện Live Coding DSA (Stack & JVM Memory Internals):**
+  - Bài 9: **Valid Parentheses** (LeetCode 20, Easy) — Ứng dụng Stack LIFO so khớp dấu ngoặc $O(N)$ Time / $O(N)$ Space (`ArrayDeque<Character>`).
+  - Bài 10: **Min Stack** (LeetCode 155, Medium) — Thiết kế ngăn xếp có `getMin()` trong $O(1)$ Time dùng 2 Stack hoặc Linked Node bọc giá trị nhỏ nhất; commit vào `dsa/week-05/`.
 
 ---
 
-## Tuần 6 — Tái Cấu Trúc Spring Core & Spring MVC Nâng Cao (Chuẩn Hóa 3 Layers)
+## Tuần 6 — Tách Khớp Nối Kiến Trúc (Seam), Vòng Đời Đơn Hàng & Next.js Client
 
-### Thứ 2 — Spring IoC Container & Bean Lifecycle Internals (2h)
-- [ ] Học sâu cơ chế Spring IoC: `ApplicationContext` vs `BeanFactory`.
-- [ ] Bean Scopes: Singleton (mặc định), Prototype, Request, Session.
-- [ ] Chi tiết vòng đời của một Spring Bean (**Spring Bean Lifecycle**):
-  - `BeanDefinition` $\rightarrow$ Instantiation (khởi tạo instance) $\rightarrow$ Populate Properties (tiêm thuộc tính) $\rightarrow$ Aware Interfaces (`BeanNameAware`, `ApplicationContextAware`) $\rightarrow$ `BeanPostProcessor.postProcessBeforeInitialization` $\rightarrow$ `@PostConstruct` / `InitializingBean` $\rightarrow$ `BeanPostProcessor.postProcessAfterInitialization` $\rightarrow$ Bean sẵn sàng sử dụng $\rightarrow$ `@PreDestroy` / `DisposableBean`.
-- [ ] Viết code thực nghiệm in log từng bước của Bean Lifecycle; commit.
+### Thứ 2 — Tách Khớp Nối Kiến Trúc Module Sâu (Backend Seam & IoC Internals) (2h)
+- [ ] **Backend (70%):**
+  - Học sâu cơ chế Spring IoC: `ApplicationContext` vs `BeanFactory`.
+  - Bean Scopes: Singleton (mặc định), Prototype, Request, Session.
+  - Chi tiết vòng đời của một Spring Bean (**Spring Bean Lifecycle**): `BeanDefinition` $\rightarrow$ Instantiation $\rightarrow$ Populate Properties $\rightarrow$ Aware Interfaces $\rightarrow$ `BeanPostProcessor` $\rightarrow$ `@PostConstruct` $\rightarrow$ In use $\rightarrow$ `@PreDestroy`.
+  - Thiết kế Module Sâu (Deep Module): Tạo Seam rõ ràng giữa Controller và Service, ẩn hoàn toàn logic xử lý bên trong.
+- [ ] **Frontend (30%):**
+  - Tách bạch cấu trúc Component: Phân tách **Container Components** (chứa logic gọi API, quản lý state) vs **Presentational Components** (thuần hiển thị UI, nhận props); commit.
 
 ### Thứ 3 — Spring AOP, Proxy Internals & Self-Invocation Trap (2h)
-- [ ] Học nguyên lý Aspect-Oriented Programming (AOP): Pointcut, Advice, JoinPoint, Aspect.
-- [ ] Cơ chế Spring Proxy:
-  - **JDK Dynamic Proxy**: Dựa trên Interface (Java Reflection).
-  - **CGLIB Proxy**: Tạo subclass bằng bytecode runtime (mặc định trong Spring Boot).
-- [ ] Tái hiện và giải thích bẫy kinh điển: **`@Transactional` / `@Async` Self-Invocation Trap**:
-  - Khi một method trong class tự gọi trực tiếp một method khác có `@Transactional` cùng class, proxy bị bypass hoàn toàn $\rightarrow$ Transaction không bao giờ được mở!
-  - Thực hành 3 cách khắc phục chuẩn: (1) Tách sang Bean/Service khác, (2) Tự inject chính mình bằng `@Lazy`, (3) Dùng `TransactionTemplate`; commit.
+- [ ] **Backend (70%):**
+  - Học nguyên lý Aspect-Oriented Programming (AOP): Pointcut, Advice, JoinPoint, Aspect.
+  - Cơ chế Spring Proxy: JDK Dynamic Proxy (dựa trên Interface) vs CGLIB Proxy (bytecode runtime).
+  - Tái hiện và giải thích bẫy kinh điển: **`@Transactional` / `@Async` Self-Invocation Trap**:
+    - Khi một method trong class tự gọi trực tiếp một method khác có `@Transactional` cùng class, proxy bị bypass hoàn toàn $\rightarrow$ Transaction không bao giờ được mở!
+    - Thực hành 3 cách khắc phục chuẩn: (1) Tách sang Bean/Service khác, (2) Tự inject chính mình bằng `@Lazy`, (3) Dùng `TransactionTemplate`.
+- [ ] **Frontend (30%):**
+  - Áp dụng Custom Hook `useOrders()` để đóng gói logic gọi API, giúp các UI component không bị dính chặt vào thư viện fetch/axios; commit.
 
-### Thứ 4 — Spring MVC Architecture & Request Lifecycle (2h)
-- [ ] Cơ chế hoạt động của `DispatcherServlet`: Client request $\rightarrow$ `HandlerMapping` $\rightarrow$ `HandlerAdapter` $\rightarrow$ Controller $\rightarrow$ `HttpMessageConverter` (Jackson JSON) $\rightarrow$ Response.
-- [ ] Custom Filters và Interceptors:
-  - Tạo `RequestLoggingFilter` để ghi nhận request time, URI và sinh `traceId`.
-  - Phân biệt Filter (tầng Servlet container) vs Interceptor (tầng Spring MVC); commit.
+### Thứ 4 — Chức Năng Cập Nhật Tiến Độ Vòng Đời Đơn Hàng (Backend API) (2h)
+- [ ] **Backend (70%):**
+  - Xây dựng API `PATCH /api/v1/orders/{id}/status`: Cho phép cập nhật trạng thái đơn hàng (`OPEN` $\rightarrow$ `ACCEPTED` $\rightarrow$ `PICKED_UP` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`).
+  - Kiểm tra tính hợp lệ của việc chuyển trạng thái qua máy trạng thái `canTransitionTo()`.
+  - Ném `InvalidOrderStateException` (trả về 409 Conflict) nếu tài xế cố tình nhảy cóc trạng thái (ví dụ từ `OPEN` nhảy thẳng lên `COMPLETED`).
+- [ ] **Frontend (30%):**
+  - Thêm TypeScript function `updateOrderStatus(orderId, newStatus)` trong `lib/api.ts`; commit.
 
-### Thứ 5 — DTO Validation Nâng Cao với Jakarta Bean Validation (2h)
-- [ ] Sử dụng `spring-boot-starter-validation`.
-- [ ] Các validation annotations trên `CreateOrderRequest`: `@NotNull`, `@NotBlank`, `@Positive`, `@Min`, `@Size`.
-- [ ] Viết Custom Validator: Tạo annotation `@ValidLocation` để kiểm tra tọa độ hợp lệ (latitude trong khoảng $[-90, 90]$, longitude trong khoảng $[-180, 180]$).
-- [ ] Xử lý `MethodArgumentNotValidException` trong Global Exception Handler để trả về danh sách chi tiết từng trường bị lỗi kèm message rõ ràng; commit.
+### Thứ 5 — Chức Năng Cập Nhật Tiến Độ Vòng Đời Đơn Hàng (Frontend Controls UI) (2h)
+- [ ] **Frontend (70%):**
+  - Thêm các nút bấm hành động cập nhật tiến độ trên từng thẻ đơn hàng của Runner:
+    - Khi đơn đang `ACCEPTED`: Hiển thị nút "Đã lấy hàng" (chuyển sang `PICKED_UP`).
+    - Khi đơn đang `PICKED_UP`: Hiển thị nút "Bắt đầu giao" (chuyển sang `IN_TRANSIT`).
+    - Khi đơn đang `IN_TRANSIT`: Hiển thị nút "Hoàn thành" (chuyển sang `COMPLETED`).
+  - Xử lý loading và cập nhật badge màu sắc ngay lập tức sau khi bấm.
+- [ ] **Backend (30%):**
+  - Test endpoint PATCH với các trạng thái hợp lệ và không hợp lệ.
+- [ ] **Chạy thử trên trình duyệt:** Runner bấm nút "Đã lấy hàng" $\rightarrow$ Badge trên web lập tức chuyển sang màu cam `PICKED_UP`, nút bấm đổi thành "Bắt đầu giao" mượt mà!
 
-### Thứ 6 — Chuẩn Hóa Kiến Trúc 3 Tầng (Controller – Service – Repository Seam) (2h)
-- [ ] Phân định ranh giới (Seam) kiến trúc:
-  - **Controller Layer**: Chỉ chịu trách nhiệm tiếp nhận HTTP, validation cú pháp, mapping DTO.
-  - **Service Layer**: Nắm giữ toàn bộ nghiệp vụ thuần túy của Giao Vặt, không phụ thuộc vào Web hay Servlet API.
-  - **Repository Layer (Interface Seam)**: Tạo interface `OrderRepository` để trừu tượng hóa việc lưu trữ dữ liệu (tách rời khỏi cách lưu cụ thể).
-- [ ] Viết một implementation tạm thời `InMemoryOrderRepository` implements `OrderRepository` để chuẩn bị cho việc tích hợp Database vào tuần sau; commit.
+### Thứ 6 — Request Tracing & Correlation Header (Fullstack Observability) (2h)
+- [ ] **Backend (70%):**
+  - Tạo `RequestLoggingFilter` kế thừa `OncePerRequestFilter`: Đọc header `X-Trace-Id` từ client (hoặc tự sinh UUID nếu chưa có), ghi nhận thời gian xử lý và in log ra console.
+  - Sử dụng DTO Validation nâng cao Jakarta Bean Validation: `@NotNull`, `@NotBlank`, `@Positive`, `@Min`, `@Size`.
+- [ ] **Frontend (30%):**
+  - Cấu hình Axios / Fetch Request Interceptor: Tự động sinh mã UUID và đính kèm vào header `X-Trace-Id` trong mọi request gửi đi.
+  - Cấu hình Response Interceptor log thời gian phản hồi của request lên console trình duyệt; commit.
 
-### Thứ 7 — REST API Standardization Lab (5h)
-- [ ] 2h: Hoàn thiện toàn bộ bộ API Giao Vặt chuẩn hóa 3-layer: CRUD Đơn hàng, Feed bảng tin, Claim đơn hàng, Chuyển trạng thái, Báo cáo.
-- [ ] 1h: Tích hợp đầy đủ tài liệu OpenAPI/Swagger 3 với `@Operation`, `@ApiResponse`, schema models.
-- [ ] 1h: Viết test controller với `MockMvc` (kiểm tra status code 200, 201, 400 validation, 404 not found, 409 conflict).
-- [ ] 1h: Commit và sẵn sàng bước sang tầng Database.
-
----
-
-## Tuần 7 — SQL, Database Relational, B-Tree Index & Spring Data JPA
-
-### Thứ 2 — Thiết Kế Database Relational & Migration Flyway (2h)
-- [ ] Học thiết kế cơ sở dữ liệu quan hệ: Bảng, Primary Key (PK), Foreign Key (FK), Chuẩn hóa 1NF–3NF, Constraints.
-- [ ] Thiết kế ERD chuẩn cho Giao Vặt:
-  - Bảng `users`: `id`, `email`, `password_hash`, `full_name`, `phone_number`, `role` (`ROLE_CREATOR`, `ROLE_RUNNER`).
-  - Bảng `orders`: `id`, `creator_id`, `runner_id`, `pickup_address`, `dropoff_address`, `distance_km`, `min_price`, `offered_price`, `status`, `version`, `created_at`, `updated_at`.
-- [ ] Tạo file migration đầu tiên bằng Flyway: `src/main/resources/db/migration/V1__init_schema.sql`; commit.
-
-### Thứ 3 — SQL CRUD, JOIN & Cấu Trúc B-Tree Index (2h)
-- [ ] Học SQL nâng cao: INSERT, UPDATE, DELETE, SELECT, INNER/LEFT JOIN, GROUP BY, HAVING.
-- [ ] Học cấu trúc **B-Tree Index**: Cấu trúc cây cân bằng $O(\log N)$, leaf nodes linked list cho range query, Clustered Index (Primary Key) vs Secondary Index; phân biệt Index Seek vs Index Scan vs Full Table Scan.
-- [ ] Tạo composite index trên `(status, created_at)` để tối ưu câu truy vấn lấy danh sách đơn chờ nhận trên bảng tin.
-- [ ] Viết 10 câu query thực chiến cho Giao Vặt: lấy danh sách đơn `OPEN` mới nhất, lịch sử đơn theo Creator, tổng thu nhập theo Runner; seed 1.000 dòng dữ liệu test; commit.
-
-### Thứ 4 — Spring Data JPA Entity & Repository Mapping (2h)
-- [ ] Học `@Entity`, `@Table`, `@Id`, `@GeneratedValue(strategy = GenerationType.IDENTITY)`, `JpaRepository`.
-- [ ] Mapping entity `User` và `Order`; dùng `@Enumerated(EnumType.STRING)` cho `OrderStatus` và `OrderCategory`.
-- [ ] Viết Repository methods: `findByStatusOrderByCreatedAtDesc(OrderStatus status, Pageable pageable)`.
-- [ ] Viết repository test sử dụng Testcontainers (PostgreSQL container thật); commit.
-
-### Thứ 5 — Relationships, Cascade & Xử Lý N+1 Query Problem (2h)
-- [ ] Học `@ManyToOne`, `@OneToMany`, owning side, FetchType (`LAZY` vs `EAGER`), cascade options.
-- [ ] Mapping quan hệ: Một `User` (Creator) có nhiều `Order`; một `User` (Runner) có thể thụ lý nhiều `Order`.
-- [ ] Luôn đặt `FetchType.LAZY` cho quan hệ to-one; kiểm soát và reproduce lỗi **N+1 Query Problem** qua SQL log.
-- [ ] Giải quyết N+1 bằng `JOIN FETCH` trong JPQL hoặc `@EntityGraph`; commit.
-
-### Thứ 6 — Transactions, Isolation Levels, MVCC & Locking Nền Tảng (2h)
-- [ ] Học `@Transactional`: Transaction boundaries, rollback rules (`rollbackFor = Exception.class`).
-- [ ] Học **Transaction Isolation Levels**: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE; phân tích 4 hiện tượng dị thường: **Dirty Read**, **Non-repeatable Read**, **Phantom Read**, **Lost Update**.
-- [ ] Cơ chế **MVCC** (Multi-Version Concurrency Control) trong PostgreSQL / MySQL InnoDB (Undo Log, Read View để đọc non-blocking snapshot).
-- [ ] **Khóa Lạc Quan (Optimistic Locking) nền tảng:** Thêm trường `@Version private Long version;` trên thực thể `Order` để bảo vệ tranh chấp khi nhiều Runner cùng nhận 1 đơn; commit.
-
-### Thứ 7 — Chuyển Toàn Bộ Giao Vặt API Sang Database (5h)
-- [ ] 2h: Thay thế `InMemoryOrderRepository` bằng `JpaOrderRepository`; hoàn thiện mapping Entity $\leftrightarrow$ DTO.
-- [ ] 1h: Thêm phân trang (Pagination) và sắp xếp (Sorting) cho API bảng tin đơn hàng bằng `Pageable`.
-- [ ] 1h: Viết Integration Tests kiểm tra lưu trữ và truy vấn DB thật với Testcontainers.
-- [ ] 1h: Commit và dọn dẹp mã nguồn.
+### Thứ 7 — Fullstack Seam Hardening Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Cấu hình chuẩn `CorsConfigurationSource` trong Spring Boot cho phép `http://localhost:3000` kèm credentials.
+- [ ] 1h: Kiểm tra luồng gọi API kèm mã `X-Trace-Id` xuyên suốt Frontend và Backend; viết test MockMvc.
+- [ ] 1h: Commit mã nguồn và dọn dẹp các warnings.
+- [ ] 1h: **Luyện Live Coding DSA (Linked List & Fast/Slow Pointers):**
+  - Bài 11: **Linked List Cycle** (LeetCode 141, Easy) — Thuật toán rùa và thỏ (Floyd’s Tortoise and Hare) phát hiện chu trình $O(N)$ Time / $O(1)$ Space.
+  - Bài 12: **Middle of the Linked List** (LeetCode 876, Easy) — Con trỏ nhanh gấp đôi con trỏ chậm tìm trung điểm trong 1 pass $O(N)$ Time / $O(1)$ Space; commit vào `dsa/week-06/`.
 
 ---
 
-## Tuần 8 — Hoàn Thiện Monolith v0 Giao Vặt & Quality Gate 1
+## Tuần 7 — Chuyển Đổi Sang Database Thật (PostgreSQL + Flyway + JPA) & Phân Trang
 
-### Thứ 2 — Order Lifecycle & Runner Claim Order Flow Hoàn Chỉnh (2h)
-- [ ] Nối thông toàn bộ luồng từ DB:
-  - Creator tạo đơn (`POST /api/v1/orders`) $\rightarrow$ Lưu DB trạng thái `OPEN`.
-  - Runner duyệt bảng tin (`GET /api/v1/orders/feed`) $\rightarrow$ Query DB index `(status, created_at)`.
-  - Runner nhận đơn (`POST /api/v1/orders/{id}/claim`) $\rightarrow$ Kiểm tra trạng thái và cập nhật `runner_id`, đổi status sang `ACCEPTED` dưới sự bảo vệ của `@Version`.
-- [ ] Test validation nghiệp vụ: Chặn Runner nhận đơn không phải `OPEN`, chặn Creator tự nhận đơn của chính mình; commit.
+### Thứ 2 — Database Relational & Migration Flyway (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Học thiết kế cơ sở dữ liệu quan hệ: Bảng, Primary Key (PK), Foreign Key (FK), Constraints.
+  - Thiết kế schema cho Giao Vặt:
+    - Bảng `users`: `id`, `email`, `password_hash`, `full_name`, `phone_number`, `role` (`ROLE_CREATOR`, `ROLE_RUNNER`).
+    - Bảng `orders`: `id`, `creator_id`, `runner_id`, `pickup_address`, `dropoff_address`, `distance_km`, `min_price`, `offered_price`, `status`, `version`, `created_at`, `updated_at`.
+  - Tạo file migration Flyway: `src/main/resources/db/migration/V1__init_schema.sql`.
+  - Khởi chạy PostgreSQL qua Docker Compose local (`docker compose up -d postgres`).
+  - Cấu hình Spring Data JPA, `application.yml` kết nối Postgres thật, HikariCP connection pool; commit.
+- [ ] **Frontend (30%):**
+  - Giữ nguyên giao diện Next.js, đảm bảo contract API không đổi (tính tương thích ngược).
 
-### Thứ 3 — Error Handling Chuẩn Hóa & RFC 7807 (2h)
-- [ ] Rà soát toàn bộ HTTP status code, format timestamp UTC, URL path.
-- [ ] Xử lý `OptimisticLockingFailureException` $\rightarrow$ Trả về `409 Conflict` kèm message `"Đơn hàng đã được nhận bởi tài xế khác"`.
-- [ ] Cập nhật tài liệu OpenAPI với toàn bộ mã lỗi chuẩn; commit.
+### Thứ 3 — Chuyển Đổi Sang Database Thật: Kiểm Tra Tính Tương Thích Giao Diện (Frontend) (2h)
+- [ ] **Frontend (70%):**
+  - Mở form tạo đơn trên Next.js $\rightarrow$ Submit tạo 3 đơn hàng mới.
+  - Tắt server Spring Boot và khởi động lại $\rightarrow$ Tải lại trang danh sách trên Next.js $\rightarrow$ Toàn bộ 3 đơn hàng vẫn còn nguyên vẹn 100% nhờ đã lưu bền vững xuống PostgreSQL thật (thay thế hoàn toàn bộ nhớ in-memory tạm thời)!
+- [ ] **Backend (30%):**
+  - Kiểm tra bảng `orders` trong PostgreSQL qua tool GUI (DBeaver / DataGrip) để xác nhận dữ liệu đã lưu đúng kiểu `BIGDECIMAL`, `VARCHAR`, `TIMESTAMP`.
+- [ ] **Kết quả:** Hệ thống chính thức chạy trên Database quan hệ thật mà không làm gãy giao diện!
 
-### Thứ 4 — Integration Test Toàn Diện (2h)
-- [ ] Viết test Controller bằng `MockMvc` kết hợp `@SpringBootTest` và PostgreSQL container thật.
-- [ ] Viết test đa luồng cơ bản với `CountDownLatch` (2 threads cùng gọi claim 1 đơn $\rightarrow$ 1 thành công, 1 nhận 409).
-- [ ] Chạy `mvn test` pass 100%; kiểm tra không có flaky test; commit.
+### Thứ 4 — Chức Năng Phân Trang Bảng Tin (Backend: Pageable & Index) (2h)
+- [ ] **Backend (70%):**
+  - Học cấu trúc **B-Tree Index**: Cấu trúc cây cân bằng $O(\log N)$, leaf nodes linked list cho range query; phân biệt Index Scan vs Full Table Scan.
+  - Tạo composite index trên `(status, created_at)` để tối ưu câu truy vấn lấy danh sách đơn chờ nhận trên bảng tin.
+  - Sử dụng Spring Data JPA `Pageable` và `PageRequest`:
+    - Repository method: `findByStatusOrderByCreatedAtDesc(OrderStatus status, Pageable pageable)`.
+    - API `GET /api/v1/orders/feed?page=0&size=10`.
+  - Trả về DTO phân trang chứa: `content`, `pageNumber`, `pageSize`, `totalElements`, `totalPages`.
+- [ ] **Frontend (30%):**
+  - Khai báo TypeScript interface `PaginatedResponse<T>` khớp với cấu trúc `Page` của Spring Boot; commit.
 
-### Thứ 5 — Performance Profiling & Query Optimization (2h)
-- [ ] Chạy `EXPLAIN ANALYZE` trên câu query bảng tin đơn hàng; so sánh chi phí trước và sau khi có B-Tree index `(status, created_at)`.
-- [ ] Kiểm tra dung lượng query, đảm bảo không bị N+1 khi trả về thông tin Creator kèm theo đơn hàng.
-- [ ] Ghi lại kết quả benchmark vào file `docs/benchmarks/foundation-query.md`; commit.
+### Thứ 5 — Chức Năng Phân Trang Bảng Tin (Frontend: Pagination Controls UI) (2h)
+- [ ] **Frontend (70%):**
+  - Xây dựng thanh điều khiển phân trang ở cuối trang Bảng Tin (`app/feed/page.tsx`):
+    - Nút "Trang trước" (disabled khi ở trang đầu).
+    - Danh sách số trang `[1] [2] [3] ...`.
+    - Nút "Trang sau" (disabled khi ở trang cuối).
+    - Hiển thị thông tin *"Hiển thị 10 trên tổng số 45 đơn hàng"*.
+  - Bấm chuyển trang $\rightarrow$ Gọi API tải dữ liệu trang tương ứng mượt mà.
+- [ ] **Backend (30%):**
+  - Kiểm tra câu query `COUNT(*)` và query dữ liệu phân trang trong log SQL.
+- [ ] **Chạy thử trên trình duyệt:** Tạo 15 đơn hàng $\rightarrow$ Bấm sang "Trang 2" trên web $\rightarrow$ Bảng tin hiển thị chính xác 5 đơn hàng của trang tiếp theo!
 
-### Thứ 6 — Technical Interview Gate 1 (2h)
-- [ ] Tự vấn đáp 15 câu Java Core (OOP, Collections, Exceptions, Memory), 15 câu Spring Boot (IoC, Lifecycle, Proxy trap, MVC, JPA), 10 câu SQL/Transaction (Isolation, Index, MVCC).
-- [ ] Làm 2 bài DSA Easy trong 45 phút.
-- [ ] Ghi nhận các điểm còn chưa tự tin vào sổ tay kỹ thuật.
+### Thứ 6 — Quan Hệ JPA, Xử Lý N+1 Query & Auditing (2h)
+- [ ] **Backend (70%):**
+  - Mapping quan hệ `@ManyToOne` giữa `Order` và `User` (Creator/Runner), luôn đặt `FetchType.LAZY`.
+  - Tái hiện lỗi **N+1 Query Problem**: Khi load danh sách 10 đơn hàng kèm thông tin Creator $\rightarrow$ Hibernate bắn 1 câu query lấy đơn + 10 câu query lấy Creator!
+  - Giải quyết triệt để N+1 bằng `JOIN FETCH` trong JPQL: `SELECT o FROM Order o JOIN FETCH o.creator WHERE o.status = :status`.
+  - Cấu hình JPA Auditing: `@CreatedDate`, `@LastModifiedDate`, `AuditingEntityListener`.
+- [ ] **Frontend (30%):**
+  - Hiển thị thời gian tạo đơn định dạng thân thiện trên `OrderCard` (ví dụ: *"5 phút trước"*, *"14:30 09/10/2026"*); commit.
 
-### Thứ 7 — Demo Gate 1: Sẵn Sàng Bước Sang Giai Đoạn 2 (5h)
-- [ ] 2h: Thử thách tái tạo lại một CRUD entity độc lập từ đầu không nhìn tài liệu (để kiểm tra độ nhuần nhuyễn).
-- [ ] 1h: Chạy demo toàn bộ luồng Monolith v0 và quay video demo ngắn.
-- [ ] 1h: Hoàn thiện README, ERD, hướng dẫn chạy ứng dụng bằng `mvn spring-boot:run`.
-- [ ] 1h: Tag release Git: `giaovat-foundation-ready`.
+### Thứ 7 — Fullstack Database Integration Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Seed 25 đơn hàng mẫu trong PostgreSQL; kiểm tra thao tác chuyển trang và lọc dữ liệu trên web; kiểm tra log SQL sạch lỗi N+1 (`JOIN FETCH`).
+- [ ] 1h: Viết integration test với `@DataJpaTest` hoặc Testcontainers PostgreSQL; commit.
+- [ ] 1h: Tổng kết tuần và rà soát schema database.
+- [ ] 1h: **Luyện Live Coding DSA (Binary Search & Database Indexing):**
+  - Bài 13: **Binary Search** (LeetCode 704, Easy) — Chặt nhị phân kinh điển chống tràn số nguyên `mid = left + (right - left) / 2` trong $O(\log N)$ Time / $O(1)$ Space.
+  - Bài 14: **Search a 2D Matrix** (LeetCode 74, Medium) — Ánh xạ ma trận $M \times N$ thành mảng 1D ảo và chặt nhị phân trong $O(\log(M \cdot N))$ Time; commit vào `dsa/week-07/`.
+
+---
+
+## Tuần 8 — Chức Năng Runner Nhận Đơn (Claim Order) & Khóa Concurrency (@Version)
+
+### Thứ 2 — Chức Năng Runner Nhận Đơn (Backend: Claim Order API) (2h)
+- [ ] **Backend (70%):**
+  - Xây dựng API `POST /api/v1/orders/{id}/claim`: Cho phép Runner nhận một đơn hàng đang `OPEN`.
+  - Logic nghiệp vụ:
+    - Kiểm tra đơn hàng có tồn tại không (nếu không $\rightarrow$ ném `OrderNotFoundException` 404).
+    - Kiểm tra trạng thái đơn hàng có phải `OPEN` không (nếu đã bị nhận rồi $\rightarrow$ ném `InvalidOrderStateException` 409).
+    - Gán `runner_id` của tài xế và chuyển trạng thái đơn hàng sang `ACCEPTED`.
+    - Lưu xuống Database.
+- [ ] **Frontend (30%):**
+  - Viết hàm API `claimOrder(orderId)` trong `lib/api.ts`; commit.
+
+### Thứ 3 — Chức Năng Runner Nhận Đơn (Frontend: Claim Button & Interaction) (2h)
+- [ ] **Frontend (70%):**
+  - Thêm nút **"Nhận đơn" (Claim Order)** màu xanh lá nổi bật trên từng thẻ `OrderCard` của trang Bảng Tin.
+  - Khi Runner bấm nút "Nhận đơn":
+    - Nút hiển thị spinner loading và bị disabled để chống bấm đúp.
+    - Gọi API `POST /api/v1/orders/{id}/claim`.
+    - Khi thành công: Bắn Toast chúc mừng *"Bạn đã nhận đơn #... thành công!"*, thẻ đơn hàng tự động biến mất khỏi bảng tin `OPEN`.
+  - Thêm tab "Đơn tôi đã nhận" trên menu: Hiển thị danh sách các đơn mà Runner hiện tại đã nhận.
+- [ ] **Backend (30%):**
+  - Test luồng nhận đơn thành công qua Postman/curl.
+- [ ] **Chạy thử trên trình duyệt:** Runner lướt Bảng tin $\rightarrow$ Bấm "Nhận đơn" $\rightarrow$ Đơn biến mất khỏi bảng tin và xuất hiện trong mục "Đơn tôi đã nhận"!
+
+### Thứ 4 — Chống Race Condition Concurrency (Backend: JPA Optimistic Locking) (2h)
+- [ ] **Backend (70%):**
+  - Phân tích bài toán thực tế: Hai tài xế A và B cùng nhìn thấy 1 đơn hàng giá cao và cùng bấm "Nhận đơn" trong cùng 1 tích tắc. Nếu không khóa $\rightarrow$ Cả 2 cùng nhận thành công $\rightarrow$ Thảm họa dữ liệu!
+  - Triển khai **Optimistic Locking** trên Entity `Order`: Thêm trường `@Version private Long version;`.
+  - Khi có tranh chấp ghi: Hibernate tự động kiểm tra version; transaction thứ hai sẽ bị từ chối và ném ra ngoại lệ `OptimisticLockingFailureException`.
+  - Cấu hình Global Exception Handler bắt `OptimisticLockingFailureException` $\rightarrow$ Trả về mã lỗi HTTP `409 Conflict` kèm thông điệp: *"Rất tiếc! Đơn hàng này vừa được một tài xế khác nhận trước bạn vài phần nghìn giây."*.
+- [ ] **Frontend (30%):**
+  - Xử lý bắt mã lỗi 409 trong hàm gọi nhận đơn của Next.js; commit.
+
+### Thứ 5 — Chống Race Condition Concurrency (Frontend: Optimistic UI & Rollback) (2h)
+- [ ] **Frontend (70%):**
+  - Áp dụng kỹ thuật **Optimistic UI (Cập nhật giao diện lạc quan)**:
+    - Khi Runner bấm "Nhận đơn", giao diện lập tức đổi trạng thái sang "Đang xử lý" ($0$ms delay).
+  - Xử lý **Rollback UI**:
+    - Nếu Backend trả về HTTP `409 Conflict` (bị tranh chấp đơn) $\rightarrow$ Giao diện lập tức phục hồi lại trạng thái cũ, loại bỏ đơn khỏi danh sách và hiển thị Toast cảnh báo màu cam: *"Đơn hàng vừa được tài xế khác nhận! Vui lòng chọn đơn khác."*.
+- [ ] **Backend (30%):**
+  - Viết bài test đa luồng JUnit 5 kết hợp `CountDownLatch` và `ExecutorService`: 2 threads cùng gọi claim 1 đơn hàng $\rightarrow$ Chứng minh đúng 1 thread thành công và 1 thread nhận lỗi 409 Conflict.
+- [ ] **Chạy thử trên trình duyệt:** Mở 2 tab trình duyệt cạnh nhau $\rightarrow$ Cùng bấm "Nhận đơn" trên 1 đơn hàng trong cùng 1 tích tắc $\rightarrow$ Tab 1 nhận thành công, Tab 2 nhận ngay cảnh báo 409 và UI rollback chuẩn xác 100%!
+
+### Thứ 6 — Dọn Dẹp Mã Nguồn, Linter & Chuẩn Hóa Codebase (2h)
+- [ ] Format code toàn bộ dự án: Backend theo chuẩn Google Java Style, Frontend theo ESLint & Prettier.
+- [ ] Tối ưu hóa câu truy vấn bảng tin: Kiểm tra `EXPLAIN ANALYZE` trên PostgreSQL đảm bảo câu query tận dụng index `(status, created_at)`.
+- [ ] Loại bỏ toàn bộ `console.log` thừa và code rác; commit.
+
+### Thứ 7 — Demo Gate 1: Monolith v0 & Thử Thách Live Coding Milestone (5h)
+- [ ] 2h: Chạy trọn vẹn kịch bản người dùng thực tế trên trình duyệt từ A-Z (Creator tạo đơn $\rightarrow$ Runner lướt feed nhận đơn $\rightarrow$ Optimistic Locking bảo vệ an toàn $\rightarrow$ Cập nhật tiến độ).
+- [ ] 1h: Quay video demo 3 phút toàn bộ luồng chạy trên trình duyệt; Hoàn thiện README khởi chạy.
+- [ ] 1h: Tag release Git chính thức: `fullstack-foundation-ready`.
+- [ ] 1h: **Thử Thách Live Coding Milestone v0 (Bấm giờ 35 phút):**
+  - Bài 15: **3Sum** (LeetCode 15, Medium) — Bài toán phỏng vấn kinh điển kết hợp Sorting + Two Pointers + Bỏ qua phần tử trùng lặp $O(N^2)$ Time / $O(1)$ extra Space.
+  - Tự quay video hoặc nói to giải thích 4 bước Live Coding (Clarify $\rightarrow$ Big-O $\rightarrow$ Code $\rightarrow$ Dry Run); commit vào `dsa/week-08/`.
+
+---
 
 # GIAI ĐOẠN 2 — TUẦN 9–18
 ## Đủ Điều Kiện Apply Java Fresher & Mở Rộng Tư Duy Kiến Trúc Hệ Thống (Mục tiêu 12–15 triệu)
@@ -433,206 +578,254 @@
 
 ---
 
-## Tuần 9 — Authentication, RBAC & Security Architecture
+## Tuần 9 — Authentication, RBAC & Fullstack Security Architecture
 
-### Thứ 2 — Lý Thuyết Tổng Quan Kiến Trúc Bảo Mật & Authentication (2h)
-- [ ] Học lý thuyết tổng thể các mô hình xác thực trong ngành phần mềm:
-  - Session-based Stateful Authentication (Cookie, Server Session, Redis Session Store) vs Token-based Stateless Authentication (JWT).
-  - Phân tích ưu/nhược điểm: Khả năng scale ngang (horizontal scalability), rủi ro revoke token tức thì, kích thước header.
-  - Phân biệt Authentication (Xác thực danh tính) vs Authorization (Phân quyền truy cập).
-  - Khái niệm RBAC (Role-Based Access Control) vs ABAC (Attribute-Based Access Control).
-- [ ] Lựa chọn kiến trúc cho Giao Vặt: Chọn JWT Stateless cho RESTful API, lưu refresh token trong Redis để hỗ trợ revoke; commit ADR.
+### Thứ 2 — Chức Năng 1: Đăng Ký, Đăng Nhập & Password Hashing (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Học lý thuyết kiến trúc xác thực: Stateful Session vs Stateless Token (JWT).
+  - An toàn mật khẩu: Rainbow table attacks, cơ chế Salt, Key Stretching, BCrypt vs Argon2.
+  - Cấu hình Spring Security 6 với `BCryptPasswordEncoder` (cost factor 10 hoặc 12).
+  - Tạo schema bảng `users` và migration Flyway `V2__security_users.sql` (`id`, `email`, `phone`, `password_hash`, `role`, `created_at`).
+  - Viết API đăng ký (`POST /api/v1/auth/register`) và đăng nhập (`POST /api/v1/auth/login`): Chặn duplicate email/phone, hash mật khẩu 100% trước khi lưu DB.
+- [ ] **Frontend (30%):**
+  - Định nghĩa Zod schema validation cho Form Đăng ký và Đăng nhập (`email`, `phone`, `password` tối thiểu 8 ký tự kèm chữ hoa/số); commit.
 
-### Thứ 3 — Password Hashing & Quản Lý Credential (2h)
-- [ ] Học lý thuyết an toàn mật khẩu: Rainbow table attacks, cơ chế Salt, Key Stretching.
-- [ ] So sánh các thuật toán mã hóa mật khẩu: MD5/SHA (bất an) vs BCrypt, PBKDF2, Argon2.
-- [ ] Cấu hình Spring Security với `BCryptPasswordEncoder` (cost factor 10 hoặc 12).
-- [ ] Tạo schema bảng `users` và migration Flyway `V2__security_users.sql`.
-- [ ] Viết test đăng ký: chặn duplicate email/phone, password yếu, đảm bảo mật khẩu lưu trong DB đã hash 100%; commit.
+### Thứ 3 — Chức Năng 1: Đăng Ký, Đăng Nhập & Password Hashing (Frontend Form & Submit) (2h)
+- [ ] **Frontend (70%):**
+  - Xây dựng trang Đăng ký (`app/register/page.tsx`) và Đăng nhập (`app/login/page.tsx`) bằng React Hook Form + Zod.
+  - Gọi API `POST /api/v1/auth/register` $\rightarrow$ Nhận phản hồi thành công $\rightarrow$ Chuyển hướng sang trang đăng nhập.
+  - Gọi API `POST /api/v1/auth/login` $\rightarrow$ Nhận Access Token từ Spring Boot $\rightarrow$ Lưu token an toàn.
+- [ ] **Backend (30%):**
+  - Viết test đăng ký và đăng nhập với MockMvc.
+- [ ] **Chạy thử trên trình duyệt:** Đăng ký tài khoản mới trên web $\rightarrow$ Kiểm tra PostgreSQL thấy mật khẩu đã mã hóa BCrypt $\rightarrow$ Đăng nhập thành công và nhận JWT!
 
-### Thứ 4 — JWT Anatomy & Stateless Token Flow (2h)
-- [ ] Học cấu trúc chuẩn JWT (JSON Web Token): Header (thuật toán ký), Payload (Claims: `sub`, `roles`, `exp`, `iat`), Signature.
-- [ ] Cơ chế ký số HMAC-SHA256 vs RSA (Asymmetric).
-- [ ] Xây dựng `JwtTokenProvider`: sinh Access Token (hạn 15–30 phút) chứa `user_id` và `role`.
-- [ ] Xây dựng `JwtAuthenticationFilter` kế thừa `OncePerRequestFilter`: đọc Bearer token từ header, xác thực signature và nạp Principal vào `SecurityContextHolder`.
-- [ ] Viết test: token hợp lệ, token sai chữ ký, token hết hạn; commit.
+### Thứ 4 — Chức Năng 2: JWT Stateless Token & Phân Quyền RBAC (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Cấu trúc JWT: Header (HS256), Payload (`sub`, `roles`, `exp`), Signature.
+  - Xây dựng `JwtTokenProvider`: Sinh Access Token (hạn 30 phút) chứa `userId` và `role`.
+  - Xây dựng `JwtAuthenticationFilter` kế thừa `OncePerRequestFilter`: Đọc Bearer token từ header, xác thực chữ ký và nạp Principal vào `SecurityContextHolder`.
+  - Phân quyền nghiêm ngặt bằng `@PreAuthorize("hasRole('...')")`:
+    - `ROLE_CREATOR`: Chỉ tạo và hủy đơn của chính mình; không thể gọi API nhận đơn (`claimOrder`).
+    - `ROLE_RUNNER`: Duyệt danh sách đơn `OPEN`; nhận đơn và cập nhật tiến độ đơn mình đã nhận.
+  - Bảo mật dữ liệu nhạy cảm: Ẩn số điện thoại Creator trên public feed; chỉ Runner nhận đơn thành công mới xem được SĐT; commit.
+- [ ] **Frontend (30%):**
+  - Khai báo TypeScript interface cho User profile và token payload; commit.
 
-### Thứ 5 — Authorization & RBAC trong Giao Vặt (2h)
-- [ ] Cấu hình Security Filter Chain và Method Security (`@PreAuthorize("hasRole('...')")`).
-- [ ] Phân quyền nghiêm ngặt cho hai tác nhân chính:
-  - **`ROLE_CREATOR` (Người tạo đơn):** Chỉ xem và hủy đơn của chính mình; tuyệt đối không thể gọi API nhận đơn (`claimOrder`).
-  - **`ROLE_RUNNER` (Tài xế tiện chuyến):** Duyệt danh sách bảng tin đơn `OPEN`; nhận đơn và cập nhật tiến độ đơn mình đã nhận.
-- [ ] Bảo mật dữ liệu nhạy cảm (Data Privacy): Ẩn số điện thoại khách hàng trên public feed; chỉ Runner nhận đơn thành công mới xem được số điện thoại Creator; commit.
+### Thứ 5 — Chức Năng 2: JWT Stateless & Route Protection Theo Role (Frontend) (2h)
+- [ ] **Frontend (70%):**
+  - Xây dựng `AuthContext` và hook `useAuth()`: Quản lý trạng thái đăng nhập, hàm `login()`, `logout()`, giải mã role từ JWT.
+  - Xây dựng Next.js `middleware.ts` bảo vệ Route:
+    - Chưa đăng nhập $\rightarrow$ Chặn vào `/orders/new` hoặc `/my-orders` $\rightarrow$ Redirect về `/login`.
+    - Kiểm tra Role: Tài khoản `ROLE_CREATOR` không thể vào trang `/runner/feed`; chỉ `ROLE_RUNNER` mới được vào.
+  - Trên Bảng tin: Ẩn số điện thoại khách hàng (hiển thị `0987***`); chỉ sau khi Runner nhận đơn thành công mới hiển thị đầy đủ số điện thoại.
+- [ ] **Backend (30%):**
+  - Viết test kiểm tra các API trả về 403 Forbidden khi user không đúng Role.
+- [ ] **Chạy thử trên trình duyệt:** Đăng nhập tài khoản Creator $\rightarrow$ Thử vào trang `/runner/feed` bị chặn redirect; Đăng nhập Runner $\rightarrow$ Thấy feed nhưng SĐT bị che dấu sao; Bấm nhận đơn thành công $\rightarrow$ SĐT hiện đầy đủ!
 
-### Thứ 6 — Refresh Token Rotation & Threat Modeling (2h)
-- [ ] Học cơ chế **Refresh Token Rotation**: Mỗi lần dùng Refresh Token để lấy Access Token mới, hệ thống sẽ cấp một Refresh Token hoàn toàn mới và hủy Refresh Token cũ.
-- [ ] Lưu trữ Refresh Token trong Redis với TTL (ví dụ 7 ngày); cơ chế phát hiện Replay Attack (nếu Refresh Token cũ bị dùng lại $\rightarrow$ thu hồi toàn bộ phiên của user).
-- [ ] Xây dựng API `/api/v1/auth/refresh` và `/api/v1/auth/logout`.
-- [ ] Viết tài liệu Threat Model ngắn gọn cho hệ thống auth; commit.
+### Thứ 6 — Chức Năng 3: Refresh Token Rotation trong Redis (Fullstack) (2h)
+- [ ] **Backend (70%):**
+  - Cơ chế **Refresh Token Rotation**: Mỗi lần refresh, cấp Refresh Token mới và hủy token cũ.
+  - Lưu Refresh Token trong Redis với TTL 7 ngày; phát hiện Replay Attack (nếu token cũ bị dùng lại $\rightarrow$ revoke toàn bộ phiên user).
+  - API `POST /api/v1/auth/refresh` và `POST /api/v1/auth/logout`.
+- [ ] **Frontend (30%):**
+  - Cấu hình Axios / Fetch Response Interceptor: Tự động gọi API `/refresh` trong suốt (silent refresh) khi nhận mã lỗi 401 Unauthorized $\rightarrow$ Lưu token mới và tự động thử lại request ban đầu mà người dùng không bị văng đăng nhập; commit.
 
-### Thứ 7 — Auth Integration & CORS/CSRF Hardening (5h)
-- [ ] 2h: Hoàn thiện toàn bộ luồng Auth: Register $\rightarrow$ Login $\rightarrow$ Access Protected API $\rightarrow$ Refresh Token $\rightarrow$ Logout.
-- [ ] 1h: Viết Integration Tests toàn diện cho các endpoint bảo mật với `@WithMockUser`.
-- [ ] 1h: Cấu hình CORS an toàn (chỉ cho phép domain frontend được chỉ định), tắt CSRF vì API hoàn toàn stateless.
-- [ ] 1h: Hoàn thiện README Security và commit code.
-
----
-
-## Tuần 10 — Caching Architecture, Redis & Anti-Spam Rate Limiting
-
-### Thứ 2 — Lý Thuyết Tổng Quan Caching Strategies trong System Design (2h)
-- [ ] Học lý thuyết tổng thể về các chiến lược Caching trong kiến trúc phần mềm:
-  - **Cache-Aside (Lazy Loading):** App đọc cache trước, miss thì đọc DB rồi ghi vào cache.
-  - **Read-Through:** App chỉ nói chuyện với cache, cache tự nạp từ DB.
-  - **Write-Through:** App ghi vào cache, cache ghi đồng bộ xuống DB.
-  - **Write-Behind (Write-Back):** App ghi vào cache, cache ghi bất đồng bộ theo lô xuống DB (tốc độ cao nhưng rủi ro mất dữ liệu).
-- [ ] Ba thảm họa Caching kinh điển và giải pháp:
-  - **Cache Penetration:** Query key không tồn tại $\rightarrow$ hit thẳng DB $\rightarrow$ Giải pháp: Bloom Filter hoặc lưu Null Object có TTL ngắn.
-  - **Cache Breakdown:** Hot key hết hạn $\rightarrow$ hàng nghìn request cùng dội xuống DB $\rightarrow$ Giải pháp: Mutex Lock hoặc Logical Expiration.
-  - **Cache Avalanche:** Hàng loạt cache key cùng hết hạn cùng lúc $\rightarrow$ DB sập $\rightarrow$ Giải pháp: Thêm Random Jitter vào TTL.
-- [ ] Cache Invalidation: *"Có hai điều khó nhất trong Khoa học Máy tính: đặt tên và xóa cache"*.
-
-### Thứ 3 — Redis Data Structures & Thiết Kế Bảng Tin Giao Vặt (2h)
-- [ ] Học sâu các cấu trúc dữ liệu Redis: String, Hash, List, Set, Sorted Set (ZSET), Bitmap, HyperLogLog.
-- [ ] Thiết kế Bảng Tin Đơn Hàng (`Order Feed`) trên Redis:
-  - Dùng **Sorted Set (ZSET)** key `orders:open`: Score là timestamp tạo đơn hoặc cước phí, Member là `orderId` $\rightarrow$ Hỗ trợ phân trang và sắp xếp siêu tốc $O(\log N + M)$.
-  - Dùng **Hash** key `order:{id}`: Lưu snapshot chi tiết đơn hàng dạng JSON/Fields để Runner xem nhanh không cần chạm Database.
-- [ ] Code API Runner lấy danh sách bảng tin trực tiếp từ Redis; commit.
-
-### Thứ 4 — Đồng Bộ Trạng Thái Đơn Hàng & Cache-Aside (2h)
-- [ ] Xử lý đồng bộ hai chiều (Redis $\leftrightarrow$ Database):
-  - Khi Creator tạo đơn: Ghi DB $\rightarrow$ Đẩy `orderId` vào Redis ZSET `orders:open` $\rightarrow$ Lưu Hash `order:{id}`.
-  - Khi Runner nhận đơn thành công (`OPEN` $\rightarrow$ `ACCEPTED`): Gỡ `orderId` khỏi Redis ZSET `orders:open` $\rightarrow$ Cập nhật trạng thái trong DB.
-- [ ] Cơ chế Fallback an toàn: Nếu Redis tạm thời mất kết nối (Redis down), hệ thống tự động fallback query từ Database với index `(status, created_at)`.
-- [ ] Viết test kết nối và test thao tác Redis với Docker Compose; commit.
-
-### Thứ 5 — Docker Compose Redis & Serializer Chuẩn (2h)
-- [ ] Khởi chạy Redis thông qua Docker Compose local.
-- [ ] Cấu hình Spring Data Redis: `RedisTemplate<String, Object>`, cấu hình `GenericJackson2JsonRedisSerializer` hoặc `Jackson2JsonRedisSerializer` an toàn (tránh lỗ hổng Java Deserialization).
-- [ ] Thiết lập Connection Pool với Lettuce: `max-active`, `max-idle`, `min-idle`.
-- [ ] Viết test kiểm tra eviction policy và TTL; commit.
-
-### Thứ 6 — Rate Limiting & Anti-Spam Bằng Thuật Toán Sliding Window (2h)
-- [ ] Lý thuyết các thuật toán Rate Limiting: Fixed Window Counter, Sliding Window Log, Sliding Window Counter, Token Bucket, Leaky Bucket.
-- [ ] Triển khai **Sliding Window Rate Limiter** bằng Redis ZSET (hoặc Lua script atomic):
-  - Giới hạn Creator: Tối đa 5 request tạo đơn/phút (chống spam đơn ảo).
-  - Giới hạn Runner: Tối đa 30 request refresh bảng tin/phút và tối đa 10 request claim đơn/phút (chống auto-clicker bot).
-- [ ] Trả về mã lỗi HTTP `429 Too Many Requests` kèm header `Retry-After`; commit.
-
-### Thứ 7 — Reliability, Latency Measurement & Concurrency Lab (5h)
-- [ ] 2h: Hoàn thiện luồng Redis Feed + Cache-Aside + DB Fallback.
-- [ ] 1h: Viết test đa luồng mô phỏng đồng thời 50 request vừa tạo đơn vừa pick đơn.
-- [ ] 1h: Đo đạc và lập biểu đồ latency: So sánh thời gian phản hồi khi lấy bảng tin từ Redis ($<5$ms) so với query PostgreSQL trực tiếp ($30-50$ms).
-- [ ] 1h: Ghi nhận bài học về Cache Consistency và commit code.
+### Thứ 7 — Fullstack Auth Integration Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Ghép nối toàn bộ luồng Auth: Đăng ký $\rightarrow$ Đăng nhập $\rightarrow$ Điều hướng theo Role $\rightarrow$ Đăng xuất.
+- [ ] 1h: Kiểm tra cơ chế Silent Refresh token ngầm trong suốt; cấu hình CORS chặt chẽ.
+- [ ] 1h: Viết Integration Test cho các endpoint bảo mật; commit.
+- [ ] 1h: **Luyện Live Coding DSA (Sliding Window — Cửa Sổ Trượt):**
+  - Bài 17: **Best Time to Buy and Sell Stock** (LeetCode 121, Easy) — Cửa sổ trượt đơn giản duy trì giá đáy trong $O(N)$ Time / $O(1)$ Space.
+  - Bài 18: **Longest Substring Without Repeating Characters** (LeetCode 3, Medium) — Cửa sổ trượt linh hoạt kết hợp `HashMap`/mảng vị trí $O(N)$ Time / $O(\min(N, M))$ Space; commit vào `dsa/week-09/`.
 
 ---
 
-## Tuần 11 — Containerization, CI/CD Pipeline & Deployment
+## Tuần 10 — Caching Architecture, Redis Feed & Anti-Spam Rate Limiting
 
-### Thứ 2 — Lý Thuyết Virtualization vs Containerization & 12-Factor App (2h)
-- [ ] Học lý thuyết Containerization: Khác biệt giữa Virtual Machine (Hypervisor, Guest OS) vs Container (chia sẻ OS Kernel, cgroups, namespaces).
-- [ ] 12-Factor App methodology cho Cloud-Native Backend: Config qua biến môi trường, Stateless processes, Port binding, Concurrency, Disposability.
-- [ ] Viết Dockerfile Multi-stage tối ưu cho Spring Boot (Java 17 LTS):
-  - Stage 1: Build source bằng Maven wrapper.
-  - Stage 2: Chạy trên nền Eclipse Temurin 17 JRE Alpine nhỏ gọn ($<200$MB), tạo user non-root để tăng cường bảo mật.
-- [ ] Build image và chạy container local; commit.
+### Thứ 2 — Chức Năng 1: Bảng Tin Đơn Mở Bằng Redis Sorted Set (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Học lý thuyết Caching: Cache-Aside vs Write-Through; Ba thảm họa Caching (Cache Penetration, Cache Breakdown, Cache Avalanche) và giải pháp.
+  - Học sâu các cấu trúc dữ liệu Redis: String, Hash, Sorted Set (ZSET).
+  - Thiết kế Bảng Tin Đơn Hàng trên Redis:
+    - **Sorted Set (ZSET)** key `orders:open`: Score là timestamp tạo đơn hoặc cước phí, Member là `orderId` $\rightarrow$ Hỗ trợ phân trang và sắp xếp siêu tốc $O(\log N + M)$.
+    - **Hash** key `order:{id}`: Lưu snapshot chi tiết đơn hàng dạng JSON/Fields để đọc siêu tốc không cần chạm Database.
+  - Xử lý đồng bộ hai chiều (Redis $\leftrightarrow$ Database): Tạo đơn đẩy Redis $\rightarrow$ Nhận đơn gỡ khỏi Redis; Cơ chế Fallback an toàn query DB nếu Redis tạm thời mất kết nối.
+- [ ] **Frontend (30%):**
+  - Giữ nguyên giao diện Next.js Bảng tin, chuẩn bị API client đón nhận tốc độ phản hồi cao từ Redis; commit.
 
-### Thứ 3 — Docker Compose Full-Stack Local Environment (2h)
-- [ ] Viết file `docker-compose.yml` định nghĩa toàn bộ stack:
-  - Dịch vụ backend: `app` (expose port 8080, healthcheck qua Spring Actuator).
-  - Dịch vụ database: `postgres` (port 5432, persistent volume, init scripts).
-  - Dịch vụ cache/queue: `redis` (port 6379).
-- [ ] Cấu hình network bridge và dependencies (`depends_on` với condition `service_healthy`).
-- [ ] Kiểm tra khả năng khởi động toàn bộ hệ thống bằng 1 lệnh duy nhất: `docker compose up -d`; commit.
+### Thứ 3 — Chức Năng 1: Bảng Tin Đơn Mở Bằng Redis Sorted Set (Frontend Benchmark) (2h)
+- [ ] **Frontend (70%):**
+  - Kết nối trang `/feed` của Next.js gọi API Bảng tin đọc dữ liệu từ Redis.
+  - Tích hợp TanStack Query (React Query) hoặc SWR: Quản lý cache client (`stale-while-revalidate`), tự động refetch khi window focus.
+  - Đo thời gian phản hồi: Mở DevTools Network tab đo đạc tốc độ tải Bảng tin ($<15$ms khi trúng Redis cache so với $40-60$ms khi query DB trực tiếp).
+- [ ] **Backend (30%):**
+  - Thực hành bài test tắt container Redis: Kiểm tra Spring Boot tự động fallback query từ PostgreSQL mà không làm gián đoạn API.
+- [ ] **Chạy thử trên trình duyệt:** Tải trang Bảng tin thấy danh sách đơn hiện lên tức thì; Tắt Redis $\rightarrow$ Tải lại trang web vẫn hiển thị dữ liệu từ DB fallback mà không bị lỗi giao diện!
 
-### Thứ 4 — Lý Thuyết CI/CD & GitHub Actions Pipeline (2h)
-- [ ] Học lý thuyết Continuous Integration & Continuous Delivery/Deployment.
-- [ ] Cấu hình GitHub Actions workflow (`.github/workflows/ci.yml`):
+### Thứ 4 — Chức Năng 2: Chống Spam Bằng Sliding Window Rate Limiting (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Lý thuyết các thuật toán Rate Limiting: Fixed Window, Sliding Window Log, Token Bucket, Leaky Bucket.
+  - Triển khai **Sliding Window Rate Limiter** bằng Redis ZSET:
+    - Giới hạn Creator: Tối đa 5 request tạo đơn/phút (chống spam đơn ảo).
+    - Giới hạn Runner: Tối đa 30 request refresh bảng tin/phút và tối đa 10 request claim đơn/phút (chống auto-clicker bot).
+  - Khi vượt ngưỡng: Trả về mã lỗi HTTP `429 Too Many Requests` kèm header `Retry-After: <seconds>`; commit.
+- [ ] **Frontend (30%):**
+  - Khai báo logic bắt mã lỗi 429 và đọc header `Retry-After` trong API client; commit.
+
+### Thứ 5 — Chức Năng 2: Chống Spam Bằng Sliding Window Rate Limiting (Frontend Toast) (2h)
+- [ ] **Frontend (70%):**
+  - Xử lý trải nghiệm người dùng khi bị Rate Limiting:
+    - Bắt lỗi HTTP `429 Too Many Requests` từ Backend.
+    - Đọc header `Retry-After` và hiển thị Toast đếm ngược thời gian: *"Bạn thao tác quá nhanh, vui lòng chờ {seconds}s trước khi tải lại!"*.
+    - Tự động disable nút "Làm mới bảng tin" và hiển thị đồng hồ đếm ngược trên nút (ví dụ: *"Chờ 8s..."*) để ngăn người dùng tiếp tục spam click.
+- [ ] **Backend (30%):**
+  - Viết test mô phỏng gửi 6 request liên tiếp trong 10 giây để kiểm tra kích hoạt 429.
+- [ ] **Chạy thử trên trình duyệt:** Bấm spam nút làm mới bảng tin 35 lần liên tục $\rightarrow$ Giao diện lập tức hiện Toast cảnh báo 429, nút bấm bị khóa và đếm ngược từng giây chính xác!
+
+### Thứ 6 — Reliability, Latency Measurement & Cache Consistency (2h)
+- [ ] Kiểm tra tính nhất quán (Cache Consistency): Creator hủy đơn $\rightarrow$ Đảm bảo key trong Redis ZSET và Hash `order:{id}` bị xóa sạch ngay lập tức.
+- [ ] Cấu hình Lettuce Connection Pool tối ưu: `max-active`, `max-idle`, `min-idle`.
+- [ ] Ghi lại tài liệu ADR lựa chọn Redis Sorted Set cho Bảng Tin; commit.
+
+### Thứ 7 — Fullstack Feed Performance Lab & Luyện Live Coding DSA (5h)
+- [ ] 2h: Viết test đa luồng mô phỏng đồng thời 50 request vừa tạo đơn vừa nhận đơn, kiểm tra tính toàn vẹn dữ liệu giữa Redis và PostgreSQL.
+- [ ] 1h: Đo đạc và lập biểu đồ latency so sánh giữa Redis Feed và Database Query.
+- [ ] 1h: Tự review code theo checklist Caching & Rate Limiting; commit.
+- [ ] 1h: **Luyện Live Coding DSA (Heap / Priority Queue & Top-K):**
+  - Bài 19: **Kth Largest Element in an Array** (LeetCode 215, Medium) — Min-Heap kích thước $K$ trong $O(N \log K)$ Time hoặc Quickselect $O(N)$ trung bình.
+  - Bài 20: **Top K Frequent Elements** (LeetCode 347, Medium) — `HashMap` đếm tần suất + Min-Heap hoặc Bucket Sort trong $O(N)$ Time; commit vào `dsa/week-10/`.
+
+---
+
+## Tuần 11 — Containerization, CI/CD Pipeline & Fullstack Deployment
+
+### Thứ 2 — Đóng Gói Container Spring Boot (Backend Multi-stage Dockerfile) (2h)
+- [ ] **Backend (70%):**
+  - Học lý thuyết Virtualization vs Containerization, 12-Factor App cho Cloud-Native.
+  - Viết Dockerfile Multi-stage tối ưu cho Spring Boot (Java 17 LTS):
+    - Stage 1: Build source bằng Maven wrapper (`eclipse-temurin:17-jdk-alpine`).
+    - Stage 2: Runtime với JRE siêu nhẹ (`eclipse-temurin:17-jre-alpine`, $<200$MB), tạo user non-root để đảm bảo an ninh.
+  - Build image và chạy container backend local; commit.
+- [ ] **Frontend (30%):**
+  - Tìm hiểu cơ chế build production của Next.js: `next build` và cấu hình `output: 'standalone'`; commit.
+
+### Thứ 3 — Đóng Gói Container Next.js (Frontend Standalone Dockerfile) (2h)
+- [ ] **Frontend (70%):**
+  - Bật cấu hình `output: 'standalone'` trong `next.config.js` để Next.js chỉ copy các file `node_modules` thực sự cần thiết.
+  - Viết Dockerfile Multi-stage cho Next.js:
+    - Stage 1 (`deps`): Cài đặt dependencies với cache npm/pnpm.
+    - Stage 2 (`builder`): Build mã nguồn (`next build`).
+    - Stage 3 (`runner`): Chạy server Node.js với image Alpine tối giản, giảm dung lượng image từ ~1GB xuống dưới 150MB.
+  - Quản lý biến môi trường: `NEXT_PUBLIC_API_URL` (build-time) vs Biến môi trường Server (runtime).
+- [ ] **Backend (30%):**
+  - Kiểm tra healthcheck Actuator `/actuator/health` trong container backend.
+- [ ] **Chạy thử:** Build cả 2 Docker image độc lập và kiểm tra kích thước tối ưu (cả 2 đều $<200$MB)!
+
+### Thứ 4 — Docker Compose Fullstack Chạy 1 Lệnh Duy Nhất (2h)
+- [ ] Viết file `docker-compose.yml` Fullstack duy nhất định nghĩa toàn bộ stack:
+  - Dịch vụ `frontend` (Next.js port 3000).
+  - Dịch vụ `backend` (Spring Boot port 8080, `depends_on` postgres & redis có `condition: service_healthy`).
+  - Dịch vụ `postgres` (port 5432, persistent volume).
+  - Dịch vụ `redis` (port 6379).
+- [ ] Cấu hình network bridge và biến môi trường nội bộ giữa các container.
+- [ ] Chạy lệnh duy nhất: `docker compose up -d` $\rightarrow$ Mở trình duyệt xem ứng dụng Fullstack chạy trơn tru từ A-Z; commit.
+
+### Thứ 5 — Reverse Proxy & Dập Tắt Hoàn Toàn Vấn Đề CORS (2h)
+- [ ] Cấu hình Reverse Proxy Nginx (hoặc Next.js Rewrites trong `next.config.js`):
+  - Ánh xạ đường dẫn `/api/*` từ trình duyệt thẳng tới container backend `http://backend:8080`.
+  - Gom toàn bộ hệ thống dưới 1 origin duy nhất $\rightarrow$ Loại bỏ hoàn toàn các rắc rối về CORS trên môi trường production.
+- [ ] Kiểm tra gọi API qua reverse proxy thành công 100%; commit.
+
+### Thứ 6 — CI/CD Pipeline với GitHub Actions Cho Cả Hai Phía (2h)
+- [ ] Cấu hình workflow GitHub Actions (`.github/workflows/ci.yml`):
   - Trigger: Mọi PR và Push vào nhánh `main`.
-  - Các bước: Checkout code $\rightarrow$ Setup JDK 17 $\rightarrow$ Cache Maven dependencies $\rightarrow$ Run Unit & Integration Tests (`mvn test`) $\rightarrow$ Build Docker Image.
-- [ ] Tạo status badge CI hiển thị trên README repo; commit.
+  - Job 1 — Backend: Setup JDK 17 $\rightarrow$ Cache Maven $\rightarrow$ Run Tests (`mvn test`).
+  - Job 2 — Frontend: Setup Node.js $\rightarrow$ Cache npm $\rightarrow$ Run Typecheck & Tests (`npm run typecheck && npm test`).
+  - Job 3 — Build Docker Images khi 2 job trên pass xanh 100%.
+- [ ] Đẩy code lên GitHub và kiểm tra pipeline CI chạy thành công; commit.
 
-### Thứ 5 — So Sánh Jenkins vs GitHub Actions vs GitLab CI (2h)
-- [ ] Phân tích ưu nhược điểm giữa Self-hosted CI (Jenkins) vs Managed Cloud CI (GitHub Actions, GitLab CI).
-- [ ] Tìm hiểu Jenkins Declarative Pipeline: `Jenkinsfile`, Stages, Agents, Artifact Archiving.
-- [ ] Ghi lại bảng so sánh các công cụ CI/CD vào tài liệu kỹ thuật; commit.
-
-### Thứ 6 — Deployment Cloud Thực Tế & Quản Lý Secret (2h)
-- [ ] Học các mô hình Cloud Compute: IaaS (EC2) vs PaaS (Render, Railway, Fly.io) vs CaaS/K8s.
-- [ ] Deploy backend Giao Vặt lên nền tảng Cloud phù hợp (PaaS hoặc VPS).
-- [ ] Nguyên tắc bất biến về bảo mật: Tuyệt đối không commit secret lên Git; quản lý biến môi trường qua Cloud Dashboard / Secret Manager; tạo file `.env.example`.
-- [ ] Kiểm tra kết nối từ bên ngoài tới API Cloud; commit.
-
-### Thứ 7 — Hoàn Thiện CI/CD & Runbook Triển Khai (5h)
-- [ ] 2h: Tự động hóa build và push Docker image lên GitHub Container Registry (GHCR) hoặc Docker Hub trong CI pipeline.
-- [ ] 1h: Tích hợp bước kiểm tra code chất lượng (Linter / Spotless / Checkstyle) vào CI.
+### Thứ 7 — Fullstack Docker Compose & Luyện Live Coding DSA (5h)
+- [ ] 2h: Tự động hóa build và push Docker images lên GHCR/Docker Hub; deploy thử nghiệm lên Cloud (Render/Railway).
 - [ ] 1h: Viết Runbook hướng dẫn chi tiết cách khởi động, kiểm tra log, backup và rollback hệ thống.
-- [ ] 1h: Tag release Git: `giaovat-ci-cd-ready`.
+- [ ] 1h: Tag release Git: `giaovat-fullstack-docker-ready`; commit.
+- [ ] 1h: **Luyện Live Coding DSA (Intervals — Xử Lý Khoảng Thời Gian/Lộ Trình):**
+  - Bài 21: **Merge Intervals** (LeetCode 56, Medium) — Sắp xếp theo điểm bắt đầu và gộp các khoảng giao nhau trong $O(N \log N)$ Time / $O(N)$ Space.
+  - Bài 22: **Insert Interval** (LeetCode 57, Medium) — Chèn khoảng mới và xử lý overlap trong 1 lần duyệt $O(N)$ Time / $O(N)$ Space; commit vào `dsa/week-11/`.
 
 ---
 
-## Tuần 12 — Testing Strategy, Observability & Performance Profiling
+## Tuần 12 — Testing Strategy, Observability & Fullstack E2E Quality
 
-### Thứ 2 — Lý Thuyết Testing Pyramid & Lập Ma Trận Kiểm Thử (2h)
-- [ ] Học lý thuyết **Testing Pyramid**: Unit Tests (chân tháp - nhiều nhất, nhanh nhất), Integration / Slice Tests (giữa tháp), End-to-End Tests (đỉnh tháp - ít nhất, chậm nhất).
-- [ ] Phân biệt Unit Test (cô lập, mock ranh giới) vs Integration Test (thực tế với database/redis thật).
-- [ ] Lập Test Matrix cho toàn bộ các module của Giao Vặt (Creator, Runner, Order Feed, Claim Lock, Pricing, Payment Webhook).
-- [ ] Loại bỏ các test thừa thãi chỉ kiểm tra implementation detail; commit.
+### Thứ 2 — E2E Testing với Playwright (Frontend Kịch Bản Người Dùng Thật) (2h)
+- [ ] **Frontend (70%):**
+  - Học lý thuyết Testing Pyramid: Unit Test vs Integration Test vs End-to-End (E2E) Test.
+  - Cài đặt và cấu hình **Playwright** trong thư mục `frontend/`.
+  - Viết kịch bản kiểm thử E2E người dùng thực tế:
+    - Kịch bản 1: Creator đăng nhập $\rightarrow$ điền form tạo đơn hàng $\rightarrow$ thấy thông báo Toast thành công $\rightarrow$ chuyển hướng về danh sách đơn.
+    - Kịch bản 2: Runner truy cập `/feed` $\rightarrow$ thấy đơn hàng vừa tạo xuất hiện trên bảng tin.
+- [ ] **Backend (30%):**
+  - Chạy backend local sẵn sàng đón nhận request từ Playwright test; commit.
 
-### Thứ 3 — Testcontainers Thực Chiến với PostgreSQL & Redis Thật (2h)
-- [ ] Tại sao H2 Database là "bẫy giả lập" nguy hiểm (khác biệt về SQL dialect, locking behavior, JSON support so với PostgreSQL thật)?
-- [ ] Cấu hình Testcontainers trong Spring Boot 3 (`@Testcontainers`, `@Container` PostgreSQL + Redis).
-- [ ] Viết bộ integration test kiểm tra trọn vẹn luồng tạo đơn $\rightarrow$ lưu DB $\rightarrow$ đẩy Redis feed $\rightarrow$ claim đơn.
-- [ ] Đảm bảo tính độc lập tuyệt đối giữa các bài test (Test Isolation & Clean Database); commit.
+### Thứ 3 — Testcontainers Thực Chiến với PostgreSQL & Redis Thật (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Tại sao H2 Database là "bẫy giả lập" nguy hiểm (khác biệt về SQL dialect, locking behavior, JSON support so với PostgreSQL thật)?
+  - Cấu hình Testcontainers trong Spring Boot 3 (`@Testcontainers`, `@Container` PostgreSQL + Redis).
+  - Viết bộ integration test kiểm tra trọn vẹn luồng tạo đơn $\rightarrow$ lưu DB $\rightarrow$ đẩy Redis feed $\rightarrow$ claim đơn.
+  - Đảm bảo tính độc lập tuyệt đối giữa các bài test (Test Isolation & Clean Database); commit.
+- [ ] **Frontend (30%):**
+  - Chạy Playwright test headless: Kiểm tra toàn bộ bài test E2E pass xanh 100%.
 
-### Thứ 4 — Ba Trụ Cột Của Observability: Metrics, Logs & Traces (2h)
-- [ ] Học lý thuyết Observability: Khác biệt giữa Monitoring (biết hệ thống hỏng) vs Observability (hiểu vì sao hệ thống hỏng từ bên trong).
-- [ ] Ba trụ cột:
-  - **Metrics:** Số liệu đo lường định lượng (CPU, RAM, Request Rate, Error Rate, Latency).
-  - **Structured Logging:** Log có cấu trúc (JSON format), log level (`DEBUG`, `INFO`, `WARN`, `ERROR`), MDC (Mapped Diagnostic Context) chứa `traceId` và `userId` xuyên suốt vòng đời request.
-  - **Traces:** Dấu vết đường đi của request qua các thành phần.
-- [ ] Tích hợp Spring Boot Actuator: expose `/actuator/health`, `/actuator/metrics`, `/actuator/prometheus`.
-- [ ] Cấu hình MDC Filter ghi nhận `traceId` cho mọi log entry của Giao Vặt; commit.
+### Thứ 4 — Ba Trụ Cột Observability & MDC Tracing (Backend) (2h)
+- [ ] **Backend (70%):**
+  - Học lý thuyết Observability: Metrics (Prometheus/Actuator), Logs (JSON structured format), Traces (đường đi request).
+  - Cấu hình MDC (Mapped Diagnostic Context) Filter: Đọc header `X-Trace-Id` từ client (hoặc tự sinh UUID nếu client chưa có), đính kèm `traceId` và `userId` vào mọi log entry của request.
+  - Expose các endpoint giám sát Actuator an toàn: `/actuator/health`, `/actuator/metrics`.
+- [ ] **Frontend (30%):**
+  - Khai báo logic gắn `X-Trace-Id` tự động vào request interceptor; commit.
 
-### Thứ 5 — Performance Profiling & Database Query Tuning (2h)
-- [ ] Học cách đọc và phân tích **Query Execution Plan** (`EXPLAIN (ANALYZE, BUFFERS)` trong PostgreSQL).
-- [ ] Phân biệt các toán tử truy vấn: Seq Scan (Full Table Scan), Index Scan, Index Only Scan, Bitmap Index Scan.
-- [ ] Tối ưu hóa câu query bảng tin: Đánh Composite Index `(status, created_at)` hoặc Partial Index `WHERE status = 'OPEN'`.
-- [ ] Đo lường chi phí truy vấn (Execution time và Buffers read) trước và sau khi đánh index; commit.
+### Thứ 5 — Tracing Request Xuyên Suốt Từ Trình Duyệt Vào Log Server (Frontend) (2h)
+- [ ] **Frontend (70%):**
+  - Cấu hình client Next.js tự động gửi header `X-Trace-Id: <uuid>` trong mọi request API.
+  - Khi có lỗi phát sinh: Hiển thị mã `Trace ID: {uuid}` ngay trên màn hình lỗi của trình duyệt để người dùng có thể chụp ảnh báo cáo hỗ trợ.
+- [ ] **Backend (30%):**
+  - Tối ưu hóa câu truy vấn: Đánh Composite Index `(status, created_at)` hoặc Partial Index `WHERE status = 'OPEN'`.
+- [ ] **Chạy thử:** Gửi 1 request từ giao diện Next.js $\rightarrow$ Mở terminal Spring Boot thấy đúng mã `X-Trace-Id` xuất hiện trong log!
 
-### Thứ 6 — Bug Hunting & Tái Hiện Lỗi Thực Tế (2h)
-- [ ] Thực hành tái hiện và sửa 4 lỗi kinh điển:
-  - (1) Bẫy N+1 Query khi load danh sách đơn hàng kèm thông tin Creator.
-  - (2) Lộ số điện thoại Creator trên public feed trước khi Runner claim.
-  - (3) Race condition khi 2 request cùng claim 1 đơn mà không có lock.
-  - (4) Stale cache trên Redis khi Creator hủy đơn mà cache feed chưa xóa.
-- [ ] Viết regression test chứng minh bug đã được vá triệt để; commit.
+### Thứ 6 — End-to-End Traceability Drill & Săn Lỗi Thực Tế (2h)
+- [ ] Thực hành bài tập "Săn lỗi xuyên suốt (End-to-End Traceability Drill)":
+  - Cố ý tạo một request lỗi từ form Next.js $\rightarrow$ Lấy mã `traceId` hiển thị trên màn hình lỗi trình duyệt.
+  - Dùng lệnh Linux grep đúng mã `traceId` đó trong log Spring Boot: `grep "traceId=..." app.log` $\rightarrow$ Xác định chính xác exception stack trace và root cause trong dưới 30 giây!
+- [ ] Tối ưu hóa hiệu năng giao diện với Google Lighthouse: Đảm bảo điểm số Performance $\ge 90$; commit.
 
-### Thứ 7 — Quality Gate & Stress Test Nền Tảng (5h)
-- [ ] 2h: Chạy toàn bộ test suite (Unit + Integration), đảm bảo pass 100% không có flaky test.
-- [ ] 1h: Chạy stress test đơn giản bằng tool (JMeter / k6 / ApacheBench) với 100 concurrent requests tới endpoint bảng tin.
-- [ ] 1h: Tự review code theo checklist bảo mật và chất lượng code.
-- [ ] 1h: Cập nhật tài liệu kỹ thuật và commit code.
+### Thứ 7 — Fullstack Quality Gate & Luyện Live Coding DSA (5h)
+- [ ] 2h: Chạy toàn bộ test suite: Backend Testcontainers (pass 100%) + Frontend Playwright E2E & Vitest (pass 100%).
+- [ ] 1h: Sửa 4 bẫy lỗi kinh điển: N+1 Query Hibernate, lộ SĐT trên feed, race condition claim đơn, stale cache Redis.
+- [ ] 1h: Chạy stress test 100 concurrent requests tới endpoint bảng tin; commit code.
+- [ ] 1h: **Luyện Live Coding DSA (Binary Tree Traversal — Duyệt Cây Nhị Phân):**
+  - Bài 23: **Maximum Depth of Binary Tree** (LeetCode 104, Easy) — Duyệt DFS đệ quy và BFS hàng đợi $O(N)$ Time / $O(H)$ Space.
+  - Bài 24: **Same Tree** (LeetCode 100, Easy) — So sánh cấu trúc và giá trị 2 cây đồng thời $O(N)$ Time / $O(H)$ Space; commit vào `dsa/week-12/`.
 
 ---
 
-## Tuần 13 — Agile, Engineering Processes, System Design Docs & AI Workflows
+## Tuần 13 — Agile, Engineering Processes, Vertical Slices & AI Workflows
 
-### Thứ 2 — Agile / Scrum & Quy Trình Phát Triển Phần Mềm (2h)
+### Thứ 2 — Agile / Scrum & Thiết Kế Vertical Slice Story (2h)
 - [ ] Học quy trình Agile/Scrum: Product Backlog, Sprint Planning, Daily Standup, Sprint Review, Retrospective.
-- [ ] Các khái niệm cốt lõi: Epic, User Story, Acceptance Criteria (AC), Definition of Done (DoD).
-- [ ] Viết 1 Epic Giao Vặt và 8 User Stories chi tiết theo chuẩn Vertical Slice (mỗi story mang lại giá trị độc lập từ UI/API tới Database); commit.
+- [ ] Khái niệm **Vertical Slice Architecture (Lát cắt dọc)**: Mỗi story phải đi xuyên suốt toàn bộ các tầng (UI Next.js $\rightarrow$ API Controller $\rightarrow$ Service Domain $\rightarrow$ Database/Cache) để mang lại giá trị kiểm thử được cho người dùng, thay vì chia task nằm ngang (chỉ làm UI hoặc chỉ làm DB).
+- [ ] Thiết kế 1 User Story hoàn chỉnh chuẩn Vertical Slice: **Tính năng "Hủy đơn hàng của Creator"** (khách chỉ được hủy khi đơn đang `OPEN`); commit.
 
-### Thứ 3 — Mô Phỏng Jira Board & Quản Lý Công Việc (2h)
+### Thứ 3 — Triển Khai Vertical Slice Feature: Hủy Đơn Hàng Cả Hai Phía (2h)
+- [ ] **Backend (70%):**
+  - Xây dựng API `PATCH /api/v1/orders/{id}/cancel`: Kiểm tra quyền sở hữu (`ROLE_CREATOR`), kiểm tra trạng thái phải là `OPEN`, chuyển trạng thái `CANCELLED` trong Database và gỡ đơn khỏi Redis feed.
+- [ ] **Frontend (30%):**
+  - Thêm nút "Hủy đơn" trên danh sách đơn của Creator $\rightarrow$ Bấm nút mở Modal xác nhận lý do hủy $\rightarrow$ Bấm xác nhận gọi API `PATCH /cancel` $\rightarrow$ Thẻ đơn hàng đổi trạng thái và ẩn khỏi bảng tin công khai.
+- [ ] **Chạy thử trên trình duyệt:** Creator tạo đơn $\rightarrow$ Runner thấy đơn trên feed $\rightarrow$ Creator bấm "Hủy đơn" trên web $\rightarrow$ Đơn lập tức biến mất khỏi feed của Runner!
+
+### Thứ 4 — Mô Phỏng Jira Board, Estimation & Sprint Retrospective (2h)
 - [ ] Tạo board Kanban/Scrum cá nhân (GitHub Projects hoặc Jira Free).
-- [ ] Tạo issue, gán label, độ ưu tiên (Priority), ước lượng thời gian.
-- [ ] Thực hành quy trình làm việc theo task: Kéo card `In Progress` $\rightarrow$ tạo branch `feature/ticket-id` $\rightarrow$ code & test $\rightarrow$ mở Pull Request $\rightarrow$ review $\rightarrow$ merge vào `main`.
-- [ ] Viết Daily Update mẫu bằng English: Yesterday / Today / Blockers; commit.
-
-### Thứ 4 — Estimation & Sprint Retrospective (2h)
 - [ ] Học kỹ thuật ước lượng công việc: Planning Poker, Story Points, 3-Point Estimation (Optimistic, Most Likely, Pessimistic).
-- [ ] Học cách nhận diện rủi ro và các giả định (assumptions) kỹ thuật trước khi bắt tay vào code.
-- [ ] Viết tài liệu Sprint Retrospective: Keep (điểm làm tốt), Stop (thói quen xấu cần bỏ), Start (hành động cải tiến tiếp theo); commit.
+- [ ] Thực hành quy trình làm việc theo task: Kéo card `In Progress` $\rightarrow$ tạo branch `feature/ticket-id` $\rightarrow$ code & test $\rightarrow$ mở Pull Request $\rightarrow$ review $\rightarrow$ merge vào `main`.
+- [ ] Viết tài liệu Sprint Retrospective: Keep, Stop, Start; commit.
 
 ### Thứ 5 — Kỹ Thuật Viết Design Doc & Architectural Decision Records (ADR) (2h)
 - [ ] Học tầm quan trọng của việc viết tài liệu kỹ thuật trong doanh nghiệp: *"Code là cái hệ thống làm, Design Doc là vì sao hệ thống làm như vậy"*.
@@ -642,252 +835,307 @@
   - `ADR-002`: Lựa chọn Redis Sorted Set cho Bảng Tin Đơn Hàng thời gian thực.
 - [ ] Commit tài liệu.
 
-### Thứ 6 — AI-Assisted Engineering & Workflow Hiện Đại (2h)
-- [ ] Thực hành tích hợp AI coding assistants (GitHub Copilot, Cursor, Antigravity) vào quy trình phát triển.
-- [ ] Kỹ thuật Prompt Engineering cho lập trình: Cung cấp đủ context domain, yêu cầu viết test trước (TDD), yêu cầu giải thích trade-offs.
-- [ ] Cố ý kiểm tra và bắt lỗi: Hallucination về thư viện không tồn tại, bỏ sót edge cases, vi phạm quy tắc bảo mật.
-- [ ] Ghi lại bài học kinh nghiệm về việc làm chủ AI; commit.
+### Thứ 6 — AI-Assisted Workflows Khớp Kiểu TypeScript và Java DTO (2h)
+- [ ] Thiết kế kiến trúc component Next.js theo nguyên tắc Single Responsibility: Tách biệt Container Component vs Presentational Component.
+- [ ] Thực hành tích hợp AI coding assistants (GitHub Copilot, Cursor, Antigravity) vào quy trình Fullstack:
+  - Prompt tạo component giao diện kèm Zod schema khớp với DTO Java Backend.
+  - Soát lỗi hallucination: Đảm bảo AI không sinh ra các trường dữ liệu lệch pha giữa TypeScript Interface và Java Record DTO; commit.
 
-### Thứ 7 — Code Review Workflow & PR Checklist (5h)
-- [ ] 2h: Tạo một Pull Request hoàn chỉnh cho feature mới.
-- [ ] 1h: Tự review PR dựa trên checklist nghiêm ngặt: Tính đúng đắn (Correctness), Bảo mật (Security), Khả năng quan sát (Observability), Độ bao phủ test (Test Coverage).
-- [ ] 1h: Tinh chỉnh lại code theo các góp ý tự đánh giá.
-- [ ] 1h: Merge PR và cập nhật changelog dự án.
+### Thứ 7 — Fullstack Vertical Slice PR & Luyện Live Coding DSA (5h)
+- [ ] 2h: Mở Pull Request hoàn chỉnh trên GitHub cho tính năng "Hủy đơn hàng" bao gồm cả mã nguồn Frontend và Backend kèm ảnh chụp minh họa.
+- [ ] 1h: Tự review Pull Request dựa trên checklist nghiêm ngặt 2 trục: Standards và Spec; tinh chỉnh code và merge PR.
+- [ ] 1h: Cập nhật changelog dự án và chuẩn bị kế hoạch sprint tiếp theo.
+- [ ] 1h: **Luyện Live Coding DSA (Binary Search Tree — Cây Tìm Kiếm Nhị Phân):**
+  - Bài 25: **Invert Binary Tree** (LeetCode 226, Easy) — Đảo ngược cây nhị phân kinh điển $O(N)$ Time / $O(H)$ Space.
+  - Bài 26: **Validate Binary Search Tree** (LeetCode 98, Medium) — Kiểm tra tính hợp lệ BST bằng range bounds `[min, max]` $O(N)$ Time / $O(H)$ Space; commit vào `dsa/week-13/`.
 
 ---
 
-## Tuần 14 — Cấu Trúc Dữ Liệu & Giải Thuật Ứng Dụng Trong System Design
+## Tuần 14 — Cấu Trúc Dữ Liệu, Giải Thuật & Bản Đồ Không Gian Tiện Tuyến (Geospatial)
 
-### Thứ 2 — Recursion, Call Stack & Binary Search Biến Thể (2h)
-- [ ] Học bản chất đệ quy (Call Stack, Base Case, Stack Overflow) vs Vòng lặp khử đệ quy.
-- [ ] Binary Search ($O(\log N)$) và các biến thể tìm biên (Find First/Last Occurrence).
-- [ ] Ứng dụng trong System Design: Tìm kiếm log timestamp, định vị partition key trong hệ thống phân tán.
-- [ ] Luyện 3 bài: Binary Search, Search in Rotated Sorted Array, Koko Eating Bananas; commit.
+### Thứ 2 — Thuật Toán Tìm Kiếm & Binary Search Biến Thể Trong Định Vị Partition/Log (2h)
+- [ ] **Backend (70%):**
+  - Học bản chất đệ quy (Call Stack, Base Case, Stack Overflow) vs Vòng lặp khử đệ quy.
+  - Binary Search ($O(\log N)$) và các biến thể tìm biên (Find First/Last Occurrence).
+  - Ứng dụng trong System Design: Tìm kiếm log timestamp, định vị partition key trong hệ thống phân tán.
+  - Luyện 3 bài LeetCode: Binary Search, Search in Rotated Sorted Array, Koko Eating Bananas.
+- [ ] **Frontend (30%):**
+  - Xây dựng thanh tìm kiếm đơn hàng trên Next.js tích hợp Debounce input (tránh gửi request dồn dập sau mỗi phím gõ).
+  - Highlight từ khóa tìm kiếm trực tiếp trên danh sách thẻ đơn hàng (`OrderCard`).
+- [ ] **Chạy thử trên trình duyệt:** Gõ từ khóa tìm đơn trên web $\rightarrow$ request gửi mượt mà với debounce 300ms và bôi vàng từ khóa tìm thấy.
 
-### Thứ 3 — Trees, Binary Search Tree (BST) & Cấu Trúc Index (2h)
-- [ ] Học Tree fundamentals: Depth, Height, DFS (Pre/In/Postorder), BFS (Level-order).
-- [ ] Binary Search Tree (BST) và cân bằng cây (AVL, Red-Black Tree).
-- [ ] Ứng dụng trong System Design: Vì sao Database dùng B-Tree / B+Tree cho index trên đĩa thay vì BST (tối ưu hóa I/O Block đĩa).
-- [ ] Luyện 3 bài: Invert Binary Tree, Validate BST, Binary Tree Level Order Traversal; commit.
+### Thứ 3 — Cấu Trúc Cây (Tree/BST) & Tối Ưu Hóa B-Tree Index (2h)
+- [ ] **Backend (70%):**
+  - Tree fundamentals: Depth, Height, DFS (Pre/In/Postorder), BFS (Level-order).
+  - Binary Search Tree (BST) và cân bằng cây (AVL, Red-Black Tree).
+  - Ứng dụng trong System Design: Vì sao Database dùng B-Tree / B+Tree cho index trên đĩa thay vì BST (tối ưu hóa I/O Block đĩa).
+  - Luyện 3 bài: Invert Binary Tree, Validate BST, Binary Tree Level Order Traversal.
+- [ ] **Frontend (30%):**
+  - Xây dựng component hiển thị cây phân cấp danh mục đơn hàng (`OrderCategory`: Hàng tiêu dùng $\rightarrow$ Thực phẩm / Đồ gia dụng; Tài liệu $\rightarrow$ Hỏa tốc / Tiết kiệm) dạng Accordion/Tree-select.
+- [ ] **Chạy thử trên trình duyệt:** Click mở/đóng các nhánh danh mục trên giao diện để lọc đơn hàng theo cây phân cấp.
 
-### Thứ 4 — Heap / Priority Queue & Top-K Problems (2h)
-- [ ] Học cấu trúc dữ liệu Binary Heap: Min-Heap, Max-Heap, độ phức tạp thao tác ($O(1)$ peek, $O(\log N)$ push/pop).
-- [ ] Ứng dụng trong System Design: Hàng đợi ưu tiên xử lý task, thuật toán Top-K phần tử thịnh hành trong khoảng thời gian (Top Trending).
-- [ ] Luyện 2 bài: K Closest Points to Origin, Top K Frequent Elements; commit.
+### Thứ 4 — Heap, Priority Queue & Top-K Đơn Hàng Cần Giao Gấp (2h)
+- [ ] **Backend (70%):**
+  - Cấu trúc Binary Heap: Min-Heap, Max-Heap ($O(1)$ peek, $O(\log N)$ push/pop).
+  - Xây dựng thuật toán lọc Top-K đơn hàng gấp nhất (hạn chót gần nhất hoặc tiền công cao nhất) trong bộ nhớ.
+  - Luyện 2 bài: K Closest Points to Origin, Top K Frequent Elements.
+- [ ] **Frontend (30%):**
+  - Thiết kế Widget "Top Đơn Hàng Gấp Cần Giao" ghim nổi bật ở đầu bảng tin Next.js.
+  - Tích hợp Badge đồng hồ đếm ngược thời gian giao hàng (Urgency Countdown) chuyển màu từ xanh $\rightarrow$ vàng $\rightarrow$ đỏ.
+- [ ] **Chạy thử trên trình duyệt:** Bảng tin hiển thị widget Top đơn gấp với đồng hồ đếm ngược nhảy từng giây sống động.
 
-### Thứ 5 — Graph Algorithms & Bài Toán Định Tuyến Đơn Hàng Giao Vặt (2h)
-- [ ] Học biểu diễn đồ thị: Adjacency List vs Adjacency Matrix; Duyệt đồ thị BFS vs DFS.
-- [ ] Thuật toán đường đi ngắn nhất: Dijkstra Algorithm.
-- [ ] **Ánh xạ vào bài toán thực tế của Giao Vặt:**
-  - Tìm cuốc xe gần tọa độ hiện tại của Runner nhất (Nearest Driver Problem).
-  - Ghép lộ trình tiện đường giữa đơn hàng A và đơn hàng B (Route Matching / Multi-order Batching).
-- [ ] Luyện 2 bài: Number of Islands, Course Schedule (Topological Sort); commit.
+### Thứ 5 — Định Vị Không Gian (Geospatial) & Quét Đơn Gần Nhất (Nearest Driver) (2h)
+- [ ] **Backend (70%):**
+  - Biểu diễn đồ thị & thuật toán Dijkstra tìm đường ngắn nhất; Luyện bài: Number of Islands.
+  - Xây dựng API `GET /api/v1/orders/nearby?lat=...&lng=...&radius=5` áp dụng công thức khoảng cách **Haversine** (hoặc PostGIS) lọc các đơn hàng trong bán kính 5km quanh tọa độ Runner.
+- [ ] **Frontend (30%):**
+  - Tích hợp bản đồ tương tác (Leaflet / OpenStreetMap) vào Next.js.
+  - Lấy tọa độ GPS trình duyệt (`navigator.geolocation`) $\rightarrow$ Vẽ Marker vị trí của Runner kèm vòng tròn bán kính quét 5km $\rightarrow$ Vẽ các Marker đơn hàng xung quanh.
+- [ ] **Chạy thử trên trình duyệt:** Bật định vị trên trình duyệt $\rightarrow$ Bản đồ hiển thị vị trí hiện tại và các điểm lấy hàng xung quanh Runner kèm khoảng cách ước tính (vd: 1.2 km).
 
-### Thứ 6 — Dynamic Programming (Quy Hoạch Động) Nhập Môn (2h)
-- [ ] Học bản chất Quy hoạch động: Overlapping Subproblems và Optimal Substructure.
-- [ ] So sánh Top-down (Memoization) vs Bottom-up (Tabulation).
-- [ ] Luyện 3 bài kinh điển: Climbing Stairs, House Robber, Coin Change.
-- [ ] Ghi lại bảng chuyển trạng thái (State Transition Table) bằng lời trước khi code; commit.
+### Thứ 6 — Ghép Lộ Trình Tiện Tuyến (Route Matching & Polyline Visualization) (2h)
+- [ ] **Backend (70%):**
+  - Thuật toán ghép lộ trình tiện đường (Multi-order Batching / Topological Sort): Runner lấy đơn 1 $\rightarrow$ lấy đơn 2 $\rightarrow$ trả đơn 1 $\rightarrow$ trả đơn 2 nếu đường đi trùng tuyến $\ge 70\%$. Luyện bài: Course Schedule.
+  - API `POST /api/v1/orders/batch-route`: Tính toán thứ tự giao hàng tối ưu giảm thiểu tổng quãng đường di chuyển.
+- [ ] **Frontend (30%):**
+  - Vẽ đường dẫn lộ trình (Polyline) nối liền các điểm giao/nhận trên bản đồ Next.js.
+  - Thẻ tóm tắt lộ trình tiện chuyến: Tổng quãng đường (km), Thời gian ước tính (phút), Tiền công kép nhận được (VNĐ).
+- [ ] **Chạy thử trên trình duyệt:** Runner chọn ghép 2 đơn tiện chuyến $\rightarrow$ Bản đồ tự động vẽ tuyến đường tối ưu nhiều điểm dừng trực quan!
 
-### Thứ 7 — Timed Algorithm Assessment (5h)
+### Thứ 7 — Timed Algorithm Assessment & Geospatial Integration Lab (5h) [Fullstack Integration]
 - [ ] 2h: Giải 3 bài LeetCode Easy/Medium có bấm giờ (mỗi bài tối đa 35 phút).
 - [ ] 1h: Tự giải thích thuật toán bằng tiếng Anh theo cấu trúc: Idea $\rightarrow$ Complexity $\rightarrow$ Edge Cases $\rightarrow$ Code.
-- [ ] 1h: Tổng hợp các pattern giải thuật thường gặp trong phỏng vấn kỹ thuật.
-- [ ] 1h: Commit bài giải và ghi chú.
+- [ ] 1h: Kiểm thử tích hợp toàn diện luồng bản đồ: Giả lập di chuyển vị trí Runner trên Chrome DevTools Sensors $\rightarrow$ Bản đồ tự động gọi API cập nhật danh sách đơn hàng gần nhất theo thời gian thực.
+- [ ] 1h: Commit bài giải thuật toán và mã nguồn bản đồ tiện chuyến.
 
 ---
 
-## Tuần 15 — Software Design Patterns, Network Protocols & Security Audit
+## Tuần 15 — Software Design Patterns, Network Protocols & Fullstack Security Audit
 
-### Thứ 2 — GoF Design Patterns: Creational & Structural Patterns (2h)
-- [ ] Học bản chất và ứng dụng thực tế của GoF Design Patterns:
-  - **Strategy Pattern:** Tách rời thuật toán tính toán khỏi context sử dụng (đã áp dụng trong `PricingStrategy` của Giao Vặt).
-  - **Factory Method:** Đóng gói logic khởi tạo object phức tạp.
-  - **Builder Pattern:** Xây dựng object có nhiều thuộc tính tùy chọn, đảm bảo immutability (Java `@Builder`).
-  - **Adapter & Decorator Pattern:** Chuyển đổi interface tương thích và bọc thêm tính năng.
-- [ ] Cảnh báo chống "Over-engineering": Khi nào KHÔNG nên dùng pattern; commit.
+### Thứ 2 — GoF Design Patterns & Giao Diện Chọn Chính Sách Vận Chuyển (2h)
+- [ ] **Backend (70%):**
+  - GoF Patterns: Strategy, Factory Method, Builder, Adapter/Decorator. Tránh Over-engineering.
+  - Mở rộng Strategy Pattern cho các gói dịch vụ vận chuyển: Giao Hỏa Tốc (`ExpressPricingStrategy`), Giao Tiết Kiệm (`SaverPricingStrategy`), Giao Tiện Chuyến (`CarpoolPricingStrategy`).
+- [ ] **Frontend (30%):**
+  - Component chọn gói dịch vụ vận chuyển dạng Radio Card có icon minh họa trên form tạo đơn.
+  - Khi người dùng click chuyển gói $\rightarrow$ Tính toán lại cước ước tính tức thì hiển thị trên giao diện.
+- [ ] **Chạy thử trên trình duyệt:** Chọn đổi giữa Giao Hỏa Tốc và Tiện Chuyến $\rightarrow$ Cước phí trên giao diện thay đổi tức thì đúng theo Strategy backend.
 
-### Thứ 3 — Behavioral Patterns & Event-Driven Architecture (2h)
-- [ ] Học **Observer Pattern** và mô hình Event-Driven trong Spring Boot:
-  - Sử dụng `ApplicationEventPublisher` phát sinh sự kiện nội bộ: `OrderCreatedEvent`, `OrderClaimedEvent`, `OrderCompletedEvent`.
-  - Xây dựng `@EventListener` và `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)`.
-  - Phân tích sự khác biệt giữa xử lý sự kiện đồng bộ (Synchronous) vs bất đồng bộ (`@Async`).
-- [ ] Viết test đảm bảo event listener chỉ kích hoạt sau khi database transaction đã commit thành công; commit.
+### Thứ 3 — Event-Driven Architecture & Hệ Thống Chuông Thông Báo Trực Quan (2h)
+- [ ] **Backend (70%):**
+  - Mô hình Event-Driven trong Spring Boot: `ApplicationEventPublisher`, `@EventListener` và `@TransactionalEventListener(phase = AFTER_COMMIT)`.
+  - Phát sinh sự kiện: `OrderCreatedEvent`, `OrderClaimedEvent`, `OrderCompletedEvent`.
+  - Phân biệt xử lý sự kiện đồng bộ (Synchronous) vs bất đồng bộ (`@Async`). Viết test đảm bảo transaction DB commit thành công mới bắn event.
+- [ ] **Frontend (30%):**
+  - Component Chuông thông báo (Notification Bell) trên thanh Navbar của Next.js.
+  - Hiển thị badge số lượng thông báo chưa đọc; click mở danh sách thông báo sự kiện đơn hàng vừa diễn ra.
+- [ ] **Chạy thử trên trình duyệt:** Tạo đơn hoặc nhận đơn $\rightarrow$ Chuông thông báo trên web nhảy số và hiển thị bản tin sự kiện mới.
 
-### Thứ 4 — Lý Thuyết Networking & HTTP Protocols (2h)
-- [ ] Học sâu mô hình mạng: TCP/IP stack 4 tầng, cơ chế TCP 3-Way Handshake và 4-Way Teardown.
-- [ ] TLS/SSL Handshake: Mã hóa bất đối xứng (trao đổi khóa) kết hợp mã hóa đối xứng (truyền dữ liệu).
-- [ ] So sánh các thế hệ HTTP:
-  - HTTP/1.1: Keep-Alive, bẫy Head-of-Line (HoL) Blocking ở tầng ứng dụng.
-  - HTTP/2: Binary Framing, Multiplexing qua 1 kết nối TCP duy nhất, Server Push, Header Compression (HPACK).
-  - HTTP/3: Chạy trên nền giao thức QUIC (UDP), giải quyết triệt để HoL Blocking ở cả tầng transport.
-- [ ] Dùng `curl -v` trace chi tiết một request tới Giao Vặt API; commit ghi chú.
+### Thứ 4 — Networking Protocols (HTTP/1.1, HTTP/2, HTTP/3) & Web Inspector DevTools (2h)
+- [ ] **Backend (70%):**
+  - TCP/IP stack 4 tầng, TLS handshake, so sánh HTTP/1.1 (Keep-Alive, HoL Blocking) vs HTTP/2 (Binary Framing, Multiplexing qua 1 connection, HPACK) vs HTTP/3 (QUIC trên nền UDP).
+  - Lệnh Linux điều tra server: `grep`, `awk`, `tail -f`, `netstat`, `curl -v` trace chi tiết một request tới Giao Vặt API.
+- [ ] **Frontend (30%):**
+  - Dùng Chrome DevTools Network Tab: So sánh Waterfall, kiểm tra HTTP/2 Multiplexing (nhiều request đi qua 1 connection ID duy nhất), phân tích TTFB (Time to First Byte), kích thước payload nén Gzip/Brotli.
+- [ ] **Chạy thử trên trình duyệt:** Inspect tab Network trên trình duyệt khi tải trang bảng tin $\rightarrow$ Kiểm tra giao thức `h2`, headers và thời gian phản hồi.
 
-### Thứ 5 — Linux Shell & Điều Tra Server Log (2h)
-- [ ] Học các câu lệnh Linux thiết yếu cho Backend Engineer:
-  - Tìm kiếm & lọc log: `grep`, `egrep`, `awk`, `sed`, `tail -n 100 -f app.log`.
-  - Kiểm tra tiến trình & tài nguyên: `top`, `htop`, `ps aux | grep java`, `free -m`, `df -h`.
-  - Kiểm tra mạng & cổng: `netstat -tulpn`, `ss -tulpn`, `lsof -i :8080`, `curl`, `dig`.
-- [ ] Thực hành điều tra lỗi trong file server log giả lập: tìm kiếm exception stack trace theo `traceId`; commit.
+### Thứ 5 — Kiểm Toán An Toàn Backend & Chống Lỗ Hổng BOLA/IDOR (2h)
+- [ ] **Backend (70%):**
+  - OWASP Top 10 API Security: BOLA / IDOR (Broken Object Level Authorization), Broken Authentication, SQL Injection.
+  - Xây dựng cơ chế kiểm tra quyền sở hữu chặt chẽ: Creator A tuyệt đối không được xem/sửa đơn của Creator B; Runner chỉ được cập nhật đơn mà chính mình đã nhận.
+  - Viết bài test JUnit chứng minh hệ thống chặn đứng tấn công IDOR với HTTP `403 Forbidden`.
+- [ ] **Frontend (30%):**
+  - Phân quyền giao diện người dùng: Tự động ẩn các nút hành động ("Hủy đơn", "Hoàn thành") nếu tài khoản đang đăng nhập không phải chủ sở hữu hoặc người nhận đơn.
+  - Trang báo lỗi 403 thân thiện khi người dùng cố tình nhập URL trang đơn hàng của người khác.
+- [ ] **Chạy thử trên trình duyệt:** Đăng nhập 2 tài khoản khác nhau trên 2 profile trình duyệt $\rightarrow$ Thử vào link đơn của người khác $\rightarrow$ Giao diện chặn lại và hiển thị cảnh báo từ chối truy cập.
 
-### Thứ 6 — OWASP Top 10 Security Audit Cho Giao Vặt (2h)
-- [ ] Học danh mục lỗ hổng bảo mật phổ biến **OWASP Top 10 API Security**:
-  - BOLA / IDOR (Broken Object Level Authorization): Runner A cố tình cập nhật hoặc xem chi tiết đơn của Runner B $\rightarrow$ Cách phòng chống: Luôn kiểm tra quyền sở hữu đối tượng trước khi xử lý.
-  - Broken Authentication & Token Theft.
-  - SQL Injection & Mass Assignment.
-  - Lack of Resources & Rate Limiting.
-- [ ] Rà soát toàn bộ endpoint của Giao Vặt, viết bài test chứng minh hệ thống chặn đứng lỗi IDOR; commit.
+### Thứ 6 — Client-Side Security: Chống XSS, Cấu Hình CSP & Bảo Vệ Token (2h)
+- [ ] **Frontend (70%):**
+  - Phòng chống Cross-Site Scripting (XSS): Cơ chế JSX auto-escaping; loại bỏ nguy cơ từ `dangerouslySetInnerHTML` và URL `javascript:`.
+  - Chuyển đổi cơ chế lưu trữ JWT: Tuyệt đối không lưu token nhạy cảm trong `localStorage` $\rightarrow$ Sử dụng Cookie `HttpOnly, Secure, SameSite=Strict` để JavaScript trình duyệt không thể đọc trộm.
+  - Cấu hình Content Security Policy (CSP) và Security Headers trong `next.config.js` (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`).
+- [ ] **Backend (30%):**
+  - Cấu hình Spring Security hỗ trợ đọc JWT từ HttpOnly Cookie bên cạnh header `Authorization: Bearer`.
+  - Cấu hình CORS chặt chẽ: Chỉ chấp nhận đúng domain Frontend chỉ định, cấm dùng `*` khi bật `allowCredentials(true)`.
+- [ ] **Chạy thử trên trình duyệt:** Thử gõ script `<script>alert('hack')</script>` vào ô mô tả đơn hàng $\rightarrow$ Web render văn bản thuần an toàn; mở tab Application kiểm tra cookie JWT có cờ HttpOnly.
 
-### Thứ 7 — Comprehensive Technical Mock Interview (5h)
-- [ ] 2h: Tự phỏng vấn vấn đáp 20 câu Design Patterns, Networking HTTP và Security.
-- [ ] 1h: Trực tiếp vẽ sơ đồ và giải thích Strategy Pattern và Event-Driven Architecture trên codebase Giao Vặt.
-- [ ] 1h: Vấn đáp SQL indexing, transaction isolation và query tuning.
-- [ ] 1h: Tổng kết các điểm cần cải thiện và commit checklist.
+### Thứ 7 — Fullstack Security Penetration Drill & Luyện Live Coding DSA (5h)
+- [ ] 2h: Vấn đáp 20 câu hỏi về Design Patterns, Networking HTTP và Fullstack Security (client & server).
+- [ ] 1h: Vẽ sơ đồ Strategy Pattern và Event-Driven Architecture; Penetration drill giả lập IDOR và XSS.
+- [ ] 1h: Tổng kết checklist an ninh và cập nhật tài liệu.
+- [ ] 1h: **Luyện Live Coding DSA (Graph & Backtracking):**
+  - Bài 35: **Clone Graph** (LeetCode 133, Medium) — BFS/DFS kết hợp `HashMap` sao chép đồ thị vô hướng trong $O(V + E)$ Time.
+  - Bài 36: **Subsets** (LeetCode 78, Medium) — Backtracking sinh toàn bộ tập hợp con trong $O(2^N \cdot N)$ Time; commit vào `dsa/week-15/`.
 
 ---
 
 ## Tuần 16 — System Architecture Documentation, English Communication & Portfolio
 
-### Thứ 2 — Chuẩn Hóa Toàn Diện RESTful API (2h)
-- [ ] Rà soát toàn bộ API Contracts: Chuẩn hóa URI danh từ số nhiều (`/api/v1/orders`), quy chuẩn phân trang (`page`, `size`, `sort`).
-- [ ] Cập nhật toàn bộ OpenAPI / Swagger examples cho request và response.
-- [ ] Đảm bảo tính nhất quán của mã lỗi trả về theo RFC 7807 `ProblemDetail`; commit.
+### Thứ 2 — Chuẩn Hóa Toàn Diện RESTful API & OpenAPI Contracts (2h)
+- [ ] **Backend (70%):**
+  - Rà soát toàn bộ API Contracts: Chuẩn hóa URI danh từ số nhiều (`/api/v1/orders`), quy chuẩn phân trang (`page`, `size`, `sort`).
+  - Cập nhật toàn bộ OpenAPI / Swagger examples cho request và response; chuẩn hóa mã lỗi RFC 7807 `ProblemDetail`.
+- [ ] **Frontend (30%):**
+  - Tự động sinh kiểu dữ liệu TypeScript (hoặc đồng bộ Zod schemas) từ OpenAPI JSON spec của backend, đảm bảo tính nhất quán 100% giữa hai phía.
+- [ ] **Chạy thử trên trình duyệt:** Mở Swagger UI (`/swagger-ui.html`) kiểm tra toàn bộ endpoint hoạt động trơn tru; kiểm tra Frontend typecheck pass không có cảnh báo kiểu.
 
-### Thứ 3 — Vẽ Kiến Trúc Hệ Thống Chuẩn C4 Model (2h)
+### Thứ 3 — Vẽ Kiến Trúc Hệ Thống Chuẩn C4 Model Fullstack (2h)
 - [ ] Học mô hình tài liệu kiến trúc **C4 Model**: Context, Container, Component, Code.
-- [ ] Vẽ sơ đồ kiến trúc hệ thống Giao Vặt:
-  - Sơ đồ Container: Client $\rightarrow$ Nginx / Cloud Proxy $\rightarrow$ Spring Boot Monolith $\rightarrow$ PostgreSQL & Redis.
-  - Sơ đồ Request Flow chi tiết: Khách tạo đơn $\rightarrow$ Redis Feed ZSET $\rightarrow$ Runner Claim (Locking) $\rightarrow$ SSE Broadcast.
-- [ ] Viết phần "Known Limitations & Future Architecture" vào README; commit.
+- [ ] Vẽ sơ đồ kiến trúc hệ thống Giao Vặt Fullstack:
+  - Sơ đồ Container: Browser Client (Next.js App) $\rightarrow$ Reverse Proxy / Nginx $\rightarrow$ Backend Monolith (Spring Boot 3) $\rightarrow$ Data Stores (PostgreSQL 16 & Redis 7).
+  - Sơ đồ Request Flow chi tiết: Khách tạo đơn trên UI Next.js $\rightarrow$ Ghi DB & Redis Feed ZSET $\rightarrow$ Runner Claim (Optimistic Locking) $\rightarrow$ SSE Broadcast cập nhật trực tiếp màn hình client.
+- [ ] Viết phần "Architecture Overview" vào README dự án; commit.
 
 ### Thứ 4 — Technical English: Introduction & Storytelling (2h)
-- [ ] Soạn thảo bản giới thiệu bản thân bằng tiếng Anh (Self-Introduction) trong 90 giây.
+- [ ] Soạn thảo bản giới thiệu bản thân bằng tiếng Anh (Self-Introduction) trong 90 giây định vị rõ: Kỹ sư Fullstack thiên về Backend (Java Spring Boot 70% + Next.js 30%).
 - [ ] Luyện tập ghi âm 3 lần; chỉnh sửa phát âm và ngữ pháp.
-- [ ] Nắm vững vốn từ vựng kỹ thuật chuẩn: *concurrency, race condition, data consistency, trade-off, optimistic locking, latency, horizontal scaling, bottleneck, root cause*.
+- [ ] Nắm vững vốn từ vựng kỹ thuật chuẩn: *concurrency, race condition, data consistency, trade-off, optimistic locking, latency, horizontal scaling, bottleneck, root cause, reactive UI, optimistic UI rollback*.
 - [ ] Lưu bản script giới thiệu vào repo; commit.
 
-### Thứ 5 — Technical English: Demo Dự Án Giao Vặt (2h)
-- [ ] Chuẩn bị bài thuyết trình 5 phút bằng tiếng Anh về dự án Giao Vặt theo cấu trúc:
-  - Problem & Context $\rightarrow$ Architecture Design $\rightarrow$ Technical Challenges (Concurrency Locking & Realtime Feed) $\rightarrow$ Trade-offs $\rightarrow$ Results & Metrics.
+### Thứ 5 — Technical English: Demo Dự Án Giao Vặt Fullstack (2h)
+- [ ] Chuẩn bị bài thuyết trình 5 phút bằng tiếng Anh về dự án Giao Vặt theo cấu trúc STAR:
+  - Problem & Context $\rightarrow$ Architecture Design $\rightarrow$ Technical Challenges (Concurrency Locking, Realtime Feed SSE, Rate Limiting & Optimistic UI) $\rightarrow$ Trade-offs $\rightarrow$ Results & Metrics.
   - Tự trả lời 2 câu hỏi kỹ thuật hóc búa bằng tiếng Anh:
-    1. *"How do you handle double-picking when multiple drivers claim the same order simultaneously?"*
-    2. *"Why did you choose Redis Sorted Set instead of direct database polling for the order feed?"*
+    1. *"How do you prevent race conditions when two runners claim the same order simultaneously on the web interface?"*
+    2. *"Why did you choose Server-Sent Events (SSE) over WebSocket for real-time order feeds in Next.js?"*
 - [ ] Ghi âm và đánh giá độ lưu loát; commit.
 
-### Thứ 6 — CV Kỹ Sư Backend Chuẩn Quốc Tế (2h)
-- [ ] Soạn thảo CV tiếng Anh 1 trang chuẩn format ATS (Applicant Tracking System).
-- [ ] Trình bày dự án Giao Vặt theo mô hình Action-Result (STAR): Nêu bật công nghệ sử dụng, thách thức kỹ thuật đã giải quyết và số đo đạt được (ví dụ: xử lý race condition đảm bảo 0% duplicate claim dưới tải 100 concurrent threads).
-- [ ] Đưa đúng từ khóa kỹ thuật: *Java 17 LTS, Spring Boot 3, Spring Security, JWT, Redis, PostgreSQL, JPA/Hibernate, Optimistic Locking, Testcontainers, Docker, CI/CD, RFC 7807*.
-- [ ] Rà soát ngữ pháp và chính tả; commit.
+### Thứ 6 — Next.js UI/UX Polish & Mobile-First Responsive Design (2h) [Next.js 30%]
+- [ ] Tinh chỉnh giao diện toàn bộ app Giao Vặt chuẩn Mobile-first bằng Tailwind CSS (phù hợp với Runner thao tác bằng điện thoại di động ngoài đường).
+- [ ] Cải thiện trải nghiệm người dùng (UX):
+  - Thêm hiệu ứng Skeleton Loading trong khi chờ dữ liệu bảng tin tải về.
+  - Thiết kế Empty States thân thiện khi chưa có đơn hàng nào quanh khu vực.
+  - Hỗ trợ chế độ Dark Mode / Light Mode mượt mà.
+- [ ] Tối ưu hóa SEO Metadata và OpenGraph tags cho trang chia sẻ link đơn hàng; commit.
 
-### Thứ 7 — Release Portfolio Sản Phẩm Giao Vặt v1 (5h)
-- [ ] 2h: Dọn dẹp mã nguồn, kiểm tra lint, format code chuẩn Google Java Style.
-- [ ] 1h: Quay video demo ngắn (3–5 phút) thể hiện toàn bộ tính năng và luồng chạy thực tế.
-- [ ] 1h: Tạo Git Tag release chính thức: `v1.0.0-giaovat-release`.
-- [ ] 1h: Kiểm tra quy trình Clean Clone: Clone repo về thư mục mới $\rightarrow$ Chạy `docker compose up` $\rightarrow$ Run test $\rightarrow$ Kiểm tra ứng dụng chạy trơn tru 100%.
+### Thứ 7 — Release Fullstack Portfolio Sản Phẩm Giao Vặt v1 & Luyện Live Coding DSA (5h)
+- [ ] 2h: Soạn thảo CV 1 trang tiếng Anh chuẩn ATS; quay video demo ngắn (3–5 phút) thể hiện toàn bộ luồng người dùng thật trên trình duyệt.
+- [ ] 1h: Tạo Git Tag release chính thức: `v1.0.0-fullstack-giaovat`; kiểm tra clean clone Docker Compose.
+- [ ] 1h: **Luyện Live Coding DSA (1D Dynamic Programming — Quy Hoạch Động 1D):**
+  - Bài 37: **Climbing Stairs** (LeetCode 70, Easy) — Bản chất dãy Fibonacci, tối ưu từ Memoization sang $O(N)$ Time / $O(1)$ Space.
+  - Bài 38: **House Robber** (LeetCode 198, Medium) — Quy hoạch động lựa chọn $dp[i] = \max(dp[i-1], dp[i-2] + nums[i])$ trong $O(N)$ Time / $O(1)$ Space; commit vào `dsa/week-16/`.
+- [ ] 1h: Tổng kết portfolio và sẵn sàng tuần nước rút.
 
 ---
 
 ## Tuần 17 — Production API Patterns, Real-time & High-Concurrency Locking
 
-### Thứ 2 — Lý Thuyết RESTful Nâng Cao & Idempotency Key Pattern (2h)
-- [ ] Học nguyên lý **Idempotent API**:
-  - Tính chất Idempotency: Khả năng thực thi một thao tác nhiều lần mà kết quả cuối cùng trên hệ thống không thay đổi so với thực thi một lần.
-  - Phân tích các phương thức HTTP: GET, PUT, DELETE, HEAD (vốn dĩ là idempotent) vs POST, PATCH (không idempotent).
-- [ ] Bài toán thực tế: Khách bấm nút "Đặt đơn" hoặc "Thanh toán" hai lần liên tiếp do mạng lag $\rightarrow$ Nguy cơ tạo 2 đơn trùng lặp hoặc trừ tiền 2 lần.
-- [ ] Thiết kế **Idempotency Key Pattern** cho API Tạo Đơn (`POST /api/v1/orders`):
-  - Client gửi kèm Header `Idempotency-Key` (UUID ngẫu nhiên).
-  - Backend sử dụng Redis lệnh `SET order:idempotency:{key} "PROCESSING" NX EX 120` (Atomic Set if Not Exists kèm TTL 2 phút).
-  - Nếu key đã tồn tại: Chặn ngay lập tức và trả về `409 Conflict` hoặc kết quả cache trước đó.
-  - Khi hoàn tất tạo đơn: Cập nhật value thành `"COMPLETED"` kèm ID đơn hàng.
-- [ ] Viết bài test mô phỏng gửi đồng thời 2 request cùng Idempotency Key; commit.
+### Thứ 2 — Lát Cắt Dọc 1: Chống Bấm Đúp Tạo Đơn (Idempotency Key Pattern) [Fullstack] (2h)
+- [ ] **Backend (70%):**
+  - Học nguyên lý Idempotent API (GET, PUT vs POST, PATCH).
+  - Thiết kế Idempotency Key Pattern cho `POST /api/v1/orders`:
+    - Interceptor kiểm tra Header `Idempotency-Key` (UUID).
+    - Redis lệnh `SET order:idempotency:{key} "PROCESSING" NX EX 120`.
+    - Nếu key đã tồn tại: Chặn ngay lập tức và trả về `409 Conflict` (kèm thông điệp đang xử lý) hoặc kết quả đã cache.
+    - Xử lý xong cập nhật value thành `"COMPLETED"` kèm Order ID.
+  - Viết test JUnit giả lập gửi đồng thời 2 request cùng Idempotency Key; commit.
+- [ ] **Frontend (30%):**
+  - Form tạo đơn Next.js: Tự động sinh UUID `Idempotency-Key` gắn vào request header khi bấm submit.
+  - Disable nút "Đăng Đơn" và hiển thị trạng thái loading quay tròn để ngăn người dùng bấm spam liên tục.
+- [ ] **Chạy thử trên trình duyệt:** Bấm đúp nút tạo đơn cực nhanh hoặc gửi lại request từ tab Network $\rightarrow$ Trình duyệt hiển thị thông báo hợp lý, DB chỉ ghi nhận 1 đơn hàng duy nhất!
 
-### Thứ 3 — Lý Thuyết Webhook Architecture & Security (2h)
-- [ ] Học mô hình Webhook trong tích hợp hệ thống:
-  - Khác biệt giữa Polling (chủ động hỏi) vs Webhook (bị động nhận thông báo sự kiện qua HTTP callback).
-  - Các rủi ro an ninh của Webhook: Giả mạo nguồn phát (Spoofing), Sửa đổi payload trên đường truyền (Tampering), Tấn công gửi lại (Replay Attacks).
-- [ ] Xây dựng Webhook Receiver nhận kết quả thanh toán Sandbox (giả lập VNPay/Stripe):
-  - Xác thực chữ ký số bằng thuật toán **HMAC-SHA256** dựa trên Shared Secret Key bí mật.
-  - Kiểm tra tính hợp lệ của timestamp trong webhook để ngăn chặn Replay Attack quá thời hạn.
-  - Thiết kế **Idempotent Webhook Processing**: Đảm bảo cổng thanh toán gửi lại webhook nhiều lần thì trạng thái đơn hàng vẫn chỉ cập nhật đúng 1 lần duy nhất.
-- [ ] Viết test: gửi webhook sai chữ ký (phải trả 401 Unauthorized), gửi webhook hợp lệ thành công; commit.
+### Thứ 3 — Lát Cắt Dọc 2: Tích Hợp Webhook & Cổng Thanh Toán Sandbox [Fullstack] (2h)
+- [ ] **Backend (70%):**
+  - Học mô hình Webhook: Polling vs Callback, nguy cơ Replay Attack & Spoofing.
+  - Xây dựng Webhook Receiver endpoint `POST /api/v1/payments/webhook`:
+    - Xác thực chữ ký số bằng thuật toán **HMAC-SHA256** dựa trên Shared Secret Key.
+    - Kiểm tra tính hợp lệ của timestamp chống Replay Attack quá thời hạn.
+    - Idempotent Webhook Processing: Cổng thanh toán gọi lại nhiều lần thì trạng thái đơn vẫn chỉ cập nhật đúng 1 lần duy nhất.
+- [ ] **Frontend (30%):**
+  - Trang thanh toán Sandbox: Nút "Giả lập Thanh Toán Thành Công / Thất Bại" cho đơn hàng.
+  - Giao diện chi tiết đơn hàng: Tự động chuyển huy hiệu trạng thái sang "Đã thanh toán (PAID)" mà không cần F5 trang.
+- [ ] **Chạy thử trên trình duyệt:** Bấm nút giả lập thanh toán $\rightarrow$ Webhook xử lý $\rightarrow$ Thẻ đơn hàng trên trình duyệt chuyển trạng thái xanh sang `PAID` ngay lập tức!
 
-### Thứ 4 — Lý Thuyết Real-Time Web & Server-Sent Events (SSE) (2h)
-- [ ] Học và so sánh các cơ chế giao tiếp thời gian thực:
-  - **Short Polling:** Client liên tục gửi request theo chu kỳ ngắn $\rightarrow$ Lãng phí tài nguyên máy chủ.
-  - **Long Polling:** Server giữ kết nối cho đến khi có dữ liệu mới $\rightarrow$ Nặng nề, quản lý connection phức tạp.
-  - **WebSocket (STOMP):** Kết nối 2 chiều toàn phần (Full-duplex), giao thức binary/text riêng $\rightarrow$ Tối ưu cho game/chat, nhưng nặng và khó scale qua HTTP proxies.
-  - **Server-Sent Events (SSE):** Giao tiếp 1 chiều từ Server xuống Client (Server-to-Client), chạy trên nền HTTP chuẩn (`text/event-stream`), tự động reconnect native trong trình duyệt $\rightarrow$ **Lựa chọn hoàn hảo nhất cho bảng tin đơn hàng và thông báo trạng thái**.
-- [ ] Triển khai SSE với Spring Boot `SseEmitter`:
-  - API `GET /api/v1/orders/feed/stream`: Runner đăng ký nhận stream bảng tin thời gian thực.
-  - Khi Creator tạo đơn mới: Push event `NEW_ORDER_AVAILABLE` tới toàn bộ Runner đang kết nối.
-  - Khi một Runner nhận đơn thành công: Push event `ORDER_CLAIMED` để các Runner khác tự động xóa đơn khỏi màn hình, đồng thời push event `RUNNER_ACCEPTED` cho Creator.
-- [ ] Xử lý quản lý vòng đời connection: Timeout, client disconnect, heartbeat ping định kỳ 15 giây; commit.
+### Thứ 4 — Lát Cắt Dọc 3: Bảng Tin Thời Gian Thực Với Server-Sent Events (SSE) [Fullstack] (2h)
+- [ ] **Backend (70%):**
+  - So sánh giao tiếp thời gian thực: Short Polling vs Long Polling vs WebSocket vs Server-Sent Events (SSE). Vì sao SSE tối ưu cho Bảng Tin Giao Vặt (nhẹ, HTTP chuẩn, native reconnect trình duyệt).
+  - Triển khai Spring Boot `SseEmitter`:
+    - API `GET /api/v1/orders/feed/stream`: Runner đăng ký nhận stream bảng tin thời gian thực.
+    - Khi Creator tạo đơn: Push event `NEW_ORDER_AVAILABLE` tới toàn bộ Runner đang kết nối.
+    - Khi có Runner nhận đơn: Push event `ORDER_CLAIMED` để các Runner khác tự động xóa đơn khỏi màn hình.
+    - Quản lý Heartbeat ping định kỳ 15 giây.
+- [ ] **Frontend (30%):**
+  - Xây dựng custom hook `useOrderFeedStream()` trong Next.js sử dụng native browser `EventSource`:
+    - Lắng nghe event `NEW_ORDER_AVAILABLE` $\rightarrow$ Tự động chèn đơn mới vào đầu bảng tin kèm hiệu ứng viền vàng nhấp nháy mà không cần tải lại trang.
+    - Lắng nghe event `ORDER_CLAIMED` $\rightarrow$ Tự động làm mờ và loại bỏ đơn khỏi bảng tin với hiệu ứng mượt mà.
+- [ ] **Chạy thử trên trình duyệt:** Mở 2 tab trình duyệt cạnh nhau (1 Creator, 1 Runner) $\rightarrow$ Tab Creator bấm Tạo đơn $\rightarrow$ Tab Runner thấy đơn hàng mới nhảy lên bảng tin ngay lập tức qua SSE ($<50$ms)!
 
-### Thứ 5 — Lý Thuyết Concurrency & Database Locking Thực Chiến (2h)
-- [ ] Phân tích bài toán kinh điển: **Double-Picking / Race Condition**:
-  - Khi 10 Runner cùng nhìn thấy 1 đơn hàng giá hời trên bảng tin và cùng bấm "Nhận đơn" trong cùng 1 phần nghìn giây.
-  - Nếu không có cơ chế kiểm soát đồng thời $\rightarrow$ Cả 10 Runner đều nhận thành công $\rightarrow$ Thảm họa nghiệp vụ!
-- [ ] So sánh chuyên sâu các giải pháp khóa trong ngành:
-  - **Pessimistic Locking (`SELECT ... FOR UPDATE`):** Khóa dòng trực tiếp trong Database $\rightarrow$ An toàn tuyệt đối nhưng block tài nguyên, throughput thấp, dễ dẫn đến deadlock.
-  - **Optimistic Locking (`@Version` trong JPA):** Không khóa ở DB, dựa trên số version để phát hiện xung đột $\rightarrow$ Throughput cực cao, không block đọc, phù hợp hệ thống có tỷ lệ đọc nhiều hơn ghi.
-  - **Distributed Locking (Redis Redlock / Redisson):** Dùng khi hệ thống phân tán nhiều instance độc lập.
-- [ ] Triển khai Optimistic Locking trên entity `Order`:
-  - Thêm trường `@Version private Long version;`.
-  - Viết test stress concurrency bằng JUnit 5 kết hợp `CountDownLatch` và `ExecutorService` (10 thread cùng gọi `claimOrder`): Chứng minh duy nhất 1 Runner nhận thành công, 9 Runner còn lại nhận ngoại lệ `OptimisticLockingFailureException` và trả về `409 Conflict`; commit.
+### Thứ 5 — Lát Cắt Dọc 4: Concurrency Locking & Optimistic UI Rollback [Fullstack] (2h)
+- [ ] **Backend (70%):**
+  - Phân tích bài toán Double-Picking / Race Condition khi nhiều Runner cùng tranh 1 đơn.
+  - So sánh Pessimistic Lock (`SELECT ... FOR UPDATE`) vs Optimistic Lock (`@Version` trong JPA).
+  - Triển khai `@Version private Long version;` trên entity `Order`.
+  - Bắt `OptimisticLockingFailureException` chuyển thành HTTP `409 Conflict` trả về cho client.
+- [ ] **Frontend (30%):**
+  - Triển khai **Optimistic UI (Cập nhật giao diện lạc quan)** cho nút "Nhận đơn":
+    - Khi Runner bấm "Nhận đơn" $\rightarrow$ Giao diện lập tức chuyển trạng thái sang "Đang nhận việc" và vô hiệu hóa nút ($0$ms delay cảm ứng).
+    - Xử lý **Rollback UI**: Nếu backend trả về HTTP `409 Conflict` (do tài xế khác nhanh tay nhận trước), giao diện lập tức phục hồi lại trạng thái cũ và bắn Toast cảnh báo đỏ: *"Rất tiếc! Đơn hàng này vừa được tài xế khác nhận trước bạn. Vui lòng chọn đơn khác!"*.
+- [ ] **Chạy thử trên trình duyệt:** Mở 2 tab Runner A và Runner B cạnh nhau trên cùng 1 đơn hàng $\rightarrow$ Cùng bấm "Nhận đơn" trong một tích tắc $\rightarrow$ Runner A nhận việc thành công, Runner B thấy Toast 409 và nút phục hồi trở lại!
 
-### Thứ 6 — Deadlock Simulation & Resolution Drill (2h)
-- [ ] Phân tích nguyên nhân gốc rễ sinh ra **Deadlock**: 4 điều kiện của Coffman (Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait).
-- [ ] Tạo bài lab tái hiện Deadlock thực tế: Hai transaction chạy song song cập nhật chéo tài nguyên (Tx 1: lock User rồi lock Order; Tx 2: lock Order rồi lock User).
-- [ ] Đọc và phân tích Deadlock Graph trong Database log (`SHOW ENGINE INNODB STATUS` trong MySQL hoặc Postgres log).
-- [ ] Hai giải pháp khắc phục triệt để:
-  - (1) Chuẩn hóa thứ tự khóa tài nguyên (Lock Ordering Rule).
-  - (2) Cấu hình cơ chế tự động thử lại bằng Spring `@Retryable` với Exponential Backoff khi gặp transient deadlock.
-- [ ] Viết test chứng minh `@Retryable` vượt qua deadlock tạm thời; commit.
+### Thứ 6 — Nâng Cao: Deadlock Drill, Resilient Connection & UI Status Badge (2h)
+- [ ] **Backend (70%):**
+  - Viết test concurrency stress bằng JUnit 5 `CountDownLatch` (10 thread cùng claim 1 đơn): Chứng minh duy nhất 1 thread thành công, 9 thread còn lại nhận 409 Conflict.
+  - Dọn dẹp tài nguyên và ngăn chặn rò rỉ bộ nhớ của `SseEmitter` khi client ngắt kết nối (`onCompletion`, `onTimeout`, `onError`).
+  - Cấu hình `@Retryable` với exponential backoff cho các tác vụ cần thử lại.
+- [ ] **Frontend (30%):**
+  - Cơ chế tự động kết nối lại (Auto-reconnect with Backoff) khi kết nối SSE bị gián đoạn.
+  - Hiển thị huy hiệu trạng thái kết nối SSE (Connection Badge): Xanh lá "Trực tuyến", Vàng "Đang kết nối lại...", Đỏ "Mất kết nối".
+- [ ] **Chạy thử trên trình duyệt:** Thử tắt mạng tạm thời trên browser $\rightarrow$ Huy hiệu chuyển sang màu vàng $\rightarrow$ Bật lại mạng $\rightarrow$ Kết nối tự động phục hồi và tiếp tục nhận đơn mới.
 
-### Thứ 7 — End-to-End Payment & Notification Lab (5h)
-- [ ] 2h: Ghép nối trọn vẹn luồng sản xuất hoàn chỉnh: Creator tạo đơn (kèm Idempotency Key) $\rightarrow$ Đẩy Redis Feed $\rightarrow$ Push SSE cho các Runner $\rightarrow$ Runner claim đơn (Optimistic Lock) $\rightarrow$ Gỡ đơn khỏi feed và báo cho Creator $\rightarrow$ Thanh toán Sandbox qua Webhook.
-- [ ] 1h: Viết integration tests toàn luồng với Testcontainers và MockMvc.
-- [ ] 1h: Hoàn thiện tài liệu ADR về các quyết định Idempotency, SSE và Locking.
-- [ ] 1h: Commit và tổng kết tuần.
+### Thứ 7 — Fullstack High-Concurrency & Luyện Live Coding DSA (5h) [Fullstack Integration]
+- [ ] 2h: Ghép nối trọn vẹn kịch bản Real-time & Concurrency trên 3 màn hình trình duyệt (1 Creator + 2 Runner): Creator tạo đơn $\rightarrow$ SSE đẩy 2 Runner $\rightarrow$ Tranh chấp đơn có Optimistic UI Rollback $\rightarrow$ Webhook thanh toán cập nhật realtime.
+- [ ] 1h: Giả lập mạng chậm (Network Throttling 3G) kiểm tra tính bền bỉ của Idempotency Key và cơ chế chống bấm đúp; hoàn thiện 2 bản ADR.
+- [ ] 1h: **Luyện Live Coding DSA (Monotonic Stack & Queue Simulation):**
+  - Bài 39: **Daily Temperatures** (LeetCode 739, Medium) — Monotonic Decreasing Stack tìm phần tử lớn hơn tiếp theo trong $O(N)$ Time / $O(N)$ Space.
+  - Bài 40: **Implement Stack using Queues** (LeetCode 225, Easy) — Mô phỏng ngăn xếp bằng 1 hàng đợi `Queue` $O(N)$ push / $O(1)$ pop; commit vào `dsa/week-17/`.
+- [ ] 1h: Commit mã nguồn và ghi video màn hình làm bằng chứng thực nghiệm đưa vào portfolio phỏng vấn.
 
 ---
 
-## Tuần 18 — Fresher Gate & Sẵn Sàng Ứng Tuyển Thực Tế
+## Tuần 18 — Fresher Gate & Sẵn Sàng Ứng Tuyển Thực Tế (Fullstack Java + Next.js)
 
-### Thứ 2 — Mock Technical Interview: Java Core Deep Dive (2h)
-- [ ] Vấn đáp chuyên sâu 30 câu hỏi Java Core: OOP principles, Immutability, Collections Framework internals, JVM Memory (Heap, Stack, Metaspace), GC, Java Memory Model, Concurrency primitives.
-- [ ] Sửa chữa 5 điểm thiếu sót lớn nhất ghi nhận được; commit ghi chú.
+### Thứ 2 — Mock Technical Interview: Java Core & Next.js/React Fundamentals (2h)
+- [ ] Vấn đáp chuyên sâu Java Core (70%): OOP principles, Immutability, Collections Framework internals, JVM Memory (Heap, Stack, Metaspace), Garbage Collection, Java Memory Model, Concurrency primitives.
+- [ ] Vấn đáp React & Next.js Core (30%): Virtual DOM, Client Components vs Server Components, React Hooks (`useState`, `useEffect`, `useCallback`, `useMemo`), cơ chế Data Fetching và Caching trên trình duyệt.
+- [ ] Luyện nhanh 1 câu hỏi giải thuật nhẩm miệng (Mental LeetCode): Trình bày ý tưởng giải Two Sum hoặc Valid Anagram trong 3 phút không gõ phím; commit ghi chú.
 
-### Thứ 3 — Mock Technical Interview: Spring Boot, JPA & Database (2h)
-- [ ] Vấn đáp 30 câu Spring Boot & Data: IoC/DI, Bean Lifecycle, Proxy mechanism & self-invocation trap, `@Transactional` isolation & propagation, N+1 query fix, B-Tree index structure, MVCC snapshot.
-- [ ] Vẽ sơ đồ luồng đi của request từ Client tới Database không nhìn tài liệu; commit.
+### Thứ 3 — Mock Technical Interview: Spring Boot, Database & Fullstack Architecture (2h)
+- [ ] Vấn đáp Spring Boot & Database: IoC/DI, Bean Lifecycle, Proxy mechanism & self-invocation trap, `@Transactional` isolation & propagation, N+1 query fix, B-Tree index structure, MVCC snapshot, JPA `@Version` locking.
+- [ ] Vấn đáp luồng dữ liệu Fullstack từ đầu tới cuối: User tương tác UI Next.js $\rightarrow$ HTTP Request kèm `Idempotency-Key` $\rightarrow$ Spring Filter xác thực JWT $\rightarrow$ Controller $\rightarrow$ Service $\rightarrow$ DB Transaction & Redis Feed $\rightarrow$ SSE Emitter $\rightarrow$ EventSource cập nhật DOM; commit.
 
-### Thứ 4 — Mock System & Project Presentation (2h)
-- [ ] Trình bày dự án Giao Vặt theo cấu trúc chuẩn: Bối cảnh $\rightarrow$ Vấn đề $\rightarrow$ Giải pháp kiến trúc $\rightarrow$ Trade-offs $\rightarrow$ Kết quả đạt được.
-- [ ] Trả lời phản biện các câu hỏi xoay quanh Concurrency Locking, Redis Feed, SSE connection leak, Idempotency pattern.
+### Thứ 4 — Mock System & Project Presentation Fullstack (2h)
+- [ ] Trình bày dự án Giao Vặt theo cấu trúc chuẩn: Bối cảnh $\rightarrow$ Vấn đề $\rightarrow$ Giải pháp kiến trúc Fullstack $\rightarrow$ Thách thức kỹ thuật (Concurrency Race Condition, Real-time Feed SSE, Rate Limiting, Optimistic UI) $\rightarrow$ Trade-offs $\rightarrow$ Kết quả đạt được.
+- [ ] Trả lời phản biện các câu hỏi hóc búa của nhà tuyển dụng xoay quanh Optimistic Locking, SSE connection leak, Idempotency pattern, và bảo mật JWT.
 
 ### Thứ 5 — Mock Interview bằng Tiếng Anh (English Technical Round) (2h)
-- [ ] Mô phỏng vòng phỏng vấn tiếng Anh: Self-introduction, Project walk-through, Behavioral questions (STAR method), Career aspiration.
+- [ ] Mô phỏng vòng phỏng vấn kỹ thuật bằng tiếng Anh: Self-introduction, Project walk-through, Behavioral questions (STAR method), Career aspiration.
 - [ ] Ghi âm lại và chấm điểm dựa trên: Độ rõ ràng (Clarity), Cấu trúc câu trả lời (Structure), Từ vựng kỹ thuật chính xác (Technical Vocabulary).
 
-### Thứ 6 — Thiết Lập Hệ Thống Ứng Tuyển & Tìm Kiếm Việc Làm (2h)
+### Thứ 6 — Thiết Lập Hệ Thống Ứng Tuyển & Chiến Lược Săn Việc (2h)
 - [ ] Tạo bảng Job Application Tracker: Công ty, Vị trí, Link JD, Ngày nộp, Trạng thái, Điểm còn thiếu, Kế hoạch follow-up.
-- [ ] Lựa chọn 10 Job Descriptions (JD) Fresher / Junior Java phù hợp trên thị trường (ITviec, TopCV, LinkedIn).
-- [ ] Đối chiếu từ khóa trên JD với kinh nghiệm thực tế từ dự án Giao Vặt; chuẩn bị thư xin việc (Cover Letter) cá nhân hóa cho từng vị trí.
-- [ ] Học kỹ năng đàm phán lương ban đầu: Tìm hiểu dải lương Fresher tại thị trường Việt Nam (12–15 triệu), cách trả lời câu hỏi "Mức lương mong muốn của bạn là bao nhiêu?".
+- [ ] Lựa chọn 15 Job Descriptions (JD) phù hợp trên thị trường Việt Nam (ITviec, TopCV, LinkedIn):
+  - Nhóm 1: Vị trí **Java Fresher / Junior Backend Developer** (chiếm 60–70% mục tiêu).
+  - Nhóm 2: Vị trí **Fullstack Fresher / Junior (Java + Next.js/React)** (chiếm 30–40% mục tiêu, lợi thế cạnh tranh tuyệt đối nhờ có sản phẩm hoàn chỉnh).
+- [ ] Tùy biến CV: Nhấn mạnh thế mạnh Java Backend sâu bản chất (70%), đồng thời chứng minh năng lực tự chủ xây dựng giao diện Next.js hiện đại (30%) $\rightarrow$ Điểm cộng cực lớn giúp vượt trội 90% ứng viên Fresher khác chỉ biết code lý thuyết đồ chơi.
+- [ ] Học kỹ năng đàm phán lương ban đầu: Tìm hiểu dải lương Fresher tại thị trường Việt Nam (12–15+ triệu), cách trả lời câu hỏi "Mức lương mong muốn của bạn là bao nhiêu?".
 
-### Thứ 7 — Final Gate Assessment: Đạt Chuẩn Apply Fresher (5h)
-- [ ] 2h: Thử thách Live Coding: Tự tay dựng một tính năng CRUD có validation, exception handler, auth và test trong vòng 120 phút không xem tài liệu cũ.
-- [ ] 1h: Chạy full test suite và demo toàn diện hệ thống.
-- [ ] 1h: Gửi 3 bộ hồ sơ ứng tuyển chất lượng đầu tiên.
-- [ ] 1h: Đánh giá Retrospective toàn bộ Giai đoạn 1 & 2, lập kế hoạch bước vào Giai đoạn 3 (Junior $\rightarrow$ Mid).
+### Thứ 7 — Final Gate Assessment: Đạt Chuẩn Apply Fresher Fullstack & Vòng Thi Live Coding (5h)
+- [ ] 2h: Thử thách Live Coding Fullstack: Tự tay dựng một tính năng Fullstack từ A-Z (Giao diện Next.js Form + Table kết nối Spring Boot API + DB PostgreSQL có validation, auth và exception handling) trong vòng 120 phút không xem tài liệu cũ.
+- [ ] 1h: **Vòng Thi Phỏng Vấn Live Coding DSA (Live Coding Mock Interview Round — 45 phút):**
+  - Bốc thăm ngẫu nhiên 1 bài LeetCode Medium trong bộ 40 bài cốt lõi (ví dụ: *3Sum*, *Longest Substring Without Repeating Characters*, *Top K Frequent Elements*, hoặc *Course Schedule*).
+  - Bấm giờ 35 phút, giải trực tiếp trước camera hoặc người phỏng vấn mô phỏng theo chuẩn 4 bước: 5m Clarify & Edge cases $\rightarrow$ 5m Nêu ý tưởng Brute-force & Big-O $\rightarrow$ 15m Gõ code Java 17 sạch $\rightarrow$ 5m Dry run test case.
+  - Phân tích Time Complexity và Space Complexity tự tin, chuẩn xác.
+- [ ] 1h: Chạy toàn bộ test suite (Backend JUnit + Frontend Vitest/Playwright pass 100%) và demo sản phẩm toàn diện.
+- [ ] 0.5h: Gửi 5 bộ hồ sơ ứng tuyển chất lượng đầu tiên tới các công ty đã chọn lọc.
+- [ ] 0.5h: Đánh giá Retrospective toàn bộ Giai đoạn 1 & 2, lập kế hoạch bước vào Giai đoạn 3 (Junior $\rightarrow$ Mid).
 
-**Tiêu chuẩn hoàn thành Gate Fresher (DoD Fresher):**
-- Có repository Git chuẩn mực; clone về máy mới chạy được ngay bằng `docker compose up`.
-- Nắm vững kiến trúc Backend 3 layers, code thành thạo CRUD + Auth trong 2–3 giờ.
-- Giải thích rành rọt bản chất OOP, Collections, Concurrency primitives, SQL Index, Spring Proxy và Locking.
-- Trình bày được dự án và trả lời phỏng vấn kỹ thuật bằng tiếng Anh cơ bản.
+**Tiêu chuẩn hoàn thành Gate Fresher (DoD Fresher Fullstack):**
+- Có repository Git chuẩn mực; clone về máy mới chạy được ngay toàn bộ stack bằng `docker compose up`.
+- Nắm vững kiến trúc Backend 3 layers, code thành thạo CRUD + Auth + Concurrency trong 2–3 giờ.
+- Xây dựng được giao diện Next.js tương tác mượt mà, kết nối real-time SSE và xử lý Optimistic UI chuyên nghiệp.
+- **Vượt qua bài thi Live Coding DSA:** Giải quyết được bài LeetCode Easy/Medium trong 30–35 phút theo chuẩn 4 bước Live Coding, giải thích mạch lạc Big-O và edge cases.
+- Giải thích rành rọt bản chất OOP, Collections, Concurrency primitives, SQL Index, Spring Proxy, JPA Locking, và React Lifecycle.
+- Trình bày được dự án và trả lời phỏng vấn kỹ thuật bằng tiếng Anh tự tin.
 - **Đạt gate này là BẮT ĐẦU NỘP HỒ SƠ ỨNG TUYỂN NGAY, không chờ đợi phải học hết kiến trúc Senior.**
 
 > *Trường hợp chưa đạt điểm tự tin:* Bù đắp đúng phần bị hổng trong 2 tuần tiếp theo, đồng thời mở rộng dải ứng tuyển sang Intern/Fresher dải 8–12 triệu hoặc thực tập sinh có lương; tuyệt đối không đứng ngoài thị trường lao động.
@@ -939,10 +1187,15 @@
 - [ ] 30m: refactor/test/security check.
 - [ ] 15m: ghi root cause hoặc review feedback.
 
-### Thứ 6 — Java/DSA/English (2h)
-- [ ] 45m: Java/Spring/SQL interview topic theo tuần.
-- [ ] 45m: 1–2 bài DSA/SQL.
-- [ ] 30m: nói/viết câu trả lời English.
+### Thứ 6 — Java/DSA Live Coding/English (2h)
+- [ ] 45m: Java/Spring/SQL interview topic theo tuần (đào sâu internals, GC tuning, connection pool, transaction isolation).
+- [ ] 45m: **Luyện Live Coding DSA phỏng vấn công ty Top tại VN (Shopee, VNG, NAB, Axon, Line, Grab):** 1–2 bài LeetCode Medium/Hard theo các chủ đề chuyên sâu:
+  - Graph nâng cao (BFS/DFS, Topological Sort, Dijkstra, Word Ladder).
+  - Dynamic Programming (Coin Change, Longest Increasing Subsequence, Word Break).
+  - Trie / Prefix Tree (Implement Trie, Word Search II).
+  - System-Adjacent DSA: LRU Cache (LeetCode 146), LFU Cache, Monotonic Deque (Sliding Window Maximum).
+  - Tiếp tục duy trì khung 4 bước Live Coding và giải thích Big-O bằng tiếng Anh.
+- [ ] 30m: Luyện nói và viết câu trả lời phỏng vấn kỹ thuật bằng tiếng Anh (English STAR method).
 
 ### Thứ 7 — Feature/production lab (5h)
 - [ ] 3h: hoàn thành feature hoặc lab theo kế hoạch quý.
