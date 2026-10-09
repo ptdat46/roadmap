@@ -11,649 +11,909 @@
 ---
 
 # GIAI ĐOẠN 1 — TUẦN 1–8
-## Java Core + Backend foundation
+## Java 17 LTS + Spring Boot Foundation: Xây Dựng Base Dự Án Giao Vặt
 
-**Mục tiêu cuối giai đoạn:** tự viết Java sạch; hiểu OOP/DSA; dùng Git/Maven; viết REST API Spring Boot kết nối MySQL/PostgreSQL; có test cơ bản.
+**Mục tiêu cuối giai đoạn:** Tự tay dựng và làm chủ một Backend Spring Boot 3.x chuẩn sản xuất chạy trên **Java 17 LTS**; hiểu sâu kiến trúc phân tầng 3 layers; tự viết RESTful API kết nối Database quan hệ (PostgreSQL/MySQL); nắm vững cú pháp, câu điều kiện, vòng lặp, OOP, Java Collections, Domain Exceptions, Stream API và Concurrency Locking cơ bản trực tiếp trên codebase Giao Vặt; có test tự động MockMvc và Testcontainers.
 
-**Dự án chính: Giao Vặt** — On-Demand Delivery & Order Queue Platform (Clone Grab đơn giản mô hình Crowdsourcing)
-- **Scope:** Hệ thống kết nối Khách hàng (Customer) và Tài xế (Driver). Thay vì hệ thống tự động gán tài xế, Khách hàng đăng yêu cầu giao hàng $\rightarrow$ Đơn chuyển vào hàng đợi công khai (`Order Queue`) $\rightarrow$ Các tài xế duyệt queue và tự do pick cuốc mong muốn.
-- **Core Mechanism:** Hàng đợi đơn hàng tập trung (`PENDING` orders), cơ chế khóa chống tranh chấp khi nhiều tài xế cùng bấm pick 1 cuốc (Concurrency Locking), thông báo real-time cập nhật queue và trạng thái đơn (Server-Sent Events / WebSocket).
-- **Core features:** Customer đăng đơn (điểm đón, điểm trả, cước phí), hàng đợi cuốc xe công khai, Driver duyệt queue & pick cuốc (`PENDING` $\rightarrow$ `ACCEPTED`), cập nhật hành trình (`IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`), tính giá linh hoạt (Strategy Pattern), phân quyền Customer vs Driver bằng JWT.
-- **Architecture:** Monolith Spring Boot chuẩn 3 layers (Controller–Service–Repository), Redis In-Memory Queue/Cache, PostgreSQL/MySQL tập trung, thiết kế module hóa sẵn sàng mở rộng sang Microservices phân tán.
+> **NGUYÊN TẮC HỌC CỐT LÕI CỦA GIAI ĐOẠN 1 (PRACTICE-FIRST VIA GIAO VẶT):**
+> - **Môi trường kỹ thuật chuẩn:** Sử dụng **Java 17 LTS** và phiên bản **Spring Boot 3.x tương thích** (Spring Boot 3.2+).
+> - **Tuyệt đối không học qua ví dụ console rời rạc nhỏ lẻ:** Bỏ qua các bài toán máy tính cầm tay, quản lý sinh viên mảng console, quản lý thư viện console. Chúng gây phân mảnh và không phản ánh cách tư duy của kỹ sư phần mềm backend thực chiến.
+> - **Học theo phương pháp thực hành trực tiếp làm app Giao Vặt:**
+>   1. Ngay từ Tuần 1, khởi tạo base dự án Spring Boot cho Giao Vặt $\rightarrow$ Học được cấu trúc hoàn chỉnh của 1 Backend Java Spring Boot chuẩn doanh nghiệp (Maven/Gradle, `pom.xml`, các package `controller`, `service`, `repository`, `model`, `dto`, `config`, `exception`).
+>   2. Code Controller và các REST API đầu tiên cho Giao Vặt (Ping API, Order Controller skeleton).
+>   3. Khi bắt tay vào viết logic nghiệp vụ cho Giao Vặt (tính cước sàn theo khoảng cách, kiểm tra điều kiện tạo đơn, kiểm tra trạng thái máy đơn hàng, duyệt danh sách bảng tin, lọc đơn, thống kê thu nhập) $\rightarrow$ Học và làm chủ tự nhiên các logic cú pháp Java: kiểu dữ liệu, toán tử, câu điều kiện (`if/else`, switch-case / switch expression), vòng lặp (`for`, `while`), OOP đóng gói, Java Collections in-memory, Custom Exceptions và Stream API.
+
+**Dự án chính: Giao Vặt** — On-Demand Crowdsourced Delivery Platform (Nền tảng tiện chuyến & giao việc vi mô)
+- **Scope nghiệp vụ:** Hệ thống kết nối Người tạo đơn (Creator) và Người tiện chuyến / Tài xế (Runner). Khách đăng nhu cầu giao hàng/đi nhờ xe $\rightarrow$ Đơn hàng hiển thị trên Bảng tin công khai (`Order Feed`) $\rightarrow$ Runner duyệt bảng tin và nhận đơn (`claimOrder`).
+- **Core Mechanism:** Bảng tin đơn hàng tập trung (`OPEN` orders), cơ chế khóa chống tranh chấp khi nhiều Runner cùng bấm nhận 1 đơn trong cùng tích tắc (Concurrency Locking với `@Version`), thông báo real-time cập nhật trạng thái đơn (Server-Sent Events / SSE).
+- **Core features:** Creator đăng đơn (điểm đón, điểm trả, khoảng cách, cước phí), Bảng tin đơn mở công khai, Runner duyệt feed & nhận đơn (`OPEN` $\rightarrow$ `ACCEPTED`), cập nhật hành trình (`PICKED_UP` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`), tính giá linh hoạt (Strategy Pattern), phân quyền Creator vs Runner bằng JWT.
+- **Architecture:** Monolith Spring Boot 3 chuẩn 3 layers (Controller–Service–Repository Seam), In-Memory Cache/Queue (Redis ở Giai đoạn 2), PostgreSQL/MySQL tập trung, thiết kế module hóa phân ranh giới rõ ràng.
 
 ### Danh mục 9 Module Chức năng Bắt buộc của App Giao Vặt (Khai thác 100% Roadmap)
-1. **Module 1 — Authentication & RBAC (Tuần 9, 15):** Đăng ký/đăng nhập Customer & Driver; Spring Security 6 + JWT Stateless; Refresh Token Rotation lưu Redis; phân quyền `@PreAuthorize("hasRole('...')")`; cấu hình MDC Logging `traceId`; ẩn số điện thoại khách trên public queue (chỉ hiển thị sau khi tài xế pick cuốc).
-2. **Module 2 — Đăng đơn & Định giá thông minh (Tuần 6, 15, 17):** DTO Validation `@Valid`; GoF Strategy Pattern cho tính giá cước (`StandardPricingStrategy`, `SurgePricingStrategy` giờ cao điểm, `BadWeatherPricingStrategy` thời tiết xấu); Idempotency Key Pattern (Header `Idempotency-Key` lưu Redis chống bấm đúp tạo đơn trùng); chuẩn hóa lỗi theo RFC 7807 `ProblemDetail`.
-3. **Module 3 — Redis In-Memory Priority Queue (Tuần 10):** Redis Sorted Set (ZSET) lưu `orders:pending` theo score thời gian/giá cước; Cache-Aside pattern cho chi tiết đơn `order:{id}`; Sliding Window Rate Limiting bằng Redis để chống bot/spam refresh queue.
-4. **Module 4 — Driver Pick Order & Concurrency Control (Tuần 7, 17, 24–26):** Giải quyết triệt để race condition khi nhiều tài xế cùng bấm pick 1 đơn bằng JPA Optimistic Locking (`@Version`); đối chứng so sánh với Pessimistic Locking (`PESSIMISTIC_WRITE`) hoặc Redisson Distributed Lock; cấu hình Spring `@Retryable` tự động retry với exponential backoff khi gặp deadlock.
-5. **Module 5 — Real-time Queue & Notifications (Tuần 17):** Server-Sent Events (`SseEmitter`) quản lý luồng real-time; Event-Driven Architecture (`ApplicationEventPublisher`); sử dụng Virtual Threads (JDK 21) cho tác vụ push notification bất đồng bộ (broadcast thêm đơn mới vào queue, gỡ đơn đã nhận, báo khách có tài xế nhận).
-6. **Module 6 — Quản lý vòng đời đơn & State Machine (Tuần 4, 6, 8, 12):** Quản lý chu trình trạng thái: `PENDING` $\rightarrow$ `ACCEPTED` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`; Custom Exceptions (`InvalidOrderStateException`, `OrderNotFoundException`); Global Exception Handler `@RestControllerAdvice`; Unit & Integration tests với MockMvc.
+1. **Module 1 — Authentication & RBAC (Tuần 9, 15):** Đăng ký/đăng nhập Creator & Runner; Spring Security 6 + JWT Stateless; Refresh Token Rotation; phân quyền `@PreAuthorize("hasRole('...')")`; cấu hình MDC Logging `traceId`; ẩn số điện thoại khách trên public feed (chỉ hiển thị sau khi Runner nhận đơn thành công).
+2. **Module 2 — Đăng đơn & Định giá thông minh (Tuần 3, 6, 15, 17):** Jakarta Validation `@Valid`; GoF Strategy Pattern cho tính giá cước (`StandardPricingStrategy`, `SurgePricingStrategy` giờ cao điểm, `BadWeatherPricingStrategy` thời tiết xấu); Idempotency Key Pattern (Header `Idempotency-Key` lưu Redis chống bấm đúp tạo đơn trùng); chuẩn hóa lỗi theo RFC 7807 `ProblemDetail`.
+3. **Module 3 — Redis In-Memory Priority Queue & Feed (Tuần 10):** Redis Sorted Set (ZSET) lưu `orders:open` theo score thời gian/giá cước; Cache-Aside pattern cho chi tiết đơn `order:{id}`; Sliding Window Rate Limiting bằng Redis để chống bot/spam refresh bảng tin.
+4. **Module 4 — Runner Claim Order & Concurrency Control (Tuần 7, 8, 17, 24–26):** Giải quyết triệt để race condition khi nhiều Runner cùng bấm nhận 1 đơn bằng JPA Optimistic Locking (`@Version`); đối chứng so sánh với Pessimistic Locking (`PESSIMISTIC_WRITE`) hoặc Redisson Distributed Lock; cấu hình Spring `@Retryable` tự động retry với exponential backoff khi gặp deadlock.
+5. **Module 5 — Real-time Feed & Notifications (Tuần 17):** Server-Sent Events (`SseEmitter`) quản lý luồng real-time một chiều nhẹ; Event-Driven Architecture (`ApplicationEventPublisher`); sử dụng Thread Pool bất đồng bộ (`ThreadPoolTaskExecutor`, `@Async`) trên Java 17 LTS cho tác vụ push notification (broadcast thêm đơn mới vào feed, gỡ đơn đã nhận, báo khách có Runner nhận).
+6. **Module 6 — Quản lý vòng đời đơn & State Machine (Tuần 2, 4, 6, 8, 12):** Quản lý chu trình trạng thái: `DRAFT` $\rightarrow$ `OPEN` $\rightarrow$ `ACCEPTED` $\rightarrow$ `PICKED_UP` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `COMPLETED` / `CANCELLED`; Custom Exceptions (`InvalidOrderStateException`, `OrderNotFoundException`); Global Exception Handler `@RestControllerAdvice`; Unit & Integration tests với MockMvc.
 7. **Module 7 — Thanh toán Sandbox & Webhook (Tuần 17, 49):** Tích hợp cổng thanh toán giả lập (VNPay/Stripe Sandbox); Webhook Receiver xác thực chữ ký số HMAC-SHA256; Idempotent Webhook Processing (chống duplicate webhook callback khi cổng gửi lại).
-8. **Module 8 — Báo cáo định kỳ & Spring Batch (Tuần 4, 22):** `@Scheduled` hoặc Spring Batch tự động tổng kết doanh thu tài xế lúc 00:00 hàng ngày; xuất file báo cáo Excel bằng Apache POI; tính toán thống kê bằng Java Stream API (`groupingBy`, `summarizingDouble`).
+8. **Module 8 — Báo cáo định kỳ & Spring Batch (Tuần 4, 22):** `@Scheduled` hoặc Spring Batch tự động tổng kết doanh thu Runner lúc 00:00 hàng ngày; xuất file báo cáo Excel bằng Apache POI; tính toán thống kê bằng Java Stream API (`groupingBy`, `summarizingDouble`).
 9. **Module 9 — Database Tuning, Testing & DevOps (Tuần 5, 7, 11, 12, 36):** Flyway Database Migrations (`V1`, `V2`); B-Tree Composite Index `(status, created_at)` kèm benchmark `EXPLAIN ANALYZE`; Testcontainers (PostgreSQL + Redis thật); Multi-thread stress test với JUnit 5 + `CountDownLatch`; Dockerfile multi-stage; Docker Compose full stack; GitHub Actions CI pipeline; Spring Actuator & Prometheus metrics.
 
-## Tuần 1 — Setup, syntax, control flow
+---
 
-### Thứ 2 — Môi trường + chương trình đầu tiên (2h)
-- [ ] Cài JDK 21, IntelliJ IDEA, Git, Maven; kiểm tra `java --version`, `mvn --version`, `git --version`.
-- [ ] Học cấu trúc class, `main`, biến, primitive/reference type, `String`.
-- [ ] Tạo repository `java-roadmap`; commit chương trình Hello World.
+## Tuần 1 — Khởi tạo Base Giao Vặt & Cấu trúc Backend Spring Boot (Java 17 LTS)
 
-### Thứ 3 — Kiểu dữ liệu + toán tử (2h)
-- [ ] Học numeric types, boolean, casting, overflow, operator precedence.
-- [ ] Code máy tính đơn giản: cộng, trừ, nhân, chia, modulo; validate chia cho 0.
-- [ ] Viết 5 assert kiểm tra boundary cases; commit.
+### Thứ 2 — Môi trường Java 17 LTS & Khởi tạo dự án Giao Vặt (2h)
+- [ ] Cài đặt JDK 17 (Java 17 LTS), IntelliJ IDEA, Git, Maven (hoặc Gradle wrapper); kiểm tra `java -version`, `mvn -version`, `git --version`.
+- [ ] Khởi tạo dự án Spring Boot 3.x (Java 17) cho Giao Vặt qua Spring Initializr (dependencies: `spring-boot-starter-web`, `lombok`, `spring-boot-starter-test`).
+- [ ] Khám phá cấu trúc thư mục của 1 Backend Spring Boot chuẩn: `src/main/java`, `src/main/resources`, `pom.xml` (quản lý dependency, plugin compiler target 17).
+- [ ] Tìm hiểu điểm khởi chạy ứng dụng: `@SpringBootApplication`, phương thức `main`, Spring ApplicationContext khởi động ra sao.
+- [ ] Tạo repository `giao-vat-platform`; commit initial codebase chuẩn.
 
-### Thứ 4 — Điều kiện (2h)
-- [ ] Học `if/else`, nested condition, `switch`, ternary; tránh điều kiện lồng quá sâu.
-- [ ] Code phân loại điểm, năm nhuận, loại tam giác.
-- [ ] Viết test tay cho input hợp lệ, biên, không hợp lệ.
+### Thứ 3 — Controller đầu tiên & Cấu trúc Phân tầng Package (2h)
+- [ ] Học cấu trúc phân tầng (Package Structure) chuẩn của Spring Boot Backend: `controller`, `service`, `repository`, `model`/`entity`, `dto`, `config`, `exception`.
+- [ ] Tạo Controller đầu tiên: `PingController` với endpoint `GET /api/v1/ping` trả về trạng thái hệ thống `"Giao Vat Platform v1 - Ready"`.
+- [ ] Tìm hiểu cơ chế HTTP Request/Response, annotation `@RestController`, `@GetMapping`.
+- [ ] Học cú pháp Java nền tảng: Biến, kiểu dữ liệu primitive vs reference, `String`, hằng số (`final`), quy ước đặt tên (CamelCase, Clean Code).
+- [ ] Test endpoint qua trình duyệt hoặc curl/Postman; commit.
 
-### Thứ 5 — Vòng lặp (2h)
-- [ ] Học `for`, enhanced `for`, `while`, `do-while`, `break`, `continue`.
-- [ ] Code menu console và bài tổng chữ số, số nguyên tố, Fibonacci.
-- [ ] Ghi Big-O cho từng bài; commit.
+### Thứ 4 — Controller API Đơn Hàng Đầu Tiên (`OrderController` Skeleton) (2h)
+- [ ] Tạo `OrderController` với 2 endpoint cơ bản: `POST /api/v1/orders` (tạo đơn hàng) và `GET /api/v1/orders` (lấy danh sách đơn hàng).
+- [ ] Học cách nhận dữ liệu trong Spring Boot: `@PostMapping`, `@RequestBody`, `@RequestParam`, `@PathVariable`.
+- [ ] Khái niệm DTO (Data Transfer Object): Tạo `CreateOrderRequest` và `OrderResponse`.
+- [ ] Học Java 17 `record`: Viết DTO bằng Java `record` (immutable data carrier gọn gàng) vs class truyền thống.
+- [ ] Test gửi request JSON qua Postman/curl; commit.
 
-### Thứ 6 — Method + clean code (2h)
-- [ ] Học parameter, return, scope, overload; một method chỉ nên có một trách nhiệm.
-- [ ] Tách bài tuần thành method nhỏ; đặt tên rõ; bỏ duplicate code.
-- [ ] Tự review diff; ghi 3 điểm đã sửa.
+### Thứ 5 — Inversion of Control (IoC), Dependency Injection (DI) & Tầng Service (2h)
+- [ ] Học nguyên lý Inversion of Control (IoC) và Dependency Injection (DI) trong Spring Boot.
+- [ ] Phân tách trách nhiệm: Controller chỉ nhận HTTP và trả response; Logic nghiệp vụ thuộc về Service.
+- [ ] Tạo `OrderService` (đánh dấu `@Service`), inject vào `OrderController` qua Constructor Injection (Spring Best Practice, tránh dùng `@Autowired` trên field).
+- [ ] Viết method đầu tiên trong `OrderService`: tạo đơn hàng mock và trả về `OrderResponse`.
+- [ ] Review luồng đi của dữ liệu: Client $\rightarrow$ Controller $\rightarrow$ Service $\rightarrow$ Response; commit.
 
-### Thứ 7 — Mini project 1 (5h)
-- [ ] 1h: thiết kế menu Student Management.
-- [ ] 2h: code add/list/find/delete student bằng array.
-- [ ] 1h: validation ID, name, score; custom error message.
-- [ ] 1h: README, commit, quay video chạy demo.
+### Thứ 6 — Configuration, Spring Profiles & Clean Logging (2h)
+- [ ] Cấu hình ứng dụng qua `application.yml`: cấu hình `server.port=8080`, context-path `/api`.
+- [ ] Học Spring Profiles (`local`, `dev`, `test`): tách file `application-local.yml` và kích hoạt qua `spring.profiles.active`.
+- [ ] Sử dụng SLF4J / Logback (`@Slf4j`): Ghi log khi nhận request tạo đơn, tuyệt đối không dùng `System.out.println`.
+- [ ] Tự review git diff; dọn dẹp mã nguồn; commit.
 
-**Chủ nhật:** nghỉ; tùy chọn xem lại 10 câu hỏi tự kiểm tra.
+### Thứ 7 — Base Project Lab & API Verification (5h)
+- [ ] 2h: Hoàn thiện khung base project Giao Vặt chạy mượt mà trên Java 17 LTS + Spring Boot 3.
+- [ ] 1h: Viết test khởi động context (`@SpringBootTest` contextLoads) và test endpoint `/api/v1/ping`.
+- [ ] 1h: Thiết lập tài liệu API cơ bản bằng SpringDoc OpenAPI / Swagger (`/swagger-ui.html`).
+- [ ] 1h: Viết README giới thiệu kiến trúc base của Giao Vặt; commit và tag `giaovat-base-v0`.
 
-## Tuần 2 — OOP căn bản
-
-### Thứ 2 — Class, object, constructor (2h)
-- [ ] Học class, field, method, constructor, `this`.
-- [ ] Refactor Student thành class; tạo `StudentService`.
-- [ ] Test tạo object và default validation.
-
-### Thứ 3 — Encapsulation + immutability (2h)
-- [ ] Học private field, getter/setter có validation; immutable object.
-- [ ] Tạo `Money` hoặc `Address` immutable; không expose mutable collection.
-- [ ] Review lỗi setter cho phép state sai.
-
-### Thứ 4 — Composition (2h)
-- [ ] Học composition vs inheritance; dependency giữa object.
-- [ ] Tạo `Course`, `Enrollment`, `Student`; quản lý đăng ký học.
-- [ ] Viết test enrollment duplicate.
-
-### Thứ 5 — Inheritance + override (2h)
-- [ ] Học `extends`, override, `super`, `final`; nhận diện inheritance không phù hợp.
-- [ ] Code `User`, `Admin`, `Customer`; thay thế phần duplicate bằng composition nếu cần.
-- [ ] Ghi một ví dụ “is-a” và một ví dụ “has-a”.
-
-### Thứ 6 — Interface + polymorphism (2h)
-- [ ] Học interface, abstract class, polymorphism, dependency on abstraction.
-- [ ] Tạo `NotificationSender` với Email/SMS fake implementation.
-- [ ] Test cùng một service chạy với hai implementation.
-
-### Thứ 7 — Mini project 2 (5h)
-- [ ] 1h: thiết kế Library gồm `Book`, `Member`, `Loan`.
-- [ ] 2h: code borrow/return/search; dùng composition.
-- [ ] 1h: validation và exception.
-- [ ] 1h: UML, README, refactor, commit.
-
-## Tuần 3 — Collections + Big-O
-
-### Thứ 2 — List (2h)
-- [ ] Học `ArrayList`, `LinkedList`, index, iteration, mutation.
-- [ ] Refactor Library từ array sang `List`.
-- [ ] So sánh chi phí truy cập và insert; ghi Big-O.
-
-### Thứ 3 — Set (2h)
-- [ ] Học `HashSet`, `LinkedHashSet`, `TreeSet`, `equals/hashCode` contract.
-- [ ] Chặn member/book duplicate; test object equality.
-- [ ] Ghi khi cần uniqueness, ordering, sorting.
-
-### Thứ 4 — Map (2h)
-- [ ] Học `HashMap`, `LinkedHashMap`, `TreeMap`, `getOrDefault`, `computeIfAbsent`.
-- [ ] Code word frequency và index book theo ID.
-- [ ] Giải thích bucket, hash collision, load factor ở mức phỏng vấn Fresher.
-
-### Thứ 5 — Queue, Deque, PriorityQueue (2h)
-- [ ] Học FIFO, LIFO, priority ordering.
-- [ ] Code booking queue và task priority queue.
-- [ ] Test empty queue, duplicate priority, overflow policy.
-
-### Thứ 6 — Generics (2h)
-- [ ] Học generic class/method, bounded wildcard, PECS, type erasure.
-- [ ] Viết `Repository<T, ID>` in-memory tối thiểu.
-- [ ] Xóa raw type; bật compiler warning và sửa.
-
-### Thứ 7 — DSA lab (5h)
-- [ ] 1h: học Big-O, array/hashmap pattern.
-- [ ] 2h: làm Two Sum, Valid Anagram, Group Anagrams.
-- [ ] 1h: làm Contains Duplicate, Top K Frequent Elements.
-- [ ] 1h: ghi approach, complexity, lỗi sai, commit.
-
-## Tuần 4 — Exceptions, Stream, functional Java
-
-### Thứ 2 — Exception (2h)
-- [ ] Học checked/unchecked, `throw`, `throws`, try/catch/finally.
-- [ ] Tạo `BookNotFoundException`, `InvalidLoanException`.
-- [ ] Test exception type và message; không catch `Exception` vô tội vạ.
-
-### Thứ 3 — File I/O (2h)
-- [ ] Học `Path`, `Files`, UTF-8, try-with-resources.
-- [ ] Export/import Library CSV.
-- [ ] Xử lý file thiếu, dòng lỗi, duplicate ID; test bằng temporary directory.
-
-### Thứ 4 — Lambda + functional interface (2h)
-- [ ] Học Predicate, Function, Consumer, Supplier, method reference.
-- [ ] Viết filter student/book bằng predicate.
-- [ ] So sánh lambda với anonymous class; tránh lambda khó đọc.
-
-### Thứ 5 — Stream API (2h)
-- [ ] Học `filter`, `map`, `sorted`, `distinct`, `reduce`, `collect`, `groupingBy`.
-- [ ] Tạo report: sách theo category, student theo score range.
-- [ ] Test empty stream và null input; không dùng `parallelStream` tùy tiện.
-
-### Thứ 6 — Optional, record, switch expression (2h)
-- [ ] Học `Optional` cho return value, record cho DTO/value object, switch expression.
-- [ ] Refactor query result và report.
-- [ ] Ghi rõ: không dùng record cho JPA entity mutable.
-
-### Thứ 7 — Chốt Java Core (5h)
-- [ ] 2h: hoàn thiện Library v1 và test.
-- [ ] 1h: làm 5 bài DSA Easy array/string/hashmap.
-- [ ] 1h: mock interview Java Core 20 câu.
-- [ ] 1h: dọn repo, README, tag `java-core-v1`.
-
-## Tuần 5 — Git, Maven, testing workflow
-
-### Thứ 2 — Git workflow (2h)
-- [ ] Học branch, merge, rebase, conflict, stash, revert, cherry-pick.
-- [ ] Tạo feature branch cho Library; cố ý tạo conflict rồi resolve.
-- [ ] Viết commit message theo dạng imperative.
-
-### Thứ 3 — Maven (2h)
-- [ ] Học `pom.xml`, dependency scope, lifecycle, plugin, project layout.
-- [ ] Tạo Maven project; thêm JUnit 5 và Mockito.
-- [ ] Chạy `mvn clean test`, `mvn package`; hiểu target artifact.
-
-### Thứ 4 — Unit test (2h)
-- [ ] Học arrange-act-assert, test naming, parameterized test.
-- [ ] Test `LibraryService`: borrow, return, duplicate, not-found.
-- [ ] Bổ sung boundary cases; không test implementation detail.
-
-### Thứ 5 — Mockito (2h)
-- [ ] Học mock/stub/verify, interaction test, fake vs mock.
-- [ ] Mock repository trong service test.
-- [ ] Viết một test không dùng Mockito để so sánh trade-off.
-
-### Thứ 6 — Debugging & JVM Memory + Concurrency Fundamentals (2h)
-- [ ] Dùng breakpoint, step over/into, evaluate expression, exception breakpoint; sửa 3 bug: null, off-by-one, mutable state.
-- [ ] Học JVM Memory Layout: Heap (Young Gen: Eden, Survivor; Old Gen), Stack Frame, Metaspace, Program Counter; cơ chế Garbage Collection căn bản (Mark & Sweep, Stop-The-World).
-- [ ] Học Java Memory Model (JMM): Visibility, Reordering, Happens-Before; Concurrency primitives: `volatile` vs `synchronized`, `AtomicInteger`/CAS (Compare-And-Swap), `ReentrantLock` & Condition.
-- [ ] Viết test chứng minh `volatile` giải quyết visibility và `AtomicInteger` giải quyết lost update trong multi-thread; ghi root cause và test regression.
-
-### Thứ 7 — Java Core assessment (5h)
-- [ ] 2h: làm bài test Java Core giới hạn thời gian.
-- [ ] 1h: sửa bài sai.
-- [ ] 1h: làm 3 bài DSA.
-- [ ] 1h: chốt checklist và tag `java-core-ready`.
-
-## Tuần 6 — Spring Core + Spring Boot
-
-### Thứ 2 — IoC/DI + Spring Bean Lifecycle (2h)
-- [ ] Học IoC container, ApplicationContext vs BeanFactory, bean scopes (Singleton, Prototype).
-- [ ] Học chi tiết **Spring Bean Lifecycle**: BeanDefinition -> Instantiation -> Populate properties -> Aware interfaces -> `BeanPostProcessor` (before) -> `@PostConstruct` / `InitializingBean` -> `BeanPostProcessor` (after) -> In use -> `@PreDestroy` / `DisposableBean`.
-- [ ] Tạo Spring Boot app bằng Spring Initializr; code hai implementation của `PricingService`; inject bằng `@Qualifier`.
-
-### Thứ 3 — Configuration (2h)
-- [ ] Học `@Configuration`, `@Bean`, profile, config properties, environment variable.
-- [ ] Tạo `application-local.yml` và `application-test.yml`.
-- [ ] Kiểm tra secret không nằm trong Git.
-
-### Thứ 4 — Spring MVC (2h)
-- [ ] Học `@RestController`, mapping, path variable, request param, request body.
-- [ ] Viết `DeliveryOrderController` GET/POST (khách đăng đơn hàng, xem danh sách queue đơn chờ).
-- [ ] Test request bằng curl/Postman.
-
-### Thứ 5 — DTO + validation (2h)
-- [ ] Học request DTO, response DTO, `@Valid`, constraints, enum (`OrderStatus`: PENDING, ACCEPTED, IN_TRANSIT, COMPLETED, CANCELLED).
-- [ ] Thêm validation cho CreateOrderRequest (`pickupAddress`, `dropoffAddress`, `price`, `itemNote`, `phoneNumber`).
-- [ ] Test 400 response cho payload thiếu trường hoặc giá cước <= 0.
-
-### Thứ 6 — Layering & Spring Proxy Internals (2h)
-- [ ] Học Controller–Service–Repository; transaction ở service boundary.
-- [ ] Học cơ chế **Spring AOP & Proxy**: JDK Dynamic Proxy (dựa trên interface) vs CGLIB Proxy (kế thừa class con tạo bytecode runtime).
-- [ ] Phân tích và reproduce bẫy kinh điển: **`@Transactional` / `@Async` Self-Invocation trap** (gọi method transactional cùng class dẫn đến bypass proxy, không mở transaction); thực hành 3 cách khắc phục (tách bean, self-injection bằng `@Lazy`, dùng `TransactionTemplate`).
-- [ ] Refactor Order API thành 3 layer; viết service unit test với fake repository.
-
-### Thứ 7 — REST API lab (5h)
-- [ ] 2h: hoàn thiện Order & Queue CRUD in-memory.
-- [ ] 1h: global exception handler (xử lý `OrderNotFoundException`, `InvalidOrderStateException`).
-- [ ] 1h: OpenAPI dependency và endpoint docs.
-- [ ] 1h: README API examples, commit.
-
-## Tuần 7 — SQL + JPA/Hibernate
-
-### Thứ 2 — Relational design (2h)
-- [ ] Học table, PK/FK, normalization 1NF–3NF, constraint.
-- [ ] Thiết kế ERD Giao Vặt core: `User` (id, email, password, fullName, phone, role), `DeliveryOrder` (id, customer_id, driver_id, pickupAddress, dropoffAddress, price, status, version, createdAt), `OrderReview`.
-- [ ] Thiết kế database tập trung: index trên `status` và `created_at` để tối ưu truy vấn danh sách queue đơn chờ.
-- [ ] Viết migration V1 cho database bằng Flyway.
-
-### Thứ 3 — SQL CRUD, JOIN + B-Tree Index (2h)
-- [ ] Học INSERT/UPDATE/DELETE/SELECT, INNER/LEFT/RIGHT JOIN.
-- [ ] Học cấu trúc **B-Tree Index**: Cấu trúc cây cân bằng $O(\log N)$, leaf nodes linked list cho range query, Clustered Index (Primary Key) vs Secondary Index; phân biệt Index Seek vs Index Scan vs Full Table Scan.
-- [ ] Viết 10 query cho Giao Vặt: lọc đơn `PENDING` theo thời gian mới nhất, lịch sử đơn của khách hàng, tổng thu nhập của tài xế; seed data; kiểm tra foreign key và duplicate.
-
-### Thứ 4 — JPA entity/repository (2h)
-- [ ] Học `@Entity`, ID generation, `JpaRepository`, query method.
-- [ ] Mapping `User` và `DeliveryOrder`.
-- [ ] Viết repository test với MySQL/PostgreSQL container nếu có thể (Testcontainers).
-
-### Thứ 5 — Relationships (2h)
-- [ ] Học `@ManyToOne`, `@OneToMany`, owning side, cascade, fetch.
-- [ ] Mapping `DeliveryOrder` với `User` (Customer) và `User` (Driver); mapping `OrderReview`.
-- [ ] Test persist, find, delete; tránh cascade nguy hiểm (không xóa user khi xóa order).
-
-### Thứ 6 — Transactions, Isolation Levels, MVCC & Deadlock (2h)
-- [ ] Học `@Transactional`, lazy loading, N+1, JOIN FETCH, EntityGraph; tạo N+1 bằng SQL logging và tối ưu.
-- [ ] Học **Transaction Isolation Levels**: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE; phân tích 4 hiện tượng dị thường: **Dirty Read**, **Non-repeatable Read**, **Phantom Read**, **Lost Update**.
-- [ ] Học cơ chế **MVCC** (Multi-Version Concurrency Control) trong PostgreSQL & MySQL InnoDB (Undo Log, Read View để đọc non-blocking snapshot).
-- [ ] Phân tích nguyên nhân **Deadlock**: 2 transaction tranh chấp khóa chéo nhau; cách xem MySQL Deadlock Log (`SHOW ENGINE INNODB STATUS`); giải pháp chuẩn hóa thứ tự lock và cơ chế retry.
-- [ ] Test rollback khi tạo đơn hoặc tài xế nhận cuốc fail.
-
-### Thứ 7 — Chuyển Order & Queue API sang DB (5h)
-- [ ] 2h: repository + service + DTO + MapStruct hoặc mapping thủ công.
-- [ ] 1h: pagination/sorting/filter cho danh sách queue đơn hàng chờ.
-- [ ] 1h: integration tests.
-- [ ] 1h: ERD, migration, README, commit.
-
-## Tuần 8 — Project v0 + gate
-
-### Thứ 2 — Order Lifecycle & Driver Pick Order flow (2h)
-- [ ] Code API khách tạo đơn giao hàng (`POST /api/orders`) $\rightarrow$ lưu trạng thái `PENDING`.
-- [ ] Code API tài xế xem danh sách đơn chờ (`GET /api/orders/queue`).
-- [ ] Code API tài xế nhận cuốc (`PUT /api/orders/{id}/accept`) $\rightarrow$ gán `driver_id`, cập nhật trạng thái `ACCEPTED`.
-- [ ] Test validation trạng thái: chặn tài xế nhận đơn đã được nhận hoặc đơn đã bị hủy; chặn khách tự nhận đơn của mình.
-
-### Thứ 3 — Error handling + API quality (2h)
-- [ ] Chuẩn hóa error code, status, timestamp, path, validation errors.
-- [ ] Thêm sorting/filtering/pagination cho order listing và queue.
-- [ ] Cập nhật OpenAPI.
-
-### Thứ 4 — Integration test (2h)
-- [ ] Viết test controller bằng MockMvc cho luồng tạo đơn và nhận đơn.
-- [ ] Viết test database transaction và migration.
-- [ ] Chạy toàn bộ `mvn test`; sửa flaky test.
-
-### Thứ 5 — Refactor + performance (2h)
-- [ ] Review SOLID, naming, package, duplicate logic.
-- [ ] Chạy `EXPLAIN` query queue đơn hàng; thêm composite index `(status, created_at)`.
-- [ ] Ghi benchmark trước/sau khi đánh index.
-
-### Thứ 6 — Interview gate (2h)
-- [ ] Trả lời 15 câu Java, 15 câu Spring, 10 câu SQL.
-- [ ] Làm 2 bài DSA Easy trong 45 phút.
-- [ ] Ghi lỗ hổng; tạo backlog sửa.
-
-### Thứ 7 — Demo gate (5h)
-- [ ] 2h: làm lại một CRUD entity từ số 0, không xem code cũ.
-- [ ] 1h: chạy demo và quay video.
-- [ ] 1h: hoàn thiện README/ERD/API.
-- [ ] 1h: tag `foundation-ready`.
+**Chủ nhật:** Nghỉ; tự kiểm tra kiến trúc Spring Boot và request lifecycle.
 
 ---
+
+## Tuần 2 — Nghiệp Vụ Đơn Hàng: Học Cú Pháp, Điều Kiện & Vòng Lặp Java Thực Chiến
+
+### Thứ 2 — Model Nghiệp Vụ Giao Vặt, Kiểu Dữ Liệu & Enums (2h)
+- [ ] Tạo class nghiệp vụ trung tâm: `Order` (chứa: `id`, `creatorId`, `runnerId`, `pickupAddress`, `dropoffAddress`, `distanceInKm`, `offeredPrice`, `minPrice`, `status`, `category`, `createdAt`).
+- [ ] Học các kiểu dữ liệu số thực và tiền tệ trong Java: `BigDecimal` vs `long` (lý do không dùng `double`/`float` cho tiền tệ vì lỗi sai số dấu phẩy động).
+- [ ] Học Java Enum: Tạo `OrderCategory` (`RIDE`, `FOOD`, `PARCEL`) và `OrderStatus` (`OPEN`, `ACCEPTED`, `PICKED_UP`, `IN_TRANSIT`, `COMPLETED`, `CANCELLED`).
+- [ ] Viết logic khởi tạo đơn hàng với trạng thái mặc định ban đầu là `OPEN`; commit.
+
+### Thứ 3 — Câu Điều Kiện (`if/else`, switch) & Logic Tính Cước Sàn (2h)
+- [ ] Học câu điều kiện Java (`if/else`, ternary operator `?:`).
+- [ ] Viết method tính cước sàn tối thiểu `calculateMinPrice(distanceInKm, category)`:
+  - Nếu khoảng cách $\le 0$: báo lỗi logic không hợp lệ.
+  - Cước phí cơ sở theo loại đơn: `RIDE` (10.000đ/km), `FOOD` (12.000đ/km), `PARCEL` (8.000đ/km).
+  - Sử dụng `switch expression` (tính năng mạnh mẽ của Java 17) để trả về đơn giá theo `OrderCategory`.
+- [ ] Kiểm tra điều kiện tạo đơn: `offeredPrice` do khách đưa ra phải $\ge$ `minPrice` hệ thống gợi ý.
+- [ ] Viết bài test nhỏ kiểm tra các nhánh điều kiện tính giá; commit.
+
+### Thứ 4 — Máy Trạng Thái Đơn Hàng & Switch Pattern Matching (2h)
+- [ ] Học quản lý trạng thái đơn hàng (State Transitions):
+  - Đơn chỉ có thể nhận (`ACCEPTED`) khi đang ở trạng thái `OPEN`.
+  - Đơn chỉ có thể chuyển sang `PICKED_UP` khi đang ở trạng thái `ACCEPTED`.
+  - Khách chỉ được hủy (`CANCELLED`) khi đơn chưa có Runner nhận (`OPEN`).
+- [ ] Viết hàm kiểm tra và chuyển trạng thái `canTransitionTo(currentStatus, targetStatus)` bằng `switch`.
+- [ ] Tránh nested `if/else` sâu; áp dụng kỹ thuật "Early Return / Guard Clauses" để code trong sáng, dễ đọc; commit.
+
+### Thứ 5 — Vòng Lặp Java (`for`, `while`) & Duyệt Danh Sách Đơn Bảng Tin (2h)
+- [ ] Học các loại vòng lặp trong Java: `for` truyền thống, enhanced `for-each`, `while`, `break`, `continue`.
+- [ ] Quản lý danh sách đơn hàng in-memory: Duyệt qua danh sách đơn hàng để tìm kiếm:
+  - Tìm các đơn hàng có địa chỉ đón trùng với từ khóa tìm kiếm của Runner.
+  - Lọc ra các đơn hàng thỏa mãn điều kiện cước phí tối thiểu Runner mong muốn.
+  - Dùng `while` mô phỏng việc sinh ID tự tăng an toàn không trùng lặp.
+- [ ] Phân tích độ phức tạp thời gian (Big-O) của thao tác duyệt danh sách: $O(N)$; commit.
+
+### Thứ 6 — Method Refactoring & Clean Business Logic (2h)
+- [ ] Tối ưu hóa code trong `OrderService`: Một method chỉ làm một nhiệm vụ duy nhất (Single Responsibility Principle).
+- [ ] Tách các hàm validate riêng biệt: `validateCreateOrderRequest()`, `validatePrice()`, `validateStateTransition()`.
+- [ ] Đặt tên biến và method mang tính biểu đạt cao theo từ điển nghiệp vụ Giao Vặt (xem `CONTEXT.md`).
+- [ ] Tự review diff; loại bỏ mã lặp (DRY - Don't Repeat Yourself); commit.
+
+### Thứ 7 — Order Flow In-Memory Lab (5h)
+- [ ] 2h: Hoàn thiện bộ API in-memory: Đăng đơn (`POST /api/v1/orders`), Xem bảng tin các đơn `OPEN` (`GET /api/v1/orders/feed`), Runner nhận đơn (`POST /api/v1/orders/{id}/claim`), Hủy đơn (`POST /api/v1/orders/{id}/cancel`).
+- [ ] 1h: Kiểm tra kỹ toàn bộ logic điều kiện (biên khoảng cách, giá âm, nhận đơn đã bị claim...).
+- [ ] 1h: Viết tài liệu mô tả luồng nghiệp vụ đơn hàng và máy trạng thái.
+- [ ] 1h: Commit và dọn dẹp mã nguồn.
+
+---
+
+## Tuần 3 — Đóng Gói OOP, Strategy Pattern Tính Giá & Quản Lý In-Memory Bằng Java Collections
+
+### Thứ 2 — Tính Đóng Gói (Encapsulation) & Immutability trong Giao Vặt (2h)
+- [ ] Học 4 tính chất OOP: Encapsulation, Inheritance, Polymorphism, Abstraction.
+- [ ] Encapsulation thực chiến trên class `Order`:
+  - Đặt các field là `private`; không tạo setter bừa bãi làm hỏng tính toàn vẹn trạng thái đơn hàng.
+  - Thay thế setter bằng các phương thức nghiệp vụ có chủ đích: `claimByRunner(runnerId)`, `markAsPickedUp()`, `complete()`.
+  - Đảm bảo tính bất biến (Immutability): Tạo Value Object `Location` (`address`, `lat`, `lng`) bằng Java 17 `record`.
+- [ ] Review các nguy cơ khi setter cho phép ghi đè trạng thái sai lệch; commit.
+
+### Thứ 3 — Composition over Inheritance & Thiết Kế Thực Thể (2h)
+- [ ] Học nguyên lý "Ưu tiên Composition hơn Inheritance" (Composition over Inheritance).
+- [ ] Thiết kế quan hệ giữa các thực thể Giao Vặt:
+  - `Order` sở hữu `PickupLocation` và `DropoffLocation` (Composition - Has-a relationship).
+  - Tạo `User` đóng gói thông tin người dùng (`id`, `fullName`, `phoneNumber`, `role`), phân tách rõ Creator vs Runner.
+  - Tránh bẫy kế thừa sai lầm (ví dụ: không kế thừa `Order` thành `FoodOrder`, mà dùng enum thuộc tính hoặc strategy).
+- [ ] Viết test đảm bảo tính độc lập giữa các thực thể; commit.
+
+### Thứ 4 — Interface, Polymorphism & GoF Strategy Pattern Tính Giá Cước (2h)
+- [ ] Học Interface, Abstract Class, Polymorphism (Tính đa hình), Dependency Inversion.
+- [ ] Áp dụng **Strategy Pattern** cho bài toán tính cước phí Giao Vặt (Module 2):
+  - Tạo interface `PricingStrategy` với method `calculatePrice(distanceInKm)`.
+  - Triển khai `StandardPricingStrategy` (giá cước ngày thường).
+  - Triển khai `SurgePricingStrategy` (nhân hệ số giờ cao điểm 1.5x).
+  - Triển khai `BadWeatherPricingStrategy` (nhân hệ số trời mưa 1.3x).
+- [ ] Dùng Spring `@Component` và `@Qualifier` hoặc Factory để chọn strategy linh hoạt theo điều kiện; commit.
+
+### Thứ 5 — Java Collections Nền Tảng: List & Map Quản Lý Bảng Tin Đơn Hàng (2h)
+- [ ] Học Java Collections Framework: Hierarchy của `Collection`, `List`, `Set`, `Map`.
+- [ ] `ArrayList` vs `LinkedList`: Hiệu năng truy xuất ngẫu nhiên $O(1)$ vs chèn/xóa $O(N)$ trong bảng tin đơn hàng.
+- [ ] `HashMap` vs `ConcurrentHashMap`:
+  - Lưu trữ danh sách đơn hàng in-memory dạng Key-Value (`Map<Long, Order>`).
+  - Tìm kiếm đơn theo ID với độ phức tạp $O(1)$.
+  - Hiểu sâu cơ chế bên trong của `HashMap`: Hash function, Array of Buckets, Hash Collision (Chaining bằng LinkedList / Red-Black Tree khi bucket $\ge 8$), Load Factor (0.75), Rehashing.
+  - Hợp đồng bất biến: `equals()` và `hashCode()` contract — tại sao override `equals` bắt buộc phải override `hashCode`.
+- [ ] Test tìm kiếm và thêm đơn hàng vào Map; commit.
+
+### Thứ 6 — Java Collections Nâng Cao: Set & PriorityQueue (2h)
+- [ ] `HashSet` / `LinkedHashSet`: Quản lý danh sách ID đơn đã hoàn tất hoặc danh sách mã khuyến mãi độc nhất (không trùng lặp).
+- [ ] `PriorityQueue` (Hàng đợi ưu tiên):
+  - Ứng dụng sắp xếp bảng tin đơn hàng: Đơn có cước phí đề xuất (`offeredPrice`) cao hơn hoặc thời gian chờ lâu hơn sẽ được ưu tiên xếp lên đầu queue.
+  - Học cơ chế Binary Heap bên dưới `PriorityQueue`.
+- [ ] Viết test so sánh thứ tự pick đơn khi dùng Queue thường vs PriorityQueue; commit.
+
+### Thứ 7 — Collections & Strategy Lab (5h)
+- [ ] 2h: Refactor toàn bộ tầng lưu trữ in-memory của Giao Vặt sang dùng `ConcurrentHashMap<Long, Order>` và `PriorityQueue`.
+- [ ] 1h: Tích hợp Strategy Pattern tính giá cước động dựa trên thời gian request (giờ cao điểm).
+- [ ] 1h: Viết test cho `PricingStrategy` và các thao tác CRUD in-memory.
+- [ ] 1h: Commit và tổng kết bài học về cấu trúc dữ liệu.
+
+---
+
+## Tuần 4 — Xử Lý Lỗi Tập Trung (Domain Exceptions), Java Stream API & Báo Cáo Doanh Thu
+
+### Thứ 2 — Phân Cấp Exception & Domain Exceptions Giao Vặt (2h)
+- [ ] Học cơ chế xử lý ngoại lệ trong Java: `Throwable`, `Error`, `Exception` (Checked vs Unchecked / `RuntimeException`).
+- [ ] Tại sao trong Spring Boot Backend hiện đại nên ưu tiên Unchecked Domain Exceptions?
+- [ ] Tạo bộ Custom Domain Exceptions cho Giao Vặt:
+  - `OrderNotFoundException` (khi không tìm thấy ID đơn hàng).
+  - `InvalidOrderStateException` (khi chuyển trạng thái sai quy tắc, ví dụ đơn đã nhận rồi mà Runner khác đòi nhận lại).
+  - `PriceBelowMinimumException` (khi khách trả giá thấp hơn giá sàn).
+- [ ] Sử dụng từ khóa `throw`, `throws`, khối `try/catch/finally`; commit.
+
+### Thứ 3 — Chuẩn Hóa Lỗi API với `@RestControllerAdvice` & RFC 7807 (2h)
+- [ ] Xây dựng Global Exception Handler tập trung bằng `@RestControllerAdvice` và `@ExceptionHandler`.
+- [ ] Chuyển đổi các Domain Exception thành HTTP Response tương ứng:
+  - `OrderNotFoundException` $\rightarrow$ `404 Not Found`.
+  - `InvalidOrderStateException` $\rightarrow$ `409 Conflict`.
+  - `PriceBelowMinimumException` $\rightarrow$ `400 Bad Request`.
+- [ ] Chuẩn hóa payload lỗi theo chuẩn quốc tế **RFC 7807 ProblemDetail** (Spring 6 / Spring Boot 3 hỗ trợ native: `status`, `title`, `detail`, `instance`, `timestamp`).
+- [ ] Không bao giờ để lộ stack trace thô ra ngoài client vì lý do bảo mật; commit.
+
+### Thứ 4 — Lambda Expressions & Functional Interfaces (2h)
+- [ ] Học lập trình hàm trong Java: Anonymous class vs Lambda expressions `() -> {}`.
+- [ ] Các Functional Interfaces cốt lõi trong `java.util.function`:
+  - `Predicate<T>`: Kiểm tra điều kiện (ví dụ: `order -> order.getStatus() == OrderStatus.OPEN`).
+  - `Function<T, R>`: Biến đổi dữ liệu (ví dụ: chuyển `Order` thành `OrderResponse`).
+  - `Consumer<T>`: Tiêu thụ dữ liệu (ví dụ: gửi thông báo).
+  - `Supplier<T>`: Cung cấp dữ liệu.
+- [ ] Method References (`Order::getId`, `System.out::println`); commit.
+
+### Thứ 5 — Java Stream API Thực Chiến (2h)
+- [ ] Khái niệm luồng xử lý dữ liệu Stream (nguồn, intermediate operations, terminal operations).
+- [ ] Các thao tác xử lý danh sách đơn hàng Giao Vặt bằng Stream:
+  - `filter()`: Lọc các đơn đang ở trạng thái `OPEN` và có khoảng cách $\le 5$km.
+  - `map()`: Biến đổi danh sách thực thể `Order` sang danh sách `OrderResponse` DTO.
+  - `sorted()`: Sắp xếp đơn theo cước phí giảm dần (`Comparator.comparing(Order::getOfferedPrice).reversed()`).
+  - `distinct()`, `limit()`, `skip()` (hỗ trợ phân trang in-memory).
+  - `collect(Collectors.toList())` / Java 16+ `.toList()`.
+- [ ] Test stream với danh sách rỗng và null; commit.
+
+### Thứ 6 — Stream Collectors Nâng Cao & Java 17 Optional (2h)
+- [ ] Thống kê doanh thu Runner bằng `Collectors`:
+  - `groupingBy(Order::getCategory)`: Nhóm đơn hàng theo danh mục.
+  - `summarizingDouble(Order::getOfferedPrice)`: Tính tổng doanh thu, cước phí trung bình, đơn giá cao nhất/thấp nhất.
+  - `counting()`: Đếm số đơn hoàn tất theo từng Runner.
+- [ ] Học `Optional<T>`: Tránh triệt để lỗi kinh điển `NullPointerException` (NPE).
+- [ ] Viết method `findOrderById(Long id)` trả về `Optional<Order>`, sử dụng `.orElseThrow(() -> new OrderNotFoundException(id))`; commit.
+
+### Thứ 7 — Reporting & Stream API Lab (5h)
+- [ ] 2h: Viết API thống kê báo cáo cho Giao Vặt (`GET /api/v1/orders/reports/summary`) sử dụng toàn bộ sức mạnh của Stream API.
+- [ ] 1h: Export dữ liệu báo cáo ra định dạng CSV/Text sử dụng try-with-resources an toàn tài nguyên.
+- [ ] 1h: Viết unit tests kiểm tra toàn bộ luồng exception và logic thống kê Stream API.
+- [ ] 1h: Commit và tổng kết tuần.
+
+---
+
+## Tuần 5 — Git, Maven, Unit Testing Thực Chiến & Nền Tảng JVM / Concurrency trên Java 17
+
+### Thứ 2 — Git Workflow Thực Chiến Trong Team (2h)
+- [ ] Học Git fundamentals: Working Directory, Staging Area, Local Repository, Remote.
+- [ ] Branching model: `main`, `develop`, feature branches (`feature/order-lifecycle`, `feature/pricing-strategy`).
+- [ ] Các lệnh thiết yếu: `branch`, `checkout`/`switch`, `merge`, `rebase`, `stash`, `cherry-pick`, `revert`.
+- [ ] Quy ước commit chuẩn Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`).
+- [ ] Thực hành cố ý tạo conflict trên code Giao Vặt và giải quyết conflict (merge conflict resolution); commit.
+
+### Thứ 3 — Maven Build Tool & Dependency Management (2h)
+- [ ] Cấu trúc `pom.xml`: `groupId`, `artifactId`, `version`, `packaging`.
+- [ ] Quản lý dependency: Dependency Scopes (`compile`, `provided`, `runtime`, `test`).
+- [ ] Maven Build Lifecycle: `validate` $\rightarrow$ `compile` $\rightarrow$ `test` $\rightarrow$ `package` $\rightarrow$ `verify` $\rightarrow$ `install`.
+- [ ] Phân tích và xử lý xung đột dependency (Dependency Convergence & Exclusion); commit.
+
+### Thứ 4 — Unit Testing Chuẩn với JUnit 5 (2h)
+- [ ] Nguyên lý kiểm thử: Mô hình Arrange-Act-Assert (AAA), First-Class Tests, Red-Green-Refactor.
+- [ ] JUnit 5 Annotations: `@Test`, `@BeforeEach`, `@AfterEach`, `@DisplayName`, `@ParameterizedTest` (kiểm thử tham số hóa nhiều trường hợp khoảng cách và giá cước).
+- [ ] Viết unit test toàn diện cho logic tính cước sàn và chuyển trạng thái đơn hàng trong `OrderService`.
+- [ ] Assertions: `assertEquals`, `assertThrows`, `assertNotNull`, AssertJ Fluent Assertions (`assertThat`); commit.
+
+### Thứ 5 — Mocking Dependencies với Mockito (2h)
+- [ ] Bản chất của Mocking: Phân biệt Dummy, Stub, Spy, Mock, Fake.
+- [ ] Mockito annotations: `@Mock`, `@InjectMocks`, `@Spy`, `@ExtendWith(MockitoExtension.class)`.
+- [ ] Cấu hình hành vi giả lập: `when(...).thenReturn(...)`, `when(...).thenThrow(...)`.
+- [ ] Xác minh tương tác: `verify(mock, times(1)).doSomething(...)`.
+- [ ] Viết unit test cho `OrderController` độc lập với Service; đánh giá trade-off giữa Unit Test độc lập vs Integration Test; commit.
+
+### Thứ 6 — JVM Memory Layout & Concurrency Primitives trên Java 17 (2h)
+- [ ] Học kiến trúc bộ nhớ JVM:
+  - **Heap Memory**: Young Generation (Eden, Survivor 0/1), Old Generation.
+  - **Stack Memory**: Stack Frame, lưu biến cục bộ (Local Variables) và tham chiếu phương thức; phân biệt rõ Pass-by-value trong Java.
+  - **Metaspace**: Lưu metadata của class, static fields.
+  - Cơ chế Garbage Collection (GC) căn bản: Mark & Sweep, Stop-The-World.
+- [ ] Nền tảng Concurrency trên Java 17:
+  - Java Memory Model (JMM): Visibility, Instruction Reordering, Happens-Before relationship.
+  - Từ khóa `volatile` (đảm bảo visibility qua CPU cache) vs `synchronized` (đảm bảo atomicity & mutual exclusion).
+  - `AtomicInteger`, `AtomicLong` và cơ chế phần cứng CAS (Compare-And-Swap).
+  - Tạo bài lab đa luồng nhỏ: 10 threads cùng cộng dồn biến đếm đơn hàng để chứng minh Lost Update nếu không đồng bộ hóa; commit.
+
+### Thứ 7 — Java Core & Quality Assessment (5h)
+- [ ] 2h: Rà soát toàn bộ codebase Giao Vặt in-memory, đảm bảo Clean Code và test coverage đạt $\ge 80\%$ cho tầng Service.
+- [ ] 1h: Tự giải 3 bài toán DSA căn bản liên quan đến Array, HashMap, Two Pointers.
+- [ ] 1h: Mock interview tự vấn đáp 20 câu hỏi trọng tâm về Java Core, OOP, Collections, JVM Memory.
+- [ ] 1h: Tag release Git: `giaovat-core-passed`.
+
+---
+
+## Tuần 6 — Tái Cấu Trúc Spring Core & Spring MVC Nâng Cao (Chuẩn Hóa 3 Layers)
+
+### Thứ 2 — Spring IoC Container & Bean Lifecycle Internals (2h)
+- [ ] Học sâu cơ chế Spring IoC: `ApplicationContext` vs `BeanFactory`.
+- [ ] Bean Scopes: Singleton (mặc định), Prototype, Request, Session.
+- [ ] Chi tiết vòng đời của một Spring Bean (**Spring Bean Lifecycle**):
+  - `BeanDefinition` $\rightarrow$ Instantiation (khởi tạo instance) $\rightarrow$ Populate Properties (tiêm thuộc tính) $\rightarrow$ Aware Interfaces (`BeanNameAware`, `ApplicationContextAware`) $\rightarrow$ `BeanPostProcessor.postProcessBeforeInitialization` $\rightarrow$ `@PostConstruct` / `InitializingBean` $\rightarrow$ `BeanPostProcessor.postProcessAfterInitialization` $\rightarrow$ Bean sẵn sàng sử dụng $\rightarrow$ `@PreDestroy` / `DisposableBean`.
+- [ ] Viết code thực nghiệm in log từng bước của Bean Lifecycle; commit.
+
+### Thứ 3 — Spring AOP, Proxy Internals & Self-Invocation Trap (2h)
+- [ ] Học nguyên lý Aspect-Oriented Programming (AOP): Pointcut, Advice, JoinPoint, Aspect.
+- [ ] Cơ chế Spring Proxy:
+  - **JDK Dynamic Proxy**: Dựa trên Interface (Java Reflection).
+  - **CGLIB Proxy**: Tạo subclass bằng bytecode runtime (mặc định trong Spring Boot).
+- [ ] Tái hiện và giải thích bẫy kinh điển: **`@Transactional` / `@Async` Self-Invocation Trap**:
+  - Khi một method trong class tự gọi trực tiếp một method khác có `@Transactional` cùng class, proxy bị bypass hoàn toàn $\rightarrow$ Transaction không bao giờ được mở!
+  - Thực hành 3 cách khắc phục chuẩn: (1) Tách sang Bean/Service khác, (2) Tự inject chính mình bằng `@Lazy`, (3) Dùng `TransactionTemplate`; commit.
+
+### Thứ 4 — Spring MVC Architecture & Request Lifecycle (2h)
+- [ ] Cơ chế hoạt động của `DispatcherServlet`: Client request $\rightarrow$ `HandlerMapping` $\rightarrow$ `HandlerAdapter` $\rightarrow$ Controller $\rightarrow$ `HttpMessageConverter` (Jackson JSON) $\rightarrow$ Response.
+- [ ] Custom Filters và Interceptors:
+  - Tạo `RequestLoggingFilter` để ghi nhận request time, URI và sinh `traceId`.
+  - Phân biệt Filter (tầng Servlet container) vs Interceptor (tầng Spring MVC); commit.
+
+### Thứ 5 — DTO Validation Nâng Cao với Jakarta Bean Validation (2h)
+- [ ] Sử dụng `spring-boot-starter-validation`.
+- [ ] Các validation annotations trên `CreateOrderRequest`: `@NotNull`, `@NotBlank`, `@Positive`, `@Min`, `@Size`.
+- [ ] Viết Custom Validator: Tạo annotation `@ValidLocation` để kiểm tra tọa độ hợp lệ (latitude trong khoảng $[-90, 90]$, longitude trong khoảng $[-180, 180]$).
+- [ ] Xử lý `MethodArgumentNotValidException` trong Global Exception Handler để trả về danh sách chi tiết từng trường bị lỗi kèm message rõ ràng; commit.
+
+### Thứ 6 — Chuẩn Hóa Kiến Trúc 3 Tầng (Controller – Service – Repository Seam) (2h)
+- [ ] Phân định ranh giới (Seam) kiến trúc:
+  - **Controller Layer**: Chỉ chịu trách nhiệm tiếp nhận HTTP, validation cú pháp, mapping DTO.
+  - **Service Layer**: Nắm giữ toàn bộ nghiệp vụ thuần túy của Giao Vặt, không phụ thuộc vào Web hay Servlet API.
+  - **Repository Layer (Interface Seam)**: Tạo interface `OrderRepository` để trừu tượng hóa việc lưu trữ dữ liệu (tách rời khỏi cách lưu cụ thể).
+- [ ] Viết một implementation tạm thời `InMemoryOrderRepository` implements `OrderRepository` để chuẩn bị cho việc tích hợp Database vào tuần sau; commit.
+
+### Thứ 7 — REST API Standardization Lab (5h)
+- [ ] 2h: Hoàn thiện toàn bộ bộ API Giao Vặt chuẩn hóa 3-layer: CRUD Đơn hàng, Feed bảng tin, Claim đơn hàng, Chuyển trạng thái, Báo cáo.
+- [ ] 1h: Tích hợp đầy đủ tài liệu OpenAPI/Swagger 3 với `@Operation`, `@ApiResponse`, schema models.
+- [ ] 1h: Viết test controller với `MockMvc` (kiểm tra status code 200, 201, 400 validation, 404 not found, 409 conflict).
+- [ ] 1h: Commit và sẵn sàng bước sang tầng Database.
+
+---
+
+## Tuần 7 — SQL, Database Relational, B-Tree Index & Spring Data JPA
+
+### Thứ 2 — Thiết Kế Database Relational & Migration Flyway (2h)
+- [ ] Học thiết kế cơ sở dữ liệu quan hệ: Bảng, Primary Key (PK), Foreign Key (FK), Chuẩn hóa 1NF–3NF, Constraints.
+- [ ] Thiết kế ERD chuẩn cho Giao Vặt:
+  - Bảng `users`: `id`, `email`, `password_hash`, `full_name`, `phone_number`, `role` (`ROLE_CREATOR`, `ROLE_RUNNER`).
+  - Bảng `orders`: `id`, `creator_id`, `runner_id`, `pickup_address`, `dropoff_address`, `distance_km`, `min_price`, `offered_price`, `status`, `version`, `created_at`, `updated_at`.
+- [ ] Tạo file migration đầu tiên bằng Flyway: `src/main/resources/db/migration/V1__init_schema.sql`; commit.
+
+### Thứ 3 — SQL CRUD, JOIN & Cấu Trúc B-Tree Index (2h)
+- [ ] Học SQL nâng cao: INSERT, UPDATE, DELETE, SELECT, INNER/LEFT JOIN, GROUP BY, HAVING.
+- [ ] Học cấu trúc **B-Tree Index**: Cấu trúc cây cân bằng $O(\log N)$, leaf nodes linked list cho range query, Clustered Index (Primary Key) vs Secondary Index; phân biệt Index Seek vs Index Scan vs Full Table Scan.
+- [ ] Tạo composite index trên `(status, created_at)` để tối ưu câu truy vấn lấy danh sách đơn chờ nhận trên bảng tin.
+- [ ] Viết 10 câu query thực chiến cho Giao Vặt: lấy danh sách đơn `OPEN` mới nhất, lịch sử đơn theo Creator, tổng thu nhập theo Runner; seed 1.000 dòng dữ liệu test; commit.
+
+### Thứ 4 — Spring Data JPA Entity & Repository Mapping (2h)
+- [ ] Học `@Entity`, `@Table`, `@Id`, `@GeneratedValue(strategy = GenerationType.IDENTITY)`, `JpaRepository`.
+- [ ] Mapping entity `User` và `Order`; dùng `@Enumerated(EnumType.STRING)` cho `OrderStatus` và `OrderCategory`.
+- [ ] Viết Repository methods: `findByStatusOrderByCreatedAtDesc(OrderStatus status, Pageable pageable)`.
+- [ ] Viết repository test sử dụng Testcontainers (PostgreSQL container thật); commit.
+
+### Thứ 5 — Relationships, Cascade & Xử Lý N+1 Query Problem (2h)
+- [ ] Học `@ManyToOne`, `@OneToMany`, owning side, FetchType (`LAZY` vs `EAGER`), cascade options.
+- [ ] Mapping quan hệ: Một `User` (Creator) có nhiều `Order`; một `User` (Runner) có thể thụ lý nhiều `Order`.
+- [ ] Luôn đặt `FetchType.LAZY` cho quan hệ to-one; kiểm soát và reproduce lỗi **N+1 Query Problem** qua SQL log.
+- [ ] Giải quyết N+1 bằng `JOIN FETCH` trong JPQL hoặc `@EntityGraph`; commit.
+
+### Thứ 6 — Transactions, Isolation Levels, MVCC & Locking Nền Tảng (2h)
+- [ ] Học `@Transactional`: Transaction boundaries, rollback rules (`rollbackFor = Exception.class`).
+- [ ] Học **Transaction Isolation Levels**: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE; phân tích 4 hiện tượng dị thường: **Dirty Read**, **Non-repeatable Read**, **Phantom Read**, **Lost Update**.
+- [ ] Cơ chế **MVCC** (Multi-Version Concurrency Control) trong PostgreSQL / MySQL InnoDB (Undo Log, Read View để đọc non-blocking snapshot).
+- [ ] **Khóa Lạc Quan (Optimistic Locking) nền tảng:** Thêm trường `@Version private Long version;` trên thực thể `Order` để bảo vệ tranh chấp khi nhiều Runner cùng nhận 1 đơn; commit.
+
+### Thứ 7 — Chuyển Toàn Bộ Giao Vặt API Sang Database (5h)
+- [ ] 2h: Thay thế `InMemoryOrderRepository` bằng `JpaOrderRepository`; hoàn thiện mapping Entity $\leftrightarrow$ DTO.
+- [ ] 1h: Thêm phân trang (Pagination) và sắp xếp (Sorting) cho API bảng tin đơn hàng bằng `Pageable`.
+- [ ] 1h: Viết Integration Tests kiểm tra lưu trữ và truy vấn DB thật với Testcontainers.
+- [ ] 1h: Commit và dọn dẹp mã nguồn.
+
+---
+
+## Tuần 8 — Hoàn Thiện Monolith v0 Giao Vặt & Quality Gate 1
+
+### Thứ 2 — Order Lifecycle & Runner Claim Order Flow Hoàn Chỉnh (2h)
+- [ ] Nối thông toàn bộ luồng từ DB:
+  - Creator tạo đơn (`POST /api/v1/orders`) $\rightarrow$ Lưu DB trạng thái `OPEN`.
+  - Runner duyệt bảng tin (`GET /api/v1/orders/feed`) $\rightarrow$ Query DB index `(status, created_at)`.
+  - Runner nhận đơn (`POST /api/v1/orders/{id}/claim`) $\rightarrow$ Kiểm tra trạng thái và cập nhật `runner_id`, đổi status sang `ACCEPTED` dưới sự bảo vệ của `@Version`.
+- [ ] Test validation nghiệp vụ: Chặn Runner nhận đơn không phải `OPEN`, chặn Creator tự nhận đơn của chính mình; commit.
+
+### Thứ 3 — Error Handling Chuẩn Hóa & RFC 7807 (2h)
+- [ ] Rà soát toàn bộ HTTP status code, format timestamp UTC, URL path.
+- [ ] Xử lý `OptimisticLockingFailureException` $\rightarrow$ Trả về `409 Conflict` kèm message `"Đơn hàng đã được nhận bởi tài xế khác"`.
+- [ ] Cập nhật tài liệu OpenAPI với toàn bộ mã lỗi chuẩn; commit.
+
+### Thứ 4 — Integration Test Toàn Diện (2h)
+- [ ] Viết test Controller bằng `MockMvc` kết hợp `@SpringBootTest` và PostgreSQL container thật.
+- [ ] Viết test đa luồng cơ bản với `CountDownLatch` (2 threads cùng gọi claim 1 đơn $\rightarrow$ 1 thành công, 1 nhận 409).
+- [ ] Chạy `mvn test` pass 100%; kiểm tra không có flaky test; commit.
+
+### Thứ 5 — Performance Profiling & Query Optimization (2h)
+- [ ] Chạy `EXPLAIN ANALYZE` trên câu query bảng tin đơn hàng; so sánh chi phí trước và sau khi có B-Tree index `(status, created_at)`.
+- [ ] Kiểm tra dung lượng query, đảm bảo không bị N+1 khi trả về thông tin Creator kèm theo đơn hàng.
+- [ ] Ghi lại kết quả benchmark vào file `docs/benchmarks/foundation-query.md`; commit.
+
+### Thứ 6 — Technical Interview Gate 1 (2h)
+- [ ] Tự vấn đáp 15 câu Java Core (OOP, Collections, Exceptions, Memory), 15 câu Spring Boot (IoC, Lifecycle, Proxy trap, MVC, JPA), 10 câu SQL/Transaction (Isolation, Index, MVCC).
+- [ ] Làm 2 bài DSA Easy trong 45 phút.
+- [ ] Ghi nhận các điểm còn chưa tự tin vào sổ tay kỹ thuật.
+
+### Thứ 7 — Demo Gate 1: Sẵn Sàng Bước Sang Giai Đoạn 2 (5h)
+- [ ] 2h: Thử thách tái tạo lại một CRUD entity độc lập từ đầu không nhìn tài liệu (để kiểm tra độ nhuần nhuyễn).
+- [ ] 1h: Chạy demo toàn bộ luồng Monolith v0 và quay video demo ngắn.
+- [ ] 1h: Hoàn thiện README, ERD, hướng dẫn chạy ứng dụng bằng `mvn spring-boot:run`.
+- [ ] 1h: Tag release Git: `giaovat-foundation-ready`.
 
 # GIAI ĐOẠN 2 — TUẦN 9–18
-## Đủ điều kiện apply Java Fresher — mục tiêu 12–15 triệu
-
-**Mục tiêu:** Giao Vặt v1 là on-demand delivery platform với Order Queue tập trung, cơ chế Driver pick cuốc, phân quyền Customer vs Driver, Redis Caching, rate limiting, Docker, CI/CD, deploy và tài liệu chuẩn. Sau tuần 18 bắt đầu apply, không chờ học Senior.
-
-## Tuần 9 — Spring Security + password/JWT
-
-### Thứ 2 — Security fundamentals (2h)
-- [ ] Học authentication, authorization, filter chain, principal, authority.
-- [ ] Thêm Spring Security; phân biệt các Role: `ROLE_CUSTOMER`, `ROLE_DRIVER`, `ROLE_ADMIN`.
-- [ ] Implement user context từ JWT token (lấy `user_id`, `role` từ SecurityContextHolder).
-- [ ] Test endpoint public (đăng ký, đăng nhập) vs private (đăng đơn, nhận đơn, xem queue).
-
-### Thứ 3 — Password (2h)
-- [ ] Học password hashing, BCrypt, credential flow.
-- [ ] Tạo User/Role schema và migration.
-- [ ] Test register: duplicate email/phone, password yếu, password không lưu plain text.
-
-### Thứ 4 — Login JWT (2h)
-- [ ] Học JWT header/payload/signature, expiry, access token.
-- [ ] Code login trả access token kèm role (`CUSTOMER` hoặc `DRIVER`).
-- [ ] Test token hợp lệ, sai signature, hết hạn.
-
-### Thứ 5 — Authorization & RBAC (2h)
-- [ ] Học RBAC và method security (`@PreAuthorize`).
-- [ ] Khách hàng (`ROLE_CUSTOMER`): chỉ xem và hủy đơn của chính mình; không thể gọi API nhận cuốc.
-- [ ] Tài xế (`ROLE_DRIVER`): duyệt danh sách queue các đơn `PENDING`; nhận cuốc và cập nhật đơn mình đã nhận.
-- [ ] Bảo mật dữ liệu: Ẩn số điện thoại khách hàng trên public queue; chỉ tài xế đã pick cuốc thành công mới xem được số điện thoại khách.
-
-### Thứ 6 — Refresh/logout (2h)
-- [ ] Học refresh token rotation và revoke cơ bản.
-- [ ] Code refresh/logout; secret từ environment.
-- [ ] Ghi threat model ngắn.
-
-### Thứ 7 — Auth integration (5h)
-- [ ] 2h: hoàn thiện auth flow.
-- [ ] 1h: integration tests.
-- [ ] 1h: CORS/SameSite/CSRF decision cho API.
-- [ ] 1h: README security.
-
-## Tuần 10 — Redis In-Memory Order Queue & Caching
-
-### Thứ 2 — Redis Data Structures & Order Queue (2h)
-- [ ] Học String, Set, Sorted Set (ZSet), Hash, TTL trong Redis.
-- [ ] Thiết kế Order Queue trên Redis: khi khách đăng đơn, lưu chi tiết vào Hash `order:{id}` và đẩy `order_id` vào Set/ZSet `orders:pending` (sắp xếp theo timestamp tạo đơn).
-- [ ] Code API tài xế lấy danh sách đơn chờ trực tiếp từ Redis để giảm tải tối đa cho Database chính.
-
-### Thứ 3 — Order State Synchronization & Cache-Aside (2h)
-- [ ] Xử lý đồng bộ: khi tài xế pick cuốc thành công (`PENDING` $\rightarrow$ `ACCEPTED`), xóa `order_id` khỏi Redis Set `orders:pending`.
-- [ ] Cập nhật cache chi tiết đơn `order:{id}` và lưu đồng thời xuống Database.
-- [ ] Xử lý Cache-Aside pattern và fallback query DB khi Redis gặp sự cố.
-
-### Thứ 4 — Redis setup & Docker Compose (2h)
-- [ ] Chạy Redis bằng Docker Compose.
-- [ ] Cấu hình Spring Data Redis, `RedisTemplate` và serializer JSON an toàn.
-- [ ] Viết test kết nối và test thao tác trên Redis Queue.
-
-### Thứ 5 — Cache Correctness & Invalidation (2h)
-- [ ] Invalidate cache sau khi đơn bị khách hủy hoặc tài xế hoàn thành đơn.
-- [ ] Test stale data và cache miss; xử lý Cache Penetration bằng cách lưu null object ngắn hạn.
-- [ ] Ghi rõ nguyên tắc: dữ liệu tiền bạc/trạng thái thanh toán luôn đọc từ DB gốc.
-
-### Thứ 6 — Rate Limiting & Anti-Spam (2h)
-- [ ] Học thuật toán Token Bucket và Sliding Window Rate Limiting.
-- [ ] Triển khai Rate Limiting với Redis: Giới hạn khách tạo tối đa 5 đơn/phút; giới hạn tài xế spam pick đơn tối đa 10 lần/phút để chống bot script.
-- [ ] Không lưu token/password và số điện thoại thô trong server log.
-
-### Thứ 7 — Reliability & Concurrency Lab (5h)
-- [ ] 2h: hoàn thiện luồng Redis Queue + DB fallback.
-- [ ] 1h: test đồng bộ trạng thái khi có nhiều request tạo đơn và pick đơn đồng thời.
-- [ ] 1h: đo latency API lấy danh sách queue từ Redis so với query PostgreSQL trực tiếp.
-- [ ] 1h: root-cause note và commit.
-
-## Tuần 11 — Docker + CI/CD
-
-### Thứ 2 — Docker backend (2h)
-- [ ] Học image/container/layer/volume/network.
-- [ ] Viết Dockerfile multi-stage cho Spring Boot.
-- [ ] Build và chạy image.
-
-### Thứ 3 — Compose (2h)
-- [ ] Viết Compose cho app + MySQL/PostgreSQL + Redis.
-- [ ] Healthcheck và environment variables.
-- [ ] Kiểm tra one-command startup.
-
-### Thứ 4 — GitHub Actions (2h)
-- [ ] Học workflow, job, step, cache dependency.
-- [ ] Pipeline checkout → setup JDK → `mvn test` → package.
-- [ ] Tạo badge CI.
-
-### Thứ 5 — Jenkins (2h)
-- [ ] Chạy Jenkins local/container.
-- [ ] Tạo Pipeline: checkout → Maven test → archive artifact.
-- [ ] Ghi khác biệt Jenkins vs GitHub Actions.
-
-### Thứ 6 — Deployment (2h)
-- [ ] Học deploy env, logs, healthcheck, rollback cơ bản.
-- [ ] Deploy backend lên Render/Railway/Fly.io hoặc máy chủ phù hợp.
-- [ ] Không commit secret; tạo `.env.example`.
-
-### Thứ 7 — CI/CD finish (5h)
-- [ ] 2h: build image trong CI.
-- [ ] 1h: integration test trong CI nếu runner hỗ trợ.
-- [ ] 1h: deploy demo.
-- [ ] 1h: README runbook và rollback.
-
-## Tuần 12 — Testing, debugging, performance
-
-### Thứ 2 — Testing pyramid (2h)
-- [ ] Phân biệt unit, slice, integration, e2e.
-- [ ] Lập test matrix cho Customer/Driver/Order Queue/Pick Order.
-- [ ] Bỏ test trùng hoặc test implementation detail.
-
-### Thứ 3 — Testcontainers/MockMvc (2h)
-- [ ] Chạy MySQL/PostgreSQL thật trong Testcontainers.
-- [ ] Viết repository + controller integration tests cho luồng Order & Queue.
-- [ ] Sửa test isolation.
-
-### Thứ 4 — Logging/observability (2h)
-- [ ] Structured logging, log level, correlation ID.
-- [ ] Thêm request ID và exception log không lộ secret, không lộ số điện thoại khách.
-- [ ] Dùng Actuator health/info/metrics cơ bản.
-
-### Thứ 5 — Performance (2h)
-- [ ] Đo query danh sách queue đơn hàng bằng `EXPLAIN`.
-- [ ] Kiểm tra N+1 khi query Order kèm User (Customer/Driver), pagination, composite index `(status, created_at)`.
-- [ ] Ghi before/after; không claim tối ưu nếu không đo.
-
-### Thứ 6 — Bug hunt (2h)
-- [ ] Tạo hoặc nhận 5 bug: validation thiếu trường, sai quyền role, race condition khi 2 tài xế cùng pick đơn, stale cache queue trên Redis, lộ SĐT khách trước khi pick.
-- [ ] Debug từng bug; thêm regression test.
-- [ ] Viết root cause ngắn bằng English.
-
-### Thứ 7 — Quality gate (5h)
-- [ ] 2h: chạy test full.
-- [ ] 1h: review code như reviewer lạ.
-- [ ] 1h: fix top 5 risk.
-- [ ] 1h: cập nhật quality checklist.
-
-## Tuần 13 — Agile, Jira, Confluence, AI workflow
-
-### Thứ 2 — Agile/Scrum (2h)
-- [ ] Học backlog, epic, story, acceptance criteria, sprint, DoD.
-- [ ] Viết 1 epic Giao Vặt và 8 user stories (Khách đăng đơn, Hiển thị Queue, Tài xế pick cuốc, Cập nhật lộ trình, Hủy đơn, Đánh giá).
-- [ ] Chia story theo vertical slice.
-
-### Thứ 3 — Jira mock (2h)
-- [ ] Tạo board cá nhân; tạo issue, label, priority, estimate.
-- [ ] Lập sprint 1 tuần; kéo task theo trạng thái.
-- [ ] Viết daily update: done/next/blocker.
-
-### Thứ 4 — Planning/retro (2h)
-- [ ] Estimate 3 task bằng 3-point/story points; ghi assumptions.
-- [ ] Tự mô phỏng sprint planning.
-- [ ] Viết retrospective: keep/stop/start, một action item.
-
-### Thứ 5 — Confluence/design docs (2h)
-- [ ] Viết design doc: context, requirements, API, ERD, alternatives, risks.
-- [ ] Viết ADR chọn kiến trúc queue đơn hàng, MySQL/PostgreSQL, Redis cache, JWT.
-- [ ] Viết runbook start/test/rollback.
-
-### Thứ 6 — AI coding assistant (2h)
-- [ ] Chọn Copilot, Cursor hoặc Codeium; dùng cho một endpoint và test.
-- [ ] Lưu prompt, generated diff, review comments, test output.
-- [ ] Cố ý kiểm tra hallucinated API, security flaw, missing edge case.
-
-### Thứ 7 — Review workflow (5h)
-- [ ] 2h: tạo PR cho feature tính cước linh hoạt hoặc hủy đơn hàng.
-- [ ] 1h: review diff bằng checklist correctness/security/test.
-- [ ] 1h: dùng AI tạo test rồi tự sửa test sai.
-- [ ] 1h: ghi AI workflow vào README.
-
-## Tuần 14 — DSA nâng cao: recursion, tree, graph, DP
-
-### Thứ 2 — Recursion + binary search (2h)
-- [ ] Học recursion, base case, call stack; binary search và biến thể.
-- [ ] Làm 3 bài: Binary Search, Search in Rotated Sorted Array, Koko Eating Bananas.
-- [ ] Ghi template binary search tránh off-by-one; test boundary.
-
-### Thứ 3 — Tree (2h)
-- [ ] Học BST, DFS/BFS, inorder/preorder/postorder, height.
-- [ ] Làm 3 bài: Invert Binary Tree, Max Depth, Validate BST, Level Order Traversal.
-- [ ] Code cả đệ quy và iterative bằng stack/queue.
-
-### Thứ 4 — Heap + Trie (2h)
-- [ ] Học `PriorityQueue` làm heap, top-k pattern; Trie cho prefix search.
-- [ ] Làm 2 bài: K Closest Points, Top K Frequent (bản heap); tự implement Trie.
-- [ ] So sánh heap vs sort cho top-k; ghi complexity.
-
-### Thứ 5 — Graph cơ bản (2h)
-- [ ] Học adjacency list/matrix, BFS/DFS, connected component, topo sort.
-- [ ] Làm 2 bài: Number of Islands, Course Schedule.
-- [ ] Map sang bài toán thật: tìm cuốc xe gần tọa độ hiện tại của tài xế nhất (Nearest Driver / Shortest Route).
-
-### Thứ 6 — DP nhập môn (2h)
-- [ ] Học memoization vs tabulation; Climbing Stairs, House Robber, Coin Change.
-- [ ] Viết state transition bằng lời trước khi code; không học mẹo.
-- [ ] Ghi bảng dp cho từng bài.
-
-### Thứ 7 — Timed DSA set (5h)
-- [ ] 2h: 3 bài Mixed Easy/Medium có timer (array/hashmap/two pointers).
-- [ ] 1h: 1 bài Medium tree/graph vừa code vừa giải thích.
-- [ ] 1h: review lỗi và pattern chưa thuộc.
-- [ ] 1h: cập nhật DSA notes; commit.
-
-## Tuần 15 — Design patterns, HTTP/networking, Linux, security audit
-
-### Thứ 2 — Strategy + Factory + Builder (2h)
-- [ ] Học GoF: Strategy, Factory Method, Builder, Singleton (và vì sao hạn chế dùng).
-- [ ] Refactor `PricingService` (áp dụng Strategy Pattern: `StandardPricingStrategy`, `SurgePricingStrategy` cho giờ cao điểm) và `NotificationSender` trong Giao Vặt.
-- [ ] Ghi khi nào KHÔNG cần pattern; tránh over-engineering.
-
-### Thứ 3 — Observer + Template Method + Adapter (2h)
-- [ ] Học Observer (Spring events), Template Method, Adapter, Decorator.
-- [ ] Code domain event `OrderCreatedEvent`, `OrderAcceptedEvent` dùng `ApplicationEventPublisher`.
-- [ ] Test listener chạy sau commit; ghi trade-off sync/async.
-
-### Thứ 4 — HTTP/networking (2h)
-- [ ] Học DNS, TCP/TLS handshake, HTTP/1.1 vs 2, keep-alive, CORS, cookie vs token.
-- [ ] Dùng `curl -v` trace một request Giao Vặt; đọc certificate chain.
-- [ ] Vẽ đường đi request: client → load balancer → app → DB.
-
-### Thứ 5 — Linux shell + server log (2h)
-- [ ] Học `grep`, `tail -f`, `journalctl`, `systemctl`, `ps/top`, `lsof` port.
-- [ ] Tìm lỗi trong log server bằng grep + context; kill process chiếm port.
-- [ ] Ghi 5 câu lệnh hay dùng vào runbook.
-
-### Thứ 6 — OWASP self-audit (2h)
-- [ ] Học OWASP Top 10; lập checklist từng mục với Giao Vặt.
-- [ ] Tự tìm: injection, broken auth, BOLA/IDOR (tài xế A sửa đơn của tài xế B), misconfig, thiếu rate limit; sửa ít nhất 2 finding.
-- [ ] Ghi finding + fix vào README security.
-
-### Thứ 7 — Interview drill (5h)
-- [ ] 2h: mock 20 câu design patterns + HTTP/networking.
-- [ ] 1h: giải thích 3 pattern bằng code Giao Vặt không nhìn slide.
-- [ ] 1h: SQL JOIN/aggregate 10 câu.
-- [ ] 1h: index/transaction/deadlock 5 câu + `EXPLAIN` query queue Giao Vặt.
-
-## Tuần 16 — Project polish + English
-
-### Thứ 2 — API polish (2h)
-- [ ] Chuẩn hóa naming, status code, pagination response cho queue đơn.
-- [ ] Cập nhật OpenAPI examples.
-- [ ] Test backward compatibility trong phạm vi project.
-
-### Thứ 3 — README/architecture (2h)
-- [ ] Vẽ architecture diagram request flow: Khách tạo đơn $\rightarrow$ Queue Redis $\rightarrow$ Tài xế pick $\rightarrow$ SSE notification.
-- [ ] Viết ERD và trade-offs (vì sao dùng Optimistic Lock cho Pick Order).
-- [ ] Viết “Known limitations”.
-
-### Thứ 4 — English introduction (2h)
-- [ ] Viết self-introduction 90 giây.
-- [ ] Ghi âm 3 lần; sửa pronunciation/grammar.
-- [ ] Học từ vựng: requirement, estimate, trade-off, incident, root cause.
-
-### Thứ 5 — English project demo (2h)
-- [ ] Trình bày Giao Vặt 5 phút bằng English.
-- [ ] Giải thích một bug và cách fix 3 phút (ví dụ: race condition khi 2 tài xế cùng pick 1 đơn).
-- [ ] Tự trả lời: "how do you prevent double-picking orders?", "how is the in-memory queue designed with Redis?".
-
-### Thứ 6 — CV (2h)
-- [ ] Viết CV English một trang; mô tả output, không bịa kinh nghiệm.
-- [ ] Đưa keyword đúng: Java, Spring Boot, REST, Maven, Git, SQL, Docker, CI/CD, Redis, Concurrency Locking, SSE.
-- [ ] Soát ATS và lỗi tiếng Anh.
-
-### Thứ 7 — Portfolio release (5h)
-- [ ] 2h: fix blocker và deploy.
-- [ ] 1h: quay demo.
-- [ ] 1h: tag release `giaovat-v1`.
-- [ ] 1h: kiểm tra clone → run → test theo README.
-
-## Tuần 17 — Production API Patterns, Real-time & Webhooks
-
-### Thứ 2 — Advanced RESTful & Idempotency Key Pattern (2h)
-- [ ] Học chuẩn RESTful nâng cao: chuẩn hóa lỗi HTTP theo RFC 7807 (Problem Details for HTTP APIs), API Versioning qua Header/URL.
-- [ ] Học nguyên lý **Idempotent API**: Sự khác biệt giữa GET/PUT/DELETE (vốn idempotent) vs POST (không idempotent).
-- [ ] Implement **Idempotency Key Pattern** cho Order Creation API (`POST /api/orders`) và Payment API: nhận header `Idempotency-Key`, dùng Redis lưu trạng thái key (PENDING / COMPLETED) kèm TTL để chống khách bấm đúp hoặc mạng retry tạo nhiều đơn trùng lặp.
-- [ ] Test race condition: gửi đồng thời 2 request cùng Idempotency-Key -> chỉ 1 request xử lý tạo đơn, request sau nhận kết quả cache hoặc 409 Conflict.
-
-### Thứ 3 — Webhook Architecture & Security (2h)
-- [ ] Học mô hình Webhook: Webhook Publisher vs Webhook Consumer; cơ chế retry với exponential backoff và dead-letter queue (DLQ).
-- [ ] Xây dựng Webhook Receiver nhận callback thanh toán (giả lập VNPay/Stripe): xác thực tính toàn vẹn payload bằng chữ ký số HMAC-SHA256 bí mật.
-- [ ] Thiết kế Webhook Idempotency: xử lý trường hợp bên thứ 3 gửi lại cùng 1 webhook nhiều lần hoặc gửi out-of-order (sự kiện sau đến trước).
-- [ ] Test giả lập: gửi webhook giả mạo chữ ký (phải trả 401/403) và webhook hợp lệ (update trạng thái đơn hàng).
-
-### Thứ 4 — Real-time Web: WebSocket & Server-Sent Events (SSE) (2h)
-- [ ] So sánh các cơ chế giao tiếp Client-Server: Short Polling, Long Polling, Server-Sent Events (SSE) và WebSocket (STOMP).
-- [ ] Xây dựng tính năng real-time queue & booking alert bằng **Server-Sent Events (`SseEmitter`)** trong Spring Boot:
-  - Khi khách tạo đơn mới: Push event `NEW_ORDER_AVAILABLE` tới app của toàn bộ tài xế đang mở queue.
-  - Khi 1 tài xế pick cuốc thành công: Push event `ORDER_REMOVED` tới các tài xế khác để ẩn đơn khỏi màn hình, đồng thời push event `DRIVER_ACCEPTED` cho khách hàng.
-- [ ] Xử lý quản lý vòng đời SSE connection: timeout, reconnect từ client, heartbeat ping định kỳ, dọn dẹp bộ nhớ khi client disconnect.
-
-### Thứ 5 — Concurrency Control & Database Locking (2h)
-- [ ] Phân tích bài toán **Double-Picking / Race Condition** khi 10 tài xế cùng bấm pick 1 đơn hời trong cùng 1 tích tắc.
-- [ ] So sánh **Optimistic Locking** (`@Version` trong JPA) vs **Pessimistic Locking** (`PESSIMISTIC_WRITE` / `SELECT ... FOR UPDATE` trong SQL).
-- [ ] Code cả 2 giải pháp trên entity `DeliveryOrder`; viết test đa luồng với `CountDownLatch` / `ExecutorService` (10 thread cùng gọi `acceptOrder(orderId)` $\rightarrow$ chỉ duy nhất 1 tài xế nhận thành công, 9 tài xế còn lại nhận lỗi `409 Conflict` hoặc `OptimisticLockException`).
-
-### Thứ 6 — Deadlock Simulation & Resolution Drill (2h)
-- [ ] Tạo bài lab Deadlock: viết 2 transaction chạy song song cập nhật chéo tài nguyên (Transaction 1: lock A rồi lock B; Transaction 2: lock B rồi lock A).
-- [ ] Quan sát database treo và bắt exception; xem deadlock graph trong log engine database (`SHOW ENGINE INNODB STATUS`).
-- [ ] Cấu hình Spring `@Retryable` với exponential backoff để tự động retry khi gặp transient deadlock; chuẩn hóa thứ tự lock tài nguyên để triệt tiêu deadlock.
-
-### Thứ 7 — End-to-End Payment & Notification Lab (5h)
-- [ ] 2h: Ghép nối luồng hoàn chỉnh: Khách tạo đơn (kèm Idempotency Key) $\rightarrow$ Đẩy vào Redis Queue $\rightarrow$ Tài xế pick (Optimistic Lock) $\rightarrow$ Update DB $\rightarrow$ Push thông báo SSE cho khách và gỡ đơn khỏi queue của các tài xế khác.
-- [ ] 1h: Viết integration tests toàn luồng với Testcontainers và MockMvc.
-- [ ] 1h: Viết tài liệu ADR (Architectural Decision Record) về giải pháp Idempotency và Locking đã chọn.
-- [ ] 1h: Commit, push code và review checklist tuần.
-
-## Tuần 18 — Fresher gate + bắt đầu apply
-
-### Thứ 2 — Java mock (2h)
-- [ ] Mock 30 câu Java Core/OOP/Collections/exception.
-- [ ] Sửa 5 lỗ hổng lớn nhất.
-
-### Thứ 3 — Spring mock (2h)
-- [ ] Mock DI/MVC/JPA/transaction/Security/testing.
-- [ ] Vẽ request flow không nhìn tài liệu.
-
-### Thứ 4 — Project mock (2h)
-- [ ] Kể Giao Vặt theo format problem $\rightarrow$ design $\rightarrow$ implementation $\rightarrow$ trade-off $\rightarrow$ result.
-- [ ] Trả lời follow-up về race condition khi nhiều tài xế pick cuốc, kiến trúc hàng đợi Redis, xử lý SSE real-time.
-
-### Thứ 5 — English mock (2h)
-- [ ] Mock introduction, project, teamwork, failure, learning plan.
-- [ ] Ghi âm và chấm: clarity, structure, technical vocabulary.
-
-### Thứ 6 — Application setup (2h)
-- [ ] Tạo tracker: company, JD, date, stage, gap, follow-up.
-- [ ] Chọn 10 JD Fresher/Junior; map keyword với project.
-- [ ] Không ứng tuyển nếu phải bịa kinh nghiệm.
-- [ ] Đàm phán cơ bản: tra dải lương Fresher VN, cách trả "expected salary", không khai số thấp hơn dải mình muốn.
-
-### Thứ 7 — Final gate (5h)
-- [ ] 2h: full mock Java + Spring + SQL.
-- [ ] 1h: full demo.
-- [ ] 1h: gửi 3 application chất lượng.
-- [ ] 1h: retrospective và lập kế hoạch tháng 5–17.
-
-**Gate Fresher:** clone/run/test được; code CRUD + auth trong 3 giờ; giải thích OOP/collections/SQL/Spring; có project và CI; nói project English cơ bản; hiểu Agile/Jira/Confluence/AI workflow. Đạt gate thì apply, không chờ hoàn hảo.
-
-> Trượt gate: apply intern/Fresher dải thấp hơn (8–12tr) hoặc thực tập có lương; không đứng ngoài thị trường. Đặt lại gate sau 4 tuần bù đúng phần trượt.
+## Đủ Điều Kiện Apply Java Fresher & Mở Rộng Tư Duy Kiến Trúc Hệ Thống (Mục tiêu 12–15 triệu)
+
+**Mục tiêu cốt lõi:** Hoàn thiện sản phẩm Giao Vặt v1 chuẩn sản xuất: Bảng tin đơn hàng `orders:open` trên Redis, cơ chế Runner claim đơn chống race condition bằng Concurrency Locking, phân quyền Creator vs Runner với Spring Security + JWT Stateless, Caching & Rate Limiting, Docker Compose, CI/CD GitHub Actions, deploy cloud và tài liệu chuẩn OpenAPI/ADR. Sau tuần 18 bắt đầu apply vị trí Java Fresher/Junior, không chờ học hết Senior.
+
+> **TRIẾT LÝ PHƯƠNG PHÁP LUẬN TỪ GIAI ĐOẠN 2 TRỞ ĐI:**
+>
+> **1. Quy Trình 4 Bước: Học Lý Thuyết & Bức Tranh Tổng Thể ──► Phân Tích Trade-off ──► Chọn Phương Pháp Phù Hợp (ADR) ──► System Design & Thực Hành:**
+> - Đối với các mảng kiến thức kỹ thuật lớn (Bảo mật/Auth, Caching, Concurrency/Locking, Asynchronous/Real-time, Message Queues, Microservices, Distributed Systems...):
+>   - **Bước 1 — Lý thuyết & Bức tranh tổng quan (Landscape & Theory First):** Phải học lý thuyết trước để nắm được cái nhìn tổng quát về các phương pháp giải quyết bài toán đang có trong ngành (pattern catalog, protocol, under-the-hood mechanism). Không nhảy vào code một công nghệ khi chưa hiểu các phương pháp thay thế của nó.
+>   - **Bước 2 — Phân tích Trade-off:** Không có giải pháp "tốt nhất", chỉ có giải pháp phù hợp với bài toán và ràng buộc kỹ thuật. Phân tích ma trận ưu/nhược điểm (Throughput, Latency, Data Consistency, Complexity, Resource Cost).
+>   - **Bước 3 — Ra quyết định kiến trúc (Decision Making & ADR):** Chọn phương pháp phù hợp nhất cho bài toán cụ thể và viết Architectural Decision Record (ADR) giải thích rõ lý do chọn và lý do bác bỏ các phương án khác.
+>   - **Bước 4 — System Design & Thực hành:** Hiện thực hóa giải pháp vào dự án hoặc lab thực nghiệm có đo lường đối chứng.
+>
+> **2. Nhận Định Sống Còn Về Phạm Vi Senior:**
+> - Dự án **Giao Vặt** là một case study thực chiến tuyệt vời, là xương sống rèn luyện kỹ năng backend sâu (concurrency locking, in-memory queue, cache-aside, realtime SSE, idempotency, webhook).
+> - **TUY NHIÊN, LÀM XONG PROJECT GIAO VẶT KHÔNG ĐẢM BẢO BAO QUÁT HẾT TOÀN BỘ ROADMAP!**
+> - Roadmap này hướng tới **Senior Software Engineer**, và **Senior không bao giờ dừng lại ở một dự án duy nhất dù dự án đó đủ to**.
+> - Senior đòi hỏi tư duy đa chiều, khả năng System Design cho nhiều loại hình hệ thống khác nhau (E-commerce Flash Sale, Chat System thời gian thực toàn cầu, Streaming/CDN, FinTech Ledger đối soát phân tán...), hiểu sâu bản chất Hệ thống phân tán (CAP, PACELC, Consensus Raft/Paxos, Multi-region Replication) và năng lực SRE/Leadership sản xuất.
 
 ---
 
-# GIAI ĐOẠN 3 — THÁNG 5–17
-## Junior thực chiến → đủ điều kiện apply Mid Java Software Engineer, mục tiêu 25–30 triệu
+## Tuần 9 — Authentication, RBAC & Security Architecture
 
-> Giai đoạn này ưu tiên kinh nghiệm công ty thật. Mỗi tuần giữ lịch học nhẹ nhưng gắn với task thật. Nếu chưa có job, dùng Giao Vặt như môi trường mô phỏng (on-demand delivery platform) và ghi rõ là personal project.
+### Thứ 2 — Lý Thuyết Tổng Quan Kiến Trúc Bảo Mật & Authentication (2h)
+- [ ] Học lý thuyết tổng thể các mô hình xác thực trong ngành phần mềm:
+  - Session-based Stateful Authentication (Cookie, Server Session, Redis Session Store) vs Token-based Stateless Authentication (JWT).
+  - Phân tích ưu/nhược điểm: Khả năng scale ngang (horizontal scalability), rủi ro revoke token tức thì, kích thước header.
+  - Phân biệt Authentication (Xác thực danh tính) vs Authorization (Phân quyền truy cập).
+  - Khái niệm RBAC (Role-Based Access Control) vs ABAC (Attribute-Based Access Control).
+- [ ] Lựa chọn kiến trúc cho Giao Vặt: Chọn JWT Stateless cho RESTful API, lưu refresh token trong Redis để hỗ trợ revoke; commit ADR.
+
+### Thứ 3 — Password Hashing & Quản Lý Credential (2h)
+- [ ] Học lý thuyết an toàn mật khẩu: Rainbow table attacks, cơ chế Salt, Key Stretching.
+- [ ] So sánh các thuật toán mã hóa mật khẩu: MD5/SHA (bất an) vs BCrypt, PBKDF2, Argon2.
+- [ ] Cấu hình Spring Security với `BCryptPasswordEncoder` (cost factor 10 hoặc 12).
+- [ ] Tạo schema bảng `users` và migration Flyway `V2__security_users.sql`.
+- [ ] Viết test đăng ký: chặn duplicate email/phone, password yếu, đảm bảo mật khẩu lưu trong DB đã hash 100%; commit.
+
+### Thứ 4 — JWT Anatomy & Stateless Token Flow (2h)
+- [ ] Học cấu trúc chuẩn JWT (JSON Web Token): Header (thuật toán ký), Payload (Claims: `sub`, `roles`, `exp`, `iat`), Signature.
+- [ ] Cơ chế ký số HMAC-SHA256 vs RSA (Asymmetric).
+- [ ] Xây dựng `JwtTokenProvider`: sinh Access Token (hạn 15–30 phút) chứa `user_id` và `role`.
+- [ ] Xây dựng `JwtAuthenticationFilter` kế thừa `OncePerRequestFilter`: đọc Bearer token từ header, xác thực signature và nạp Principal vào `SecurityContextHolder`.
+- [ ] Viết test: token hợp lệ, token sai chữ ký, token hết hạn; commit.
+
+### Thứ 5 — Authorization & RBAC trong Giao Vặt (2h)
+- [ ] Cấu hình Security Filter Chain và Method Security (`@PreAuthorize("hasRole('...')")`).
+- [ ] Phân quyền nghiêm ngặt cho hai tác nhân chính:
+  - **`ROLE_CREATOR` (Người tạo đơn):** Chỉ xem và hủy đơn của chính mình; tuyệt đối không thể gọi API nhận đơn (`claimOrder`).
+  - **`ROLE_RUNNER` (Tài xế tiện chuyến):** Duyệt danh sách bảng tin đơn `OPEN`; nhận đơn và cập nhật tiến độ đơn mình đã nhận.
+- [ ] Bảo mật dữ liệu nhạy cảm (Data Privacy): Ẩn số điện thoại khách hàng trên public feed; chỉ Runner nhận đơn thành công mới xem được số điện thoại Creator; commit.
+
+### Thứ 6 — Refresh Token Rotation & Threat Modeling (2h)
+- [ ] Học cơ chế **Refresh Token Rotation**: Mỗi lần dùng Refresh Token để lấy Access Token mới, hệ thống sẽ cấp một Refresh Token hoàn toàn mới và hủy Refresh Token cũ.
+- [ ] Lưu trữ Refresh Token trong Redis với TTL (ví dụ 7 ngày); cơ chế phát hiện Replay Attack (nếu Refresh Token cũ bị dùng lại $\rightarrow$ thu hồi toàn bộ phiên của user).
+- [ ] Xây dựng API `/api/v1/auth/refresh` và `/api/v1/auth/logout`.
+- [ ] Viết tài liệu Threat Model ngắn gọn cho hệ thống auth; commit.
+
+### Thứ 7 — Auth Integration & CORS/CSRF Hardening (5h)
+- [ ] 2h: Hoàn thiện toàn bộ luồng Auth: Register $\rightarrow$ Login $\rightarrow$ Access Protected API $\rightarrow$ Refresh Token $\rightarrow$ Logout.
+- [ ] 1h: Viết Integration Tests toàn diện cho các endpoint bảo mật với `@WithMockUser`.
+- [ ] 1h: Cấu hình CORS an toàn (chỉ cho phép domain frontend được chỉ định), tắt CSRF vì API hoàn toàn stateless.
+- [ ] 1h: Hoàn thiện README Security và commit code.
+
+---
+
+## Tuần 10 — Caching Architecture, Redis & Anti-Spam Rate Limiting
+
+### Thứ 2 — Lý Thuyết Tổng Quan Caching Strategies trong System Design (2h)
+- [ ] Học lý thuyết tổng thể về các chiến lược Caching trong kiến trúc phần mềm:
+  - **Cache-Aside (Lazy Loading):** App đọc cache trước, miss thì đọc DB rồi ghi vào cache.
+  - **Read-Through:** App chỉ nói chuyện với cache, cache tự nạp từ DB.
+  - **Write-Through:** App ghi vào cache, cache ghi đồng bộ xuống DB.
+  - **Write-Behind (Write-Back):** App ghi vào cache, cache ghi bất đồng bộ theo lô xuống DB (tốc độ cao nhưng rủi ro mất dữ liệu).
+- [ ] Ba thảm họa Caching kinh điển và giải pháp:
+  - **Cache Penetration:** Query key không tồn tại $\rightarrow$ hit thẳng DB $\rightarrow$ Giải pháp: Bloom Filter hoặc lưu Null Object có TTL ngắn.
+  - **Cache Breakdown:** Hot key hết hạn $\rightarrow$ hàng nghìn request cùng dội xuống DB $\rightarrow$ Giải pháp: Mutex Lock hoặc Logical Expiration.
+  - **Cache Avalanche:** Hàng loạt cache key cùng hết hạn cùng lúc $\rightarrow$ DB sập $\rightarrow$ Giải pháp: Thêm Random Jitter vào TTL.
+- [ ] Cache Invalidation: *"Có hai điều khó nhất trong Khoa học Máy tính: đặt tên và xóa cache"*.
+
+### Thứ 3 — Redis Data Structures & Thiết Kế Bảng Tin Giao Vặt (2h)
+- [ ] Học sâu các cấu trúc dữ liệu Redis: String, Hash, List, Set, Sorted Set (ZSET), Bitmap, HyperLogLog.
+- [ ] Thiết kế Bảng Tin Đơn Hàng (`Order Feed`) trên Redis:
+  - Dùng **Sorted Set (ZSET)** key `orders:open`: Score là timestamp tạo đơn hoặc cước phí, Member là `orderId` $\rightarrow$ Hỗ trợ phân trang và sắp xếp siêu tốc $O(\log N + M)$.
+  - Dùng **Hash** key `order:{id}`: Lưu snapshot chi tiết đơn hàng dạng JSON/Fields để Runner xem nhanh không cần chạm Database.
+- [ ] Code API Runner lấy danh sách bảng tin trực tiếp từ Redis; commit.
+
+### Thứ 4 — Đồng Bộ Trạng Thái Đơn Hàng & Cache-Aside (2h)
+- [ ] Xử lý đồng bộ hai chiều (Redis $\leftrightarrow$ Database):
+  - Khi Creator tạo đơn: Ghi DB $\rightarrow$ Đẩy `orderId` vào Redis ZSET `orders:open` $\rightarrow$ Lưu Hash `order:{id}`.
+  - Khi Runner nhận đơn thành công (`OPEN` $\rightarrow$ `ACCEPTED`): Gỡ `orderId` khỏi Redis ZSET `orders:open` $\rightarrow$ Cập nhật trạng thái trong DB.
+- [ ] Cơ chế Fallback an toàn: Nếu Redis tạm thời mất kết nối (Redis down), hệ thống tự động fallback query từ Database với index `(status, created_at)`.
+- [ ] Viết test kết nối và test thao tác Redis với Docker Compose; commit.
+
+### Thứ 5 — Docker Compose Redis & Serializer Chuẩn (2h)
+- [ ] Khởi chạy Redis thông qua Docker Compose local.
+- [ ] Cấu hình Spring Data Redis: `RedisTemplate<String, Object>`, cấu hình `GenericJackson2JsonRedisSerializer` hoặc `Jackson2JsonRedisSerializer` an toàn (tránh lỗ hổng Java Deserialization).
+- [ ] Thiết lập Connection Pool với Lettuce: `max-active`, `max-idle`, `min-idle`.
+- [ ] Viết test kiểm tra eviction policy và TTL; commit.
+
+### Thứ 6 — Rate Limiting & Anti-Spam Bằng Thuật Toán Sliding Window (2h)
+- [ ] Lý thuyết các thuật toán Rate Limiting: Fixed Window Counter, Sliding Window Log, Sliding Window Counter, Token Bucket, Leaky Bucket.
+- [ ] Triển khai **Sliding Window Rate Limiter** bằng Redis ZSET (hoặc Lua script atomic):
+  - Giới hạn Creator: Tối đa 5 request tạo đơn/phút (chống spam đơn ảo).
+  - Giới hạn Runner: Tối đa 30 request refresh bảng tin/phút và tối đa 10 request claim đơn/phút (chống auto-clicker bot).
+- [ ] Trả về mã lỗi HTTP `429 Too Many Requests` kèm header `Retry-After`; commit.
+
+### Thứ 7 — Reliability, Latency Measurement & Concurrency Lab (5h)
+- [ ] 2h: Hoàn thiện luồng Redis Feed + Cache-Aside + DB Fallback.
+- [ ] 1h: Viết test đa luồng mô phỏng đồng thời 50 request vừa tạo đơn vừa pick đơn.
+- [ ] 1h: Đo đạc và lập biểu đồ latency: So sánh thời gian phản hồi khi lấy bảng tin từ Redis ($<5$ms) so với query PostgreSQL trực tiếp ($30-50$ms).
+- [ ] 1h: Ghi nhận bài học về Cache Consistency và commit code.
+
+---
+
+## Tuần 11 — Containerization, CI/CD Pipeline & Deployment
+
+### Thứ 2 — Lý Thuyết Virtualization vs Containerization & 12-Factor App (2h)
+- [ ] Học lý thuyết Containerization: Khác biệt giữa Virtual Machine (Hypervisor, Guest OS) vs Container (chia sẻ OS Kernel, cgroups, namespaces).
+- [ ] 12-Factor App methodology cho Cloud-Native Backend: Config qua biến môi trường, Stateless processes, Port binding, Concurrency, Disposability.
+- [ ] Viết Dockerfile Multi-stage tối ưu cho Spring Boot (Java 17 LTS):
+  - Stage 1: Build source bằng Maven wrapper.
+  - Stage 2: Chạy trên nền Eclipse Temurin 17 JRE Alpine nhỏ gọn ($<200$MB), tạo user non-root để tăng cường bảo mật.
+- [ ] Build image và chạy container local; commit.
+
+### Thứ 3 — Docker Compose Full-Stack Local Environment (2h)
+- [ ] Viết file `docker-compose.yml` định nghĩa toàn bộ stack:
+  - Dịch vụ backend: `app` (expose port 8080, healthcheck qua Spring Actuator).
+  - Dịch vụ database: `postgres` (port 5432, persistent volume, init scripts).
+  - Dịch vụ cache/queue: `redis` (port 6379).
+- [ ] Cấu hình network bridge và dependencies (`depends_on` với condition `service_healthy`).
+- [ ] Kiểm tra khả năng khởi động toàn bộ hệ thống bằng 1 lệnh duy nhất: `docker compose up -d`; commit.
+
+### Thứ 4 — Lý Thuyết CI/CD & GitHub Actions Pipeline (2h)
+- [ ] Học lý thuyết Continuous Integration & Continuous Delivery/Deployment.
+- [ ] Cấu hình GitHub Actions workflow (`.github/workflows/ci.yml`):
+  - Trigger: Mọi PR và Push vào nhánh `main`.
+  - Các bước: Checkout code $\rightarrow$ Setup JDK 17 $\rightarrow$ Cache Maven dependencies $\rightarrow$ Run Unit & Integration Tests (`mvn test`) $\rightarrow$ Build Docker Image.
+- [ ] Tạo status badge CI hiển thị trên README repo; commit.
+
+### Thứ 5 — So Sánh Jenkins vs GitHub Actions vs GitLab CI (2h)
+- [ ] Phân tích ưu nhược điểm giữa Self-hosted CI (Jenkins) vs Managed Cloud CI (GitHub Actions, GitLab CI).
+- [ ] Tìm hiểu Jenkins Declarative Pipeline: `Jenkinsfile`, Stages, Agents, Artifact Archiving.
+- [ ] Ghi lại bảng so sánh các công cụ CI/CD vào tài liệu kỹ thuật; commit.
+
+### Thứ 6 — Deployment Cloud Thực Tế & Quản Lý Secret (2h)
+- [ ] Học các mô hình Cloud Compute: IaaS (EC2) vs PaaS (Render, Railway, Fly.io) vs CaaS/K8s.
+- [ ] Deploy backend Giao Vặt lên nền tảng Cloud phù hợp (PaaS hoặc VPS).
+- [ ] Nguyên tắc bất biến về bảo mật: Tuyệt đối không commit secret lên Git; quản lý biến môi trường qua Cloud Dashboard / Secret Manager; tạo file `.env.example`.
+- [ ] Kiểm tra kết nối từ bên ngoài tới API Cloud; commit.
+
+### Thứ 7 — Hoàn Thiện CI/CD & Runbook Triển Khai (5h)
+- [ ] 2h: Tự động hóa build và push Docker image lên GitHub Container Registry (GHCR) hoặc Docker Hub trong CI pipeline.
+- [ ] 1h: Tích hợp bước kiểm tra code chất lượng (Linter / Spotless / Checkstyle) vào CI.
+- [ ] 1h: Viết Runbook hướng dẫn chi tiết cách khởi động, kiểm tra log, backup và rollback hệ thống.
+- [ ] 1h: Tag release Git: `giaovat-ci-cd-ready`.
+
+---
+
+## Tuần 12 — Testing Strategy, Observability & Performance Profiling
+
+### Thứ 2 — Lý Thuyết Testing Pyramid & Lập Ma Trận Kiểm Thử (2h)
+- [ ] Học lý thuyết **Testing Pyramid**: Unit Tests (chân tháp - nhiều nhất, nhanh nhất), Integration / Slice Tests (giữa tháp), End-to-End Tests (đỉnh tháp - ít nhất, chậm nhất).
+- [ ] Phân biệt Unit Test (cô lập, mock ranh giới) vs Integration Test (thực tế với database/redis thật).
+- [ ] Lập Test Matrix cho toàn bộ các module của Giao Vặt (Creator, Runner, Order Feed, Claim Lock, Pricing, Payment Webhook).
+- [ ] Loại bỏ các test thừa thãi chỉ kiểm tra implementation detail; commit.
+
+### Thứ 3 — Testcontainers Thực Chiến với PostgreSQL & Redis Thật (2h)
+- [ ] Tại sao H2 Database là "bẫy giả lập" nguy hiểm (khác biệt về SQL dialect, locking behavior, JSON support so với PostgreSQL thật)?
+- [ ] Cấu hình Testcontainers trong Spring Boot 3 (`@Testcontainers`, `@Container` PostgreSQL + Redis).
+- [ ] Viết bộ integration test kiểm tra trọn vẹn luồng tạo đơn $\rightarrow$ lưu DB $\rightarrow$ đẩy Redis feed $\rightarrow$ claim đơn.
+- [ ] Đảm bảo tính độc lập tuyệt đối giữa các bài test (Test Isolation & Clean Database); commit.
+
+### Thứ 4 — Ba Trụ Cột Của Observability: Metrics, Logs & Traces (2h)
+- [ ] Học lý thuyết Observability: Khác biệt giữa Monitoring (biết hệ thống hỏng) vs Observability (hiểu vì sao hệ thống hỏng từ bên trong).
+- [ ] Ba trụ cột:
+  - **Metrics:** Số liệu đo lường định lượng (CPU, RAM, Request Rate, Error Rate, Latency).
+  - **Structured Logging:** Log có cấu trúc (JSON format), log level (`DEBUG`, `INFO`, `WARN`, `ERROR`), MDC (Mapped Diagnostic Context) chứa `traceId` và `userId` xuyên suốt vòng đời request.
+  - **Traces:** Dấu vết đường đi của request qua các thành phần.
+- [ ] Tích hợp Spring Boot Actuator: expose `/actuator/health`, `/actuator/metrics`, `/actuator/prometheus`.
+- [ ] Cấu hình MDC Filter ghi nhận `traceId` cho mọi log entry của Giao Vặt; commit.
+
+### Thứ 5 — Performance Profiling & Database Query Tuning (2h)
+- [ ] Học cách đọc và phân tích **Query Execution Plan** (`EXPLAIN (ANALYZE, BUFFERS)` trong PostgreSQL).
+- [ ] Phân biệt các toán tử truy vấn: Seq Scan (Full Table Scan), Index Scan, Index Only Scan, Bitmap Index Scan.
+- [ ] Tối ưu hóa câu query bảng tin: Đánh Composite Index `(status, created_at)` hoặc Partial Index `WHERE status = 'OPEN'`.
+- [ ] Đo lường chi phí truy vấn (Execution time và Buffers read) trước và sau khi đánh index; commit.
+
+### Thứ 6 — Bug Hunting & Tái Hiện Lỗi Thực Tế (2h)
+- [ ] Thực hành tái hiện và sửa 4 lỗi kinh điển:
+  - (1) Bẫy N+1 Query khi load danh sách đơn hàng kèm thông tin Creator.
+  - (2) Lộ số điện thoại Creator trên public feed trước khi Runner claim.
+  - (3) Race condition khi 2 request cùng claim 1 đơn mà không có lock.
+  - (4) Stale cache trên Redis khi Creator hủy đơn mà cache feed chưa xóa.
+- [ ] Viết regression test chứng minh bug đã được vá triệt để; commit.
+
+### Thứ 7 — Quality Gate & Stress Test Nền Tảng (5h)
+- [ ] 2h: Chạy toàn bộ test suite (Unit + Integration), đảm bảo pass 100% không có flaky test.
+- [ ] 1h: Chạy stress test đơn giản bằng tool (JMeter / k6 / ApacheBench) với 100 concurrent requests tới endpoint bảng tin.
+- [ ] 1h: Tự review code theo checklist bảo mật và chất lượng code.
+- [ ] 1h: Cập nhật tài liệu kỹ thuật và commit code.
+
+---
+
+## Tuần 13 — Agile, Engineering Processes, System Design Docs & AI Workflows
+
+### Thứ 2 — Agile / Scrum & Quy Trình Phát Triển Phần Mềm (2h)
+- [ ] Học quy trình Agile/Scrum: Product Backlog, Sprint Planning, Daily Standup, Sprint Review, Retrospective.
+- [ ] Các khái niệm cốt lõi: Epic, User Story, Acceptance Criteria (AC), Definition of Done (DoD).
+- [ ] Viết 1 Epic Giao Vặt và 8 User Stories chi tiết theo chuẩn Vertical Slice (mỗi story mang lại giá trị độc lập từ UI/API tới Database); commit.
+
+### Thứ 3 — Mô Phỏng Jira Board & Quản Lý Công Việc (2h)
+- [ ] Tạo board Kanban/Scrum cá nhân (GitHub Projects hoặc Jira Free).
+- [ ] Tạo issue, gán label, độ ưu tiên (Priority), ước lượng thời gian.
+- [ ] Thực hành quy trình làm việc theo task: Kéo card `In Progress` $\rightarrow$ tạo branch `feature/ticket-id` $\rightarrow$ code & test $\rightarrow$ mở Pull Request $\rightarrow$ review $\rightarrow$ merge vào `main`.
+- [ ] Viết Daily Update mẫu bằng English: Yesterday / Today / Blockers; commit.
+
+### Thứ 4 — Estimation & Sprint Retrospective (2h)
+- [ ] Học kỹ thuật ước lượng công việc: Planning Poker, Story Points, 3-Point Estimation (Optimistic, Most Likely, Pessimistic).
+- [ ] Học cách nhận diện rủi ro và các giả định (assumptions) kỹ thuật trước khi bắt tay vào code.
+- [ ] Viết tài liệu Sprint Retrospective: Keep (điểm làm tốt), Stop (thói quen xấu cần bỏ), Start (hành động cải tiến tiếp theo); commit.
+
+### Thứ 5 — Kỹ Thuật Viết Design Doc & Architectural Decision Records (ADR) (2h)
+- [ ] Học tầm quan trọng của việc viết tài liệu kỹ thuật trong doanh nghiệp: *"Code là cái hệ thống làm, Design Doc là vì sao hệ thống làm như vậy"*.
+- [ ] Cấu trúc chuẩn của một bản **ADR (Architectural Decision Record)**: Title, Status, Context, Decision, Consequences (Pros & Cons).
+- [ ] Viết 2 bản ADR chính thức cho Giao Vặt lưu tại thư mục `docs/adr/`:
+  - `ADR-001`: Lựa chọn cơ chế Concurrency Locking cho luồng Runner Claim Order (Optimistic Locking `@Version` vs Pessimistic Lock).
+  - `ADR-002`: Lựa chọn Redis Sorted Set cho Bảng Tin Đơn Hàng thời gian thực.
+- [ ] Commit tài liệu.
+
+### Thứ 6 — AI-Assisted Engineering & Workflow Hiện Đại (2h)
+- [ ] Thực hành tích hợp AI coding assistants (GitHub Copilot, Cursor, Antigravity) vào quy trình phát triển.
+- [ ] Kỹ thuật Prompt Engineering cho lập trình: Cung cấp đủ context domain, yêu cầu viết test trước (TDD), yêu cầu giải thích trade-offs.
+- [ ] Cố ý kiểm tra và bắt lỗi: Hallucination về thư viện không tồn tại, bỏ sót edge cases, vi phạm quy tắc bảo mật.
+- [ ] Ghi lại bài học kinh nghiệm về việc làm chủ AI; commit.
+
+### Thứ 7 — Code Review Workflow & PR Checklist (5h)
+- [ ] 2h: Tạo một Pull Request hoàn chỉnh cho feature mới.
+- [ ] 1h: Tự review PR dựa trên checklist nghiêm ngặt: Tính đúng đắn (Correctness), Bảo mật (Security), Khả năng quan sát (Observability), Độ bao phủ test (Test Coverage).
+- [ ] 1h: Tinh chỉnh lại code theo các góp ý tự đánh giá.
+- [ ] 1h: Merge PR và cập nhật changelog dự án.
+
+---
+
+## Tuần 14 — Cấu Trúc Dữ Liệu & Giải Thuật Ứng Dụng Trong System Design
+
+### Thứ 2 — Recursion, Call Stack & Binary Search Biến Thể (2h)
+- [ ] Học bản chất đệ quy (Call Stack, Base Case, Stack Overflow) vs Vòng lặp khử đệ quy.
+- [ ] Binary Search ($O(\log N)$) và các biến thể tìm biên (Find First/Last Occurrence).
+- [ ] Ứng dụng trong System Design: Tìm kiếm log timestamp, định vị partition key trong hệ thống phân tán.
+- [ ] Luyện 3 bài: Binary Search, Search in Rotated Sorted Array, Koko Eating Bananas; commit.
+
+### Thứ 3 — Trees, Binary Search Tree (BST) & Cấu Trúc Index (2h)
+- [ ] Học Tree fundamentals: Depth, Height, DFS (Pre/In/Postorder), BFS (Level-order).
+- [ ] Binary Search Tree (BST) và cân bằng cây (AVL, Red-Black Tree).
+- [ ] Ứng dụng trong System Design: Vì sao Database dùng B-Tree / B+Tree cho index trên đĩa thay vì BST (tối ưu hóa I/O Block đĩa).
+- [ ] Luyện 3 bài: Invert Binary Tree, Validate BST, Binary Tree Level Order Traversal; commit.
+
+### Thứ 4 — Heap / Priority Queue & Top-K Problems (2h)
+- [ ] Học cấu trúc dữ liệu Binary Heap: Min-Heap, Max-Heap, độ phức tạp thao tác ($O(1)$ peek, $O(\log N)$ push/pop).
+- [ ] Ứng dụng trong System Design: Hàng đợi ưu tiên xử lý task, thuật toán Top-K phần tử thịnh hành trong khoảng thời gian (Top Trending).
+- [ ] Luyện 2 bài: K Closest Points to Origin, Top K Frequent Elements; commit.
+
+### Thứ 5 — Graph Algorithms & Bài Toán Định Tuyến Đơn Hàng Giao Vặt (2h)
+- [ ] Học biểu diễn đồ thị: Adjacency List vs Adjacency Matrix; Duyệt đồ thị BFS vs DFS.
+- [ ] Thuật toán đường đi ngắn nhất: Dijkstra Algorithm.
+- [ ] **Ánh xạ vào bài toán thực tế của Giao Vặt:**
+  - Tìm cuốc xe gần tọa độ hiện tại của Runner nhất (Nearest Driver Problem).
+  - Ghép lộ trình tiện đường giữa đơn hàng A và đơn hàng B (Route Matching / Multi-order Batching).
+- [ ] Luyện 2 bài: Number of Islands, Course Schedule (Topological Sort); commit.
+
+### Thứ 6 — Dynamic Programming (Quy Hoạch Động) Nhập Môn (2h)
+- [ ] Học bản chất Quy hoạch động: Overlapping Subproblems và Optimal Substructure.
+- [ ] So sánh Top-down (Memoization) vs Bottom-up (Tabulation).
+- [ ] Luyện 3 bài kinh điển: Climbing Stairs, House Robber, Coin Change.
+- [ ] Ghi lại bảng chuyển trạng thái (State Transition Table) bằng lời trước khi code; commit.
+
+### Thứ 7 — Timed Algorithm Assessment (5h)
+- [ ] 2h: Giải 3 bài LeetCode Easy/Medium có bấm giờ (mỗi bài tối đa 35 phút).
+- [ ] 1h: Tự giải thích thuật toán bằng tiếng Anh theo cấu trúc: Idea $\rightarrow$ Complexity $\rightarrow$ Edge Cases $\rightarrow$ Code.
+- [ ] 1h: Tổng hợp các pattern giải thuật thường gặp trong phỏng vấn kỹ thuật.
+- [ ] 1h: Commit bài giải và ghi chú.
+
+---
+
+## Tuần 15 — Software Design Patterns, Network Protocols & Security Audit
+
+### Thứ 2 — GoF Design Patterns: Creational & Structural Patterns (2h)
+- [ ] Học bản chất và ứng dụng thực tế của GoF Design Patterns:
+  - **Strategy Pattern:** Tách rời thuật toán tính toán khỏi context sử dụng (đã áp dụng trong `PricingStrategy` của Giao Vặt).
+  - **Factory Method:** Đóng gói logic khởi tạo object phức tạp.
+  - **Builder Pattern:** Xây dựng object có nhiều thuộc tính tùy chọn, đảm bảo immutability (Java `@Builder`).
+  - **Adapter & Decorator Pattern:** Chuyển đổi interface tương thích và bọc thêm tính năng.
+- [ ] Cảnh báo chống "Over-engineering": Khi nào KHÔNG nên dùng pattern; commit.
+
+### Thứ 3 — Behavioral Patterns & Event-Driven Architecture (2h)
+- [ ] Học **Observer Pattern** và mô hình Event-Driven trong Spring Boot:
+  - Sử dụng `ApplicationEventPublisher` phát sinh sự kiện nội bộ: `OrderCreatedEvent`, `OrderClaimedEvent`, `OrderCompletedEvent`.
+  - Xây dựng `@EventListener` và `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)`.
+  - Phân tích sự khác biệt giữa xử lý sự kiện đồng bộ (Synchronous) vs bất đồng bộ (`@Async`).
+- [ ] Viết test đảm bảo event listener chỉ kích hoạt sau khi database transaction đã commit thành công; commit.
+
+### Thứ 4 — Lý Thuyết Networking & HTTP Protocols (2h)
+- [ ] Học sâu mô hình mạng: TCP/IP stack 4 tầng, cơ chế TCP 3-Way Handshake và 4-Way Teardown.
+- [ ] TLS/SSL Handshake: Mã hóa bất đối xứng (trao đổi khóa) kết hợp mã hóa đối xứng (truyền dữ liệu).
+- [ ] So sánh các thế hệ HTTP:
+  - HTTP/1.1: Keep-Alive, bẫy Head-of-Line (HoL) Blocking ở tầng ứng dụng.
+  - HTTP/2: Binary Framing, Multiplexing qua 1 kết nối TCP duy nhất, Server Push, Header Compression (HPACK).
+  - HTTP/3: Chạy trên nền giao thức QUIC (UDP), giải quyết triệt để HoL Blocking ở cả tầng transport.
+- [ ] Dùng `curl -v` trace chi tiết một request tới Giao Vặt API; commit ghi chú.
+
+### Thứ 5 — Linux Shell & Điều Tra Server Log (2h)
+- [ ] Học các câu lệnh Linux thiết yếu cho Backend Engineer:
+  - Tìm kiếm & lọc log: `grep`, `egrep`, `awk`, `sed`, `tail -n 100 -f app.log`.
+  - Kiểm tra tiến trình & tài nguyên: `top`, `htop`, `ps aux | grep java`, `free -m`, `df -h`.
+  - Kiểm tra mạng & cổng: `netstat -tulpn`, `ss -tulpn`, `lsof -i :8080`, `curl`, `dig`.
+- [ ] Thực hành điều tra lỗi trong file server log giả lập: tìm kiếm exception stack trace theo `traceId`; commit.
+
+### Thứ 6 — OWASP Top 10 Security Audit Cho Giao Vặt (2h)
+- [ ] Học danh mục lỗ hổng bảo mật phổ biến **OWASP Top 10 API Security**:
+  - BOLA / IDOR (Broken Object Level Authorization): Runner A cố tình cập nhật hoặc xem chi tiết đơn của Runner B $\rightarrow$ Cách phòng chống: Luôn kiểm tra quyền sở hữu đối tượng trước khi xử lý.
+  - Broken Authentication & Token Theft.
+  - SQL Injection & Mass Assignment.
+  - Lack of Resources & Rate Limiting.
+- [ ] Rà soát toàn bộ endpoint của Giao Vặt, viết bài test chứng minh hệ thống chặn đứng lỗi IDOR; commit.
+
+### Thứ 7 — Comprehensive Technical Mock Interview (5h)
+- [ ] 2h: Tự phỏng vấn vấn đáp 20 câu Design Patterns, Networking HTTP và Security.
+- [ ] 1h: Trực tiếp vẽ sơ đồ và giải thích Strategy Pattern và Event-Driven Architecture trên codebase Giao Vặt.
+- [ ] 1h: Vấn đáp SQL indexing, transaction isolation và query tuning.
+- [ ] 1h: Tổng kết các điểm cần cải thiện và commit checklist.
+
+---
+
+## Tuần 16 — System Architecture Documentation, English Communication & Portfolio
+
+### Thứ 2 — Chuẩn Hóa Toàn Diện RESTful API (2h)
+- [ ] Rà soát toàn bộ API Contracts: Chuẩn hóa URI danh từ số nhiều (`/api/v1/orders`), quy chuẩn phân trang (`page`, `size`, `sort`).
+- [ ] Cập nhật toàn bộ OpenAPI / Swagger examples cho request và response.
+- [ ] Đảm bảo tính nhất quán của mã lỗi trả về theo RFC 7807 `ProblemDetail`; commit.
+
+### Thứ 3 — Vẽ Kiến Trúc Hệ Thống Chuẩn C4 Model (2h)
+- [ ] Học mô hình tài liệu kiến trúc **C4 Model**: Context, Container, Component, Code.
+- [ ] Vẽ sơ đồ kiến trúc hệ thống Giao Vặt:
+  - Sơ đồ Container: Client $\rightarrow$ Nginx / Cloud Proxy $\rightarrow$ Spring Boot Monolith $\rightarrow$ PostgreSQL & Redis.
+  - Sơ đồ Request Flow chi tiết: Khách tạo đơn $\rightarrow$ Redis Feed ZSET $\rightarrow$ Runner Claim (Locking) $\rightarrow$ SSE Broadcast.
+- [ ] Viết phần "Known Limitations & Future Architecture" vào README; commit.
+
+### Thứ 4 — Technical English: Introduction & Storytelling (2h)
+- [ ] Soạn thảo bản giới thiệu bản thân bằng tiếng Anh (Self-Introduction) trong 90 giây.
+- [ ] Luyện tập ghi âm 3 lần; chỉnh sửa phát âm và ngữ pháp.
+- [ ] Nắm vững vốn từ vựng kỹ thuật chuẩn: *concurrency, race condition, data consistency, trade-off, optimistic locking, latency, horizontal scaling, bottleneck, root cause*.
+- [ ] Lưu bản script giới thiệu vào repo; commit.
+
+### Thứ 5 — Technical English: Demo Dự Án Giao Vặt (2h)
+- [ ] Chuẩn bị bài thuyết trình 5 phút bằng tiếng Anh về dự án Giao Vặt theo cấu trúc:
+  - Problem & Context $\rightarrow$ Architecture Design $\rightarrow$ Technical Challenges (Concurrency Locking & Realtime Feed) $\rightarrow$ Trade-offs $\rightarrow$ Results & Metrics.
+  - Tự trả lời 2 câu hỏi kỹ thuật hóc búa bằng tiếng Anh:
+    1. *"How do you handle double-picking when multiple drivers claim the same order simultaneously?"*
+    2. *"Why did you choose Redis Sorted Set instead of direct database polling for the order feed?"*
+- [ ] Ghi âm và đánh giá độ lưu loát; commit.
+
+### Thứ 6 — CV Kỹ Sư Backend Chuẩn Quốc Tế (2h)
+- [ ] Soạn thảo CV tiếng Anh 1 trang chuẩn format ATS (Applicant Tracking System).
+- [ ] Trình bày dự án Giao Vặt theo mô hình Action-Result (STAR): Nêu bật công nghệ sử dụng, thách thức kỹ thuật đã giải quyết và số đo đạt được (ví dụ: xử lý race condition đảm bảo 0% duplicate claim dưới tải 100 concurrent threads).
+- [ ] Đưa đúng từ khóa kỹ thuật: *Java 17 LTS, Spring Boot 3, Spring Security, JWT, Redis, PostgreSQL, JPA/Hibernate, Optimistic Locking, Testcontainers, Docker, CI/CD, RFC 7807*.
+- [ ] Rà soát ngữ pháp và chính tả; commit.
+
+### Thứ 7 — Release Portfolio Sản Phẩm Giao Vặt v1 (5h)
+- [ ] 2h: Dọn dẹp mã nguồn, kiểm tra lint, format code chuẩn Google Java Style.
+- [ ] 1h: Quay video demo ngắn (3–5 phút) thể hiện toàn bộ tính năng và luồng chạy thực tế.
+- [ ] 1h: Tạo Git Tag release chính thức: `v1.0.0-giaovat-release`.
+- [ ] 1h: Kiểm tra quy trình Clean Clone: Clone repo về thư mục mới $\rightarrow$ Chạy `docker compose up` $\rightarrow$ Run test $\rightarrow$ Kiểm tra ứng dụng chạy trơn tru 100%.
+
+---
+
+## Tuần 17 — Production API Patterns, Real-time & High-Concurrency Locking
+
+### Thứ 2 — Lý Thuyết RESTful Nâng Cao & Idempotency Key Pattern (2h)
+- [ ] Học nguyên lý **Idempotent API**:
+  - Tính chất Idempotency: Khả năng thực thi một thao tác nhiều lần mà kết quả cuối cùng trên hệ thống không thay đổi so với thực thi một lần.
+  - Phân tích các phương thức HTTP: GET, PUT, DELETE, HEAD (vốn dĩ là idempotent) vs POST, PATCH (không idempotent).
+- [ ] Bài toán thực tế: Khách bấm nút "Đặt đơn" hoặc "Thanh toán" hai lần liên tiếp do mạng lag $\rightarrow$ Nguy cơ tạo 2 đơn trùng lặp hoặc trừ tiền 2 lần.
+- [ ] Thiết kế **Idempotency Key Pattern** cho API Tạo Đơn (`POST /api/v1/orders`):
+  - Client gửi kèm Header `Idempotency-Key` (UUID ngẫu nhiên).
+  - Backend sử dụng Redis lệnh `SET order:idempotency:{key} "PROCESSING" NX EX 120` (Atomic Set if Not Exists kèm TTL 2 phút).
+  - Nếu key đã tồn tại: Chặn ngay lập tức và trả về `409 Conflict` hoặc kết quả cache trước đó.
+  - Khi hoàn tất tạo đơn: Cập nhật value thành `"COMPLETED"` kèm ID đơn hàng.
+- [ ] Viết bài test mô phỏng gửi đồng thời 2 request cùng Idempotency Key; commit.
+
+### Thứ 3 — Lý Thuyết Webhook Architecture & Security (2h)
+- [ ] Học mô hình Webhook trong tích hợp hệ thống:
+  - Khác biệt giữa Polling (chủ động hỏi) vs Webhook (bị động nhận thông báo sự kiện qua HTTP callback).
+  - Các rủi ro an ninh của Webhook: Giả mạo nguồn phát (Spoofing), Sửa đổi payload trên đường truyền (Tampering), Tấn công gửi lại (Replay Attacks).
+- [ ] Xây dựng Webhook Receiver nhận kết quả thanh toán Sandbox (giả lập VNPay/Stripe):
+  - Xác thực chữ ký số bằng thuật toán **HMAC-SHA256** dựa trên Shared Secret Key bí mật.
+  - Kiểm tra tính hợp lệ của timestamp trong webhook để ngăn chặn Replay Attack quá thời hạn.
+  - Thiết kế **Idempotent Webhook Processing**: Đảm bảo cổng thanh toán gửi lại webhook nhiều lần thì trạng thái đơn hàng vẫn chỉ cập nhật đúng 1 lần duy nhất.
+- [ ] Viết test: gửi webhook sai chữ ký (phải trả 401 Unauthorized), gửi webhook hợp lệ thành công; commit.
+
+### Thứ 4 — Lý Thuyết Real-Time Web & Server-Sent Events (SSE) (2h)
+- [ ] Học và so sánh các cơ chế giao tiếp thời gian thực:
+  - **Short Polling:** Client liên tục gửi request theo chu kỳ ngắn $\rightarrow$ Lãng phí tài nguyên máy chủ.
+  - **Long Polling:** Server giữ kết nối cho đến khi có dữ liệu mới $\rightarrow$ Nặng nề, quản lý connection phức tạp.
+  - **WebSocket (STOMP):** Kết nối 2 chiều toàn phần (Full-duplex), giao thức binary/text riêng $\rightarrow$ Tối ưu cho game/chat, nhưng nặng và khó scale qua HTTP proxies.
+  - **Server-Sent Events (SSE):** Giao tiếp 1 chiều từ Server xuống Client (Server-to-Client), chạy trên nền HTTP chuẩn (`text/event-stream`), tự động reconnect native trong trình duyệt $\rightarrow$ **Lựa chọn hoàn hảo nhất cho bảng tin đơn hàng và thông báo trạng thái**.
+- [ ] Triển khai SSE với Spring Boot `SseEmitter`:
+  - API `GET /api/v1/orders/feed/stream`: Runner đăng ký nhận stream bảng tin thời gian thực.
+  - Khi Creator tạo đơn mới: Push event `NEW_ORDER_AVAILABLE` tới toàn bộ Runner đang kết nối.
+  - Khi một Runner nhận đơn thành công: Push event `ORDER_CLAIMED` để các Runner khác tự động xóa đơn khỏi màn hình, đồng thời push event `RUNNER_ACCEPTED` cho Creator.
+- [ ] Xử lý quản lý vòng đời connection: Timeout, client disconnect, heartbeat ping định kỳ 15 giây; commit.
+
+### Thứ 5 — Lý Thuyết Concurrency & Database Locking Thực Chiến (2h)
+- [ ] Phân tích bài toán kinh điển: **Double-Picking / Race Condition**:
+  - Khi 10 Runner cùng nhìn thấy 1 đơn hàng giá hời trên bảng tin và cùng bấm "Nhận đơn" trong cùng 1 phần nghìn giây.
+  - Nếu không có cơ chế kiểm soát đồng thời $\rightarrow$ Cả 10 Runner đều nhận thành công $\rightarrow$ Thảm họa nghiệp vụ!
+- [ ] So sánh chuyên sâu các giải pháp khóa trong ngành:
+  - **Pessimistic Locking (`SELECT ... FOR UPDATE`):** Khóa dòng trực tiếp trong Database $\rightarrow$ An toàn tuyệt đối nhưng block tài nguyên, throughput thấp, dễ dẫn đến deadlock.
+  - **Optimistic Locking (`@Version` trong JPA):** Không khóa ở DB, dựa trên số version để phát hiện xung đột $\rightarrow$ Throughput cực cao, không block đọc, phù hợp hệ thống có tỷ lệ đọc nhiều hơn ghi.
+  - **Distributed Locking (Redis Redlock / Redisson):** Dùng khi hệ thống phân tán nhiều instance độc lập.
+- [ ] Triển khai Optimistic Locking trên entity `Order`:
+  - Thêm trường `@Version private Long version;`.
+  - Viết test stress concurrency bằng JUnit 5 kết hợp `CountDownLatch` và `ExecutorService` (10 thread cùng gọi `claimOrder`): Chứng minh duy nhất 1 Runner nhận thành công, 9 Runner còn lại nhận ngoại lệ `OptimisticLockingFailureException` và trả về `409 Conflict`; commit.
+
+### Thứ 6 — Deadlock Simulation & Resolution Drill (2h)
+- [ ] Phân tích nguyên nhân gốc rễ sinh ra **Deadlock**: 4 điều kiện của Coffman (Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait).
+- [ ] Tạo bài lab tái hiện Deadlock thực tế: Hai transaction chạy song song cập nhật chéo tài nguyên (Tx 1: lock User rồi lock Order; Tx 2: lock Order rồi lock User).
+- [ ] Đọc và phân tích Deadlock Graph trong Database log (`SHOW ENGINE INNODB STATUS` trong MySQL hoặc Postgres log).
+- [ ] Hai giải pháp khắc phục triệt để:
+  - (1) Chuẩn hóa thứ tự khóa tài nguyên (Lock Ordering Rule).
+  - (2) Cấu hình cơ chế tự động thử lại bằng Spring `@Retryable` với Exponential Backoff khi gặp transient deadlock.
+- [ ] Viết test chứng minh `@Retryable` vượt qua deadlock tạm thời; commit.
+
+### Thứ 7 — End-to-End Payment & Notification Lab (5h)
+- [ ] 2h: Ghép nối trọn vẹn luồng sản xuất hoàn chỉnh: Creator tạo đơn (kèm Idempotency Key) $\rightarrow$ Đẩy Redis Feed $\rightarrow$ Push SSE cho các Runner $\rightarrow$ Runner claim đơn (Optimistic Lock) $\rightarrow$ Gỡ đơn khỏi feed và báo cho Creator $\rightarrow$ Thanh toán Sandbox qua Webhook.
+- [ ] 1h: Viết integration tests toàn luồng với Testcontainers và MockMvc.
+- [ ] 1h: Hoàn thiện tài liệu ADR về các quyết định Idempotency, SSE và Locking.
+- [ ] 1h: Commit và tổng kết tuần.
+
+---
+
+## Tuần 18 — Fresher Gate & Sẵn Sàng Ứng Tuyển Thực Tế
+
+### Thứ 2 — Mock Technical Interview: Java Core Deep Dive (2h)
+- [ ] Vấn đáp chuyên sâu 30 câu hỏi Java Core: OOP principles, Immutability, Collections Framework internals, JVM Memory (Heap, Stack, Metaspace), GC, Java Memory Model, Concurrency primitives.
+- [ ] Sửa chữa 5 điểm thiếu sót lớn nhất ghi nhận được; commit ghi chú.
+
+### Thứ 3 — Mock Technical Interview: Spring Boot, JPA & Database (2h)
+- [ ] Vấn đáp 30 câu Spring Boot & Data: IoC/DI, Bean Lifecycle, Proxy mechanism & self-invocation trap, `@Transactional` isolation & propagation, N+1 query fix, B-Tree index structure, MVCC snapshot.
+- [ ] Vẽ sơ đồ luồng đi của request từ Client tới Database không nhìn tài liệu; commit.
+
+### Thứ 4 — Mock System & Project Presentation (2h)
+- [ ] Trình bày dự án Giao Vặt theo cấu trúc chuẩn: Bối cảnh $\rightarrow$ Vấn đề $\rightarrow$ Giải pháp kiến trúc $\rightarrow$ Trade-offs $\rightarrow$ Kết quả đạt được.
+- [ ] Trả lời phản biện các câu hỏi xoay quanh Concurrency Locking, Redis Feed, SSE connection leak, Idempotency pattern.
+
+### Thứ 5 — Mock Interview bằng Tiếng Anh (English Technical Round) (2h)
+- [ ] Mô phỏng vòng phỏng vấn tiếng Anh: Self-introduction, Project walk-through, Behavioral questions (STAR method), Career aspiration.
+- [ ] Ghi âm lại và chấm điểm dựa trên: Độ rõ ràng (Clarity), Cấu trúc câu trả lời (Structure), Từ vựng kỹ thuật chính xác (Technical Vocabulary).
+
+### Thứ 6 — Thiết Lập Hệ Thống Ứng Tuyển & Tìm Kiếm Việc Làm (2h)
+- [ ] Tạo bảng Job Application Tracker: Công ty, Vị trí, Link JD, Ngày nộp, Trạng thái, Điểm còn thiếu, Kế hoạch follow-up.
+- [ ] Lựa chọn 10 Job Descriptions (JD) Fresher / Junior Java phù hợp trên thị trường (ITviec, TopCV, LinkedIn).
+- [ ] Đối chiếu từ khóa trên JD với kinh nghiệm thực tế từ dự án Giao Vặt; chuẩn bị thư xin việc (Cover Letter) cá nhân hóa cho từng vị trí.
+- [ ] Học kỹ năng đàm phán lương ban đầu: Tìm hiểu dải lương Fresher tại thị trường Việt Nam (12–15 triệu), cách trả lời câu hỏi "Mức lương mong muốn của bạn là bao nhiêu?".
+
+### Thứ 7 — Final Gate Assessment: Đạt Chuẩn Apply Fresher (5h)
+- [ ] 2h: Thử thách Live Coding: Tự tay dựng một tính năng CRUD có validation, exception handler, auth và test trong vòng 120 phút không xem tài liệu cũ.
+- [ ] 1h: Chạy full test suite và demo toàn diện hệ thống.
+- [ ] 1h: Gửi 3 bộ hồ sơ ứng tuyển chất lượng đầu tiên.
+- [ ] 1h: Đánh giá Retrospective toàn bộ Giai đoạn 1 & 2, lập kế hoạch bước vào Giai đoạn 3 (Junior $\rightarrow$ Mid).
+
+**Tiêu chuẩn hoàn thành Gate Fresher (DoD Fresher):**
+- Có repository Git chuẩn mực; clone về máy mới chạy được ngay bằng `docker compose up`.
+- Nắm vững kiến trúc Backend 3 layers, code thành thạo CRUD + Auth trong 2–3 giờ.
+- Giải thích rành rọt bản chất OOP, Collections, Concurrency primitives, SQL Index, Spring Proxy và Locking.
+- Trình bày được dự án và trả lời phỏng vấn kỹ thuật bằng tiếng Anh cơ bản.
+- **Đạt gate này là BẮT ĐẦU NỘP HỒ SƠ ỨNG TUYỂN NGAY, không chờ đợi phải học hết kiến trúc Senior.**
+
+> *Trường hợp chưa đạt điểm tự tin:* Bù đắp đúng phần bị hổng trong 2 tuần tiếp theo, đồng thời mở rộng dải ứng tuyển sang Intern/Fresher dải 8–12 triệu hoặc thực tập sinh có lương; tuyệt đối không đứng ngoài thị trường lao động.
+
+# GIAI ĐOẠN 3 — THÁNG 5–17
+## Junior Thực Chiến → Đủ Điều Kiện Apply Mid Java Software Engineer (Mục tiêu 25–30 triệu)
+
+> Giai đoạn này ưu tiên kinh nghiệm tại công ty thật. Mỗi tuần giữ lịch học đều đặn nhưng gắn chặt với task sản xuất thực tế. Nếu chưa có việc ngay, tiếp tục dùng **Giao Vặt** làm môi trường mô phỏng mở rộng (On-Demand Crowdsourced Delivery Platform) và ghi rõ là Personal Production Project.
+
+> **NGUYÊN TẮC CHIẾN LƯỢC: VƯỢT RA NGOÀI GIỚI HẠN CỦA MỘT DỰ ÁN — BƯỚC ĐỆM TIẾN TỚI SENIOR**
+> 
+> **1. Phương Pháp Học Các Mảng Kiến Thức Lớn: Lý Thuyết & Bức Tranh Tổng Thể ──► Phân Tích Trade-off ──► Ra Quyết Định Kiến Trúc (ADR) ──► System Design:**
+> - Khi bước vào các mảng kiến thức quy mô lớn (Microservices, Message Brokers Kafka/RabbitMQ, Distributed Consistency, Database Sharding/Replication, Observability APM, Cloud/DevOps...):
+>   - **Học lý thuyết trước để nắm được cái nhìn tổng quát (Landscape & Foundations First):** Bắt buộc phải hiểu bản chất nguồn gốc bài toán, các trường phái giải pháp trong ngành phần mềm, cơ chế hoạt động bên dưới (under the hood), ưu và nhược điểm. Tuyệt đối không học theo kiểu "cắm đầu vào cấu hình công cụ" mà không hiểu vì sao công nghệ đó ra đời.
+>   - **Đánh giá Trade-off theo ngữ cảnh (Contextual Trade-off Analysis):** Hiểu rõ khi nào nên dùng và khi nào KHÔNG nên dùng. Biết cách cân nhắc giữa Chi phí (Cost) vs Tốc độ (Performance) vs Tính nhất quán (Consistency) vs Độ phức tạp (Complexity).
+>   - **Lựa chọn phương pháp phù hợp $\rightarrow$ System Design:** Ra quyết định kiến trúc thông qua bản ADR có dẫn chứng số liệu.
+>
+> **2. Nhận Định Sống Còn Về Phạm Vi Senior:**
+> - **LÀM XONG PROJECT GIAO VẶT KHÔNG ĐẢM BẢO BAO QUÁT HẾT TOÀN BỘ ROADMAP VÌ ROADMAP HƯỚNG TỚI SENIOR.**
+> - Dự án Giao Vặt dù đủ to và giải quyết nhiều bài toán backend khó (concurrency locking, redis queue, SSE, idempotency, webhook) nhưng bản chất nó vẫn chỉ là **một mô hình nghiệp vụ cụ thể** với tập hợp giả định kỹ thuật riêng.
+> - **Senior Software Engineer không bao giờ dừng lại ở một dự án duy nhất dù dự án đó đủ to!**
+> - Đẳng cấp Senior đòi hỏi:
+>   - Năng lực **System Design tổng quát** bao quát nhiều ngành hàng khác nhau (E-commerce Flash Sale chịu tải hàng triệu QPS, Hệ thống Chat thời gian thực toàn cầu, Streaming/CDN phân tán, Hệ thống Sổ cái/FinTech đối soát tài chính phân tán...).
+>   - Hiểu sâu bản chất **Hệ thống phân tán (Distributed Systems)**: Định lý CAP, PACELC, Distributed Consensus (Raft/Paxos), Eventual Consistency, Data Partitioning, Multi-region Replication.
+>   - Năng lực **Vận hành sản xuất & SRE (Production Resilience)**: Chaos Engineering, Disaster Recovery (RTO/RPO), Capacity Planning bằng toán học, FinOps tối ưu chi phí hạ tầng cloud.
+>   - Năng lực **Lãnh đạo kỹ thuật (Technical Leadership)**: Dẫn dắt RFC/ADR liên team, mentoring kỹ sư khác, giải quyết tranh luận kỹ thuật dựa trên dữ liệu.
 
 ## Lịch cố định mỗi tuần trong cả giai đoạn
 
@@ -771,12 +1031,25 @@
 - [ ] Tuần 58: Spring deep: proxy, transaction, security, testing, configuration.
 - [ ] Tuần 59: SQL deep: locking, index, query plan, isolation, deadlock; mock technical round 1; sửa gap theo feedback.
 
-## Tuần 60–63 — Mid system design
+## Tuần 60–63 — Mid System Design: Đa Dạng Hóa Kiến Trúc Ngoài Giao Vặt
 
-- [ ] Tuần 60: design URL shortener; capacity, API, DB, cache.
-- [ ] Tuần 61: design notification system; queue, retry, idempotency.
-- [ ] Tuần 62: design booking system; availability, locking, consistency; tính capacity bằng số: QPS → số instance → connection pool → chi phí.
-- [ ] Tuần 63: trình bày 45 phút; phản biện trade-off; mock system design round.
+- [ ] Tuần 60: **System Design 1 — URL Shortener & Global Rate Limiter:** 
+  - Tính toán Capacity: Read/Write QPS, Storage trong 5 năm, Network Bandwidth.
+  - Hashing (MD5/SHA256 truncated) vs Base62 với Auto-incrementing Sequence Generator (Twitter Snowflake).
+  - Multi-tier Caching (Edge CDN $\rightarrow$ Redis $\rightarrow$ DB), Database Partitioning theo ID.
+- [ ] Tuần 61: **System Design 2 — Notification Engine & Distributed Message Queuing:** 
+  - Bức tranh Fan-out Architecture: Xử lý 1 thông báo gửi tới 10 triệu người dùng.
+  - So sánh Message Brokers: Kafka (Log-based, high throughput, replayable) vs RabbitMQ (AMQP, flexible routing, dead-letter exchange).
+  - Thiết kế Idempotent Consumer, Retry với Exponential Backoff + DLQ, Circuit Breaker với Resilience4j.
+- [ ] Tuần 62: **System Design 3 — Ride-Hailing & Real-Time Driver Matching (Mở rộng quy mô lớn từ Giao Vặt):** 
+  - Lưu trữ và truy vấn tọa độ địa lý Geospatial: Geohash, QuadTree, Google S2, Uber H3.
+  - Driver location tracking: Cập nhật vị trí mỗi 4 giây qua WebSocket/gRPC streaming.
+  - High-concurrency matching lock; Tính toán Capacity bằng số: QPS $\rightarrow$ Số container instance $\rightarrow$ DB Connection pool sizing $\rightarrow$ Chi phí cloud hàng tháng.
+- [ ] Tuần 63: **System Design 4 — E-commerce Flash Sale & Tranh Chấp Tồn Kho Cực Đại (Khác biệt hoàn toàn với Giao Vặt):** 
+  - Xử lý traffic spike 100.000+ QPS trong vài giây khi mở bán: Caching trang tĩnh tại CDN, chống bot traffic tại API Gateway.
+  - Trừ kho nguyên tử bằng Redis Lua Script; So sánh Redisson Distributed Lock vs Database `PESSIMISTIC_WRITE`.
+  - Hàng đợi đệm bất đồng bộ (Write-behind DB); Cơ chế suy giảm dịch vụ (Graceful Degradation) khi quá tải.
+  - Trình bày 45 phút phản biện trade-offs; Mock System Design interview round.
 
 ## Tuần 64–68 — Chuẩn bị nhảy Mid
 
@@ -791,9 +1064,16 @@
 ---
 
 # GIAI ĐOẠN 4 — 1–2 NĂM TIẾP
-## Mid → Senior Software Engineer
+## Mid → Senior Software Engineer: Năng Lực Kiến Trúc Phân Tán Toàn Diện & Technical Leadership
 
-> Không học theo danh sách keyword. Mỗi quý chọn một bài toán production có impact, dẫn từ design đến outcome.
+> **TRIẾT LÝ TỐI THƯỢNG CỦA SENIOR ENGINEER:**
+> 
+> **Senior Software Engineer không bị giới hạn trong phạm vi của một dự án hay một công nghệ cụ thể.**
+> Dự án Giao Vặt (dù rất lớn và bao quát nhiều bài toán khó) cũng chỉ là một bệ phóng thực nghiệm ban đầu. Để đạt và giữ vững danh hiệu Senior, kỹ sư phần mềm phải có:
+> 1. **Tư Duy Lý Thuyết Nền Tảng Sâu Sắc (First-Principles Thinking & Deep Distributed Theory):** Nắm bản chất toán học và hệ thống của bài toán phân tán (CAP, PACELC, Consensus Raft/Paxos, Gossip, Vector Clocks, CRDT, Data Partitioning/Sharding, Multi-Region Active-Active Replication).
+> 2. **Năng Lực System Design Đa Ngành Hàng (Cross-Domain Large-Scale Architecture):** Khả năng thiết kế độc lập từ con số không cho các hệ thống với đặc thù kinh doanh khác biệt (Flash Sale, Global Chat, Video Streaming/CDN, FinTech Distributed Ledger...).
+> 3. **Production SRE & Khả Năng Chống Chịu Sự Cố (Production Resilience):** Chaos Engineering, Disaster Recovery (RTO/RPO), SLI/SLO/Error Budget, Capacity Planning bằng công thức toán học, FinOps tối ưu chi phí hạ tầng cloud.
+> 4. **Technical Leadership & Architecture Governance:** Dẫn dắt RFC/ADR liên tổ chức, cố vấn (mentoring), review code chuẩn mực và ngồi bàn phỏng vấn tuyển dụng, hiệu chuẩn nhân tài.
 
 ## Lịch cố định mỗi tuần
 
@@ -822,51 +1102,54 @@
 - [ ] 1h: test/measurement.
 - [ ] 1h: retrospective và evidence log.
 
-## Quý 1 — Ownership hệ thống
+## Quý 1 — Ownership hệ thống & Domain-Driven Design (DDD)
 
-- [ ] Tuần 1–4: nắm domain, dependency, SLO, cost, security; lập system map; vẽ kiến trúc target (hexagonal/clean) cho module sở hữu.
-- [ ] Tuần 5–8: dẫn một RFC; áp dụng tactical DDD (aggregate, value object, domain event, anti-corruption layer) ở module phức tạp nhất; ship phần đầu tiên.
-- [ ] Tuần 9–12: đo outcome; hoàn thiện runbook; chia sẻ cho team.
+- [ ] Tuần 1–4: Nắm domain, dependency, SLO, cost, security; lập system map; vẽ kiến trúc target (Hexagonal / Clean / Ports & Adapters) cho module sở hữu.
+- [ ] Tuần 5–8: Dẫn dắt một RFC; áp dụng Strategic & Tactical DDD (Bounded Contexts, Ubiquitous Language, Aggregate Roots, Value Objects, Domain Events, Anti-Corruption Layer - ACL) ở module phức tạp nhất; ship phần đầu tiên.
+- [ ] Tuần 9–12: Đo lường outcome; hoàn thiện runbook; chia sẻ tech talk cho toàn bộ team kỹ thuật.
 
-## Quý 2 — Reliability và incident leadership
+## Quý 2 — Reliability, SRE & Incident Leadership
 
-- [ ] Tuần 13–16: SLI/SLO, error budget, alert quality.
-- [ ] Tuần 17–20: incident response, postmortem, follow-up ownership.
-- [ ] **Tuần 17–20 phụ:** Chaos engineering — Chaos Mesh/Litmus, failure injection drills.
-- [ ] Tuần 21–24: backup/restore hoặc DR drill theo hệ thống thật.
-- [ ] **Tuần 23–24 phụ:** Advanced DR — multi-region, RTO/RPO calculation, failover testing.
+- [ ] Tuần 13–16: Thiết lập SLI/SLO, Error Budget, Alert Quality, loại bỏ Alert Fatigue.
+- [ ] Tuần 17–20: Dẫn dắt Incident Response, chủ trì Blameless Postmortem, theo dõi đóng các action items ngăn ngừa tái diễn.
+- [ ] **Tuần 17–20 phụ (Chaos Engineering):** Tích hợp Chaos Mesh / Litmus, thực hiện các bài drill cố ý tiêm lỗi (Failure Injection): Network Latency/Partition, Pod Kill, Database CPU Spike.
+- [ ] Tuần 21–24: Thực hiện diễn tập phục hồi sự cố thảm họa (Disaster Recovery Drill - DR): Backup/Restore PostgreSQL, tính toán và cam kết RTO (Recovery Time Objective) và RPO (Recovery Point Objective) bằng số liệu cụ thể.
+- [ ] **Tuần 23–24 phụ (Advanced Multi-Region DR):** Kiến trúc Multi-Region Active-Passive vs Active-Active, Failover testing qua DNS/Global Load Balancer.
 
-## Quý 3 — Scale và distributed systems
+## Quý 3 — Scale, Distributed Systems & Cross-Domain Architectures
 
-- [ ] Tuần 25–28: capacity planning bằng số (QPS → instance → pool → cost), partitioning, cache, queue.
-- [ ] Tuần 29–32: idempotency, outbox/saga, schema evolution.
-- [ ] **Tuần 30–32 phụ:** WebFlux reactive programming, CQRS/Event Sourcing PoC.
-- [ ] Tuần 33–36: tracing, profiling, load test, bottleneck remediation.
-- [ ] **Tuần 35–36 phụ:** GraalVM native image benchmark so sánh với JVM truyền thống.
+- [ ] Tuần 25–28: Capacity Planning bằng công thức số học (QPS $\rightarrow$ Instance count $\rightarrow$ Connection pool $\rightarrow$ Chi phí cloud), Data Partitioning, Consistent Hashing.
+- [ ] Tuần 29–32: Distributed Transactions & Consistency: Idempotency, Transactional Outbox Pattern kết hợp Debezium CDC, Saga Pattern (Orchestration vs Choreography), Schema Evolution không downtime.
+- [ ] **Tuần 30–32 phụ (Nghiên cứu kiến trúc thay thế):** Reactive Programming với Spring WebFlux, Event Sourcing & CQRS (Command Query Responsibility Segregation) PoC.
+- [ ] **Chuyên đề System Design quy mô lớn ngoài Giao Vặt:**
+  - *Case Study 1: Global Video Streaming & CDN (Netflix/YouTube):* Chunking HLS/DASH, Adaptive Bitrate, Multi-tier caching.
+  - *Case Study 2: Distributed Financial Ledger (FinTech):* Double-entry bookkeeping, strict ACID, zero data loss, đối soát tự động (automated reconciliation).
+- [ ] Tuần 33–36: Distributed Tracing với OpenTelemetry, Profiling JVM (async-profiler, JFR), Load testing phân tán với k6/Gatling, định vị và giải quyết nghẽn cổ chai.
+- [ ] **Tuần 35–36 phụ:** GraalVM Native Image benchmark so sánh thời gian khởi động (Startup Time) và Memory Footprint với OpenJDK truyền thống.
 
-## Quý 4 — Platform/cloud và delivery
+## Quý 4 — Platform Engineering, Cloud & FinOps
 
-- [ ] Tuần 37–40: Kubernetes/Helm hoặc platform thực tế của công ty.
-- [ ] Tuần 41–44: Terraform/IaC, secrets, deployment strategy.
-- [ ] Tuần 45–48: giảm toil, chuẩn hóa pipeline, rollback, operational docs; rà hóa đơn cloud, cắt cost có số đo (FinOps nhẹ).
+- [ ] Tuần 37–40: Kubernetes (K8s) & Helm: Deployment, StatefulSet, ConfigMap/Secret, Ingress, HPA (Horizontal Pod Autoscaler), Custom Resource Definitions (CRD).
+- [ ] Tuần 41–44: Infrastructure as Code (IaC) với Terraform: Quản lý hạ tầng đám mây dạng mã nguồn, Secret Management (HashiCorp Vault / AWS Secrets Manager), Deployment Strategies (Blue-Green, Canary).
+- [ ] Tuần 45–48: Giảm thiểu Toil (công việc lặp lại vô nghĩa), chuẩn hóa CI/CD pipeline, Rollback an toàn; Rà soát hóa đơn đám mây (FinOps), tối ưu dung lượng và cắt giảm chi phí hạ tầng có số đo kiểm chứng.
 
-## Quý 5 — Technical leadership
+## Quý 5 — Technical Leadership & Governance
 
-- [ ] Tuần 49–52: dẫn design review liên team; thuyết phục stakeholder bằng business value (cost/risk/time), không chỉ trade-off kỹ thuật.
-- [ ] Tuần 53–56: mentor một kỹ sư; tạo feedback loop.
-- [ ] Tuần 57–60: xử lý conflict kỹ thuật bằng dữ liệu; ngồi bàn phỏng vấn: chấm bài, đưa verdict, calibration với manager.
+- [ ] Tuần 49–52: Dẫn dắt Design Review liên team; thuyết phục các bên liên quan (Product Manager, Engineering Manager, Business) bằng giá trị kinh doanh (Cost / Risk / Time-to-Market), không chỉ bằng luận điểm kỹ thuật đơn thuần.
+- [ ] Tuần 53–56: Cố vấn kỹ thuật (Mentoring) cho các kỹ sư Junior/Mid; xây dựng văn hóa chia sẻ kiến thức và feedback loop lành mạnh.
+- [ ] Tuần 57–60: Xử lý các bất đồng kỹ thuật phức tạp trong tổ chức dựa trên dữ liệu và bằng chứng; tham gia hội đồng phỏng vấn tuyển dụng: chấm bài, đưa ra verdict, calibration cùng Engineering Leadership.
 
-## Quý 6 — Senior evidence
+## Quý 6 — Senior Evidence & Impact
 
-- [ ] Tuần 61–64: hoàn thành một initiative có impact đo được.
-- [ ] Tuần 65–68: viết case study architecture/incident/performance.
-- [ ] Tuần 69–72: mock Senior interview và calibration với manager/mentor.
+- [ ] Tuần 61–64: Hoàn thành một sáng kiến kỹ thuật (Technical Initiative) mang lại tác động lớn đo lường được (giảm p99 latency X%, tiết kiệm Y% chi phí, tăng độ tin cậy Z%).
+- [ ] Tuần 65–68: Viết 2 bài Case Study chuyên sâu: (1) Kiến trúc giải quyết bài toán tải cao / tranh chấp dữ liệu, (2) Quá trình điều tra và khắc phục sự cố nghiêm trọng (Postmortem).
+- [ ] Tuần 69–72: Mock Senior Interview toàn diện (Architecture, Incident Leadership, Behavioral) và hiệu chuẩn năng lực cùng Mentor.
 
-## Quý 7–8 — Consolidation
+## Quý 7–8 — Consolidation & Market Positioning
 
-- [ ] Tuần 73–80: duy trì ownership, mentor, design review, incident response.
-- [ ] Tuần 81–88: chốt portfolio evidence; cập nhật CV/LinkedIn.
-- [ ] Tuần 89–96: đánh giá scope thực tế; apply Senior khi đã có evidence, không chỉ đủ số năm.
+- [ ] Tuần 73–80: Duy trì vững chắc vai trò System Owner, tiếp tục dẫn dắt Design Review và phản ứng sự cố.
+- [ ] Tuần 81–88: Hoàn thiện hồ sơ bằng chứng (Senior Evidence Portfolio); cập nhật CV và LinkedIn với các thành tựu đo lường được.
+- [ ] Tuần 89–96: Đánh giá phạm vi tác động thực tế (Real Scope); chính thức ứng tuyển vị trí Senior Software Engineer khi đã có đầy đủ bằng chứng kiểm chứng, không chỉ dựa vào số năm kinh nghiệm đơn thuần.
 
 **Evidence Senior cần có:**
 - [ ] Dẫn một thiết kế từ requirement đến production.
