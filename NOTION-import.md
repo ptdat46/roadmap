@@ -1,5 +1,8 @@
 # Java & Next.js Fullstack Software Engineer — Roadmap học từng ngày
 
+> **Trạng thái**: Đang thực hiện Step 1 (Khởi động ngày 26/10/2026)  
+> **Cơ chế**: Gated Sequential Progression (Chỉ mở khóa & nhắc nhở bước tiếp theo khi người dùng báo `done` bước trước)  
+
 > **Mục tiêu:** 
 > - **Fresher sau 4–5 tháng:** Đủ năng lực phỏng vấn và trúng tuyển cả hai vị trí: **Java Backend Developer** và **Fullstack Java + Next.js Developer** tại thị trường Việt Nam (Mức lương mục tiêu: 12–15+ triệu VNĐ).
 > - **Junior thực chiến & Mid sau 12–14 tháng tiếp theo:** 25–30 triệu VNĐ.
@@ -65,7 +68,8 @@
 ## Tuần 1 — Khởi tạo Base Giao Vặt: Backend Spring Boot (Java 17 LTS) & Frontend Next.js Song Song
 
 ### Thứ 2 — Khởi Tạo Nền Tảng Song Song: Backend Spring Boot & Frontend Next.js (2h)
-- [ ] **Backend (70%):**
+- [ ] **Step 1 (Khởi động - 26/10/2026)**:
+  - **Backend (70%):**
   - Cài đặt JDK 17 (Java 17 LTS), IntelliJ IDEA, Git, Maven (hoặc Gradle wrapper); kiểm tra `java -version`, `mvn -version`, `git --version`.
   - Khởi tạo dự án Spring Boot 3.x (Java 17) cho Giao Vặt qua Spring Initializr (dependencies: `spring-boot-starter-web`, `lombok`, `spring-boot-starter-test`).
   - Khám phá cấu trúc thư mục của 1 Backend Spring Boot chuẩn: `src/main/java`, `src/main/resources`, `pom.xml` (quản lý dependency, plugin compiler target 17).
