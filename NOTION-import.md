@@ -1,6 +1,6 @@
 # Java & Next.js Fullstack Software Engineer — Roadmap học từng ngày
 
-> **Trạng thái**: Chưa bắt đầu (Sẵn sàng Step 1)  
+> **Trạng thái**: Đang thực hiện Step 1 (Kích hoạt ngày 28/10/2026 - Deadline: 23:00 28/10/2026)  
 > **Cơ chế**: Gated Sequential Progression (Chỉ mở khóa & nhắc nhở bước tiếp theo khi người dùng báo `done` bước trước)  
 
 > **Mục tiêu:** 
@@ -68,7 +68,7 @@
 ## Tuần 1 — Khởi tạo Base Giao Vặt: Backend Spring Boot (Java 17 LTS) & Frontend Next.js Song Song
 
 ### Thứ 2 — Khởi Tạo Nền Tảng Song Song: Backend Spring Boot & Frontend Next.js (2h)
-- [ ] **Step 1 (Sẵn sàng kích hoạt)**:
+- [ ] **Step 1 (Đang thực hiện - Deadline: 23:00 28/10/2026)**:
   - **Backend (70%):**
   - Cài đặt JDK 17 (Java 17 LTS), IntelliJ IDEA, Git, Maven (hoặc Gradle wrapper); kiểm tra `java -version`, `mvn -version`, `git --version`.
   - Khởi tạo dự án Spring Boot 3.x (Java 17) cho Giao Vặt qua Spring Initializr (dependencies: `spring-boot-starter-web`, `lombok`, `spring-boot-starter-test`).
